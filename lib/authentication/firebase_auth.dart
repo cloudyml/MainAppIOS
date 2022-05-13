@@ -104,12 +104,12 @@ class GoogleSignInProvider extends ChangeNotifier {
   Future googleLogin(context) async {
     try {
       final googleUser = await googleSignIn.signIn();
-      showToast('Please wait while we are fetching info...');
       if (googleUser == null) return;
       _user = googleUser;
       print('user...');
       print(_user);
       final googleAuth = await googleUser.authentication;
+      showToast('Please wait while we are fetching info...');
       print("this is goooogle-- $googleAuth");
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
