@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloudyml_app2/authentication/firebase_auth.dart';
 import 'package:cloudyml_app2/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -23,6 +24,7 @@ class _EmailSignUpState extends State<EmailSignUp> {
   String msg = '';
   final GlobalKey<FormState> loginkey = GlobalKey<FormState>();
   bool loading = false;
+
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -582,6 +584,25 @@ class _DetailsScreenState extends State<DetailsScreen> {
   bool confirmEmailLoading = false;
   Timer? timer;
 
+  // Map userMap = Map<String, dynamic>();
+
+  void fetchUserDetails() async {
+    DocumentSnapshot userDocs = await FirebaseFirestore.instance
+        .collection('Users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get();
+    // print(map['payInPartsDetails'][id]['outStandingAmtPaid']);
+    // setState(() {
+    // Map userMap = userDocs.data() as Map<String, dynamic>;
+    // whetherSubScribedToPayInParts =
+    //     !(!(map['payInPartsDetails']['outStandingAmtPaid'] == null));
+    // });
+    if (userDocs.data() != null) {
+      // Navigator.push(context, MaterialPageRoute(builder: (_) => HomePage()));
+    }
+    // print("Checking userMap : ${userDocs.data()}");
+  }
+
   void checkVerified() async {
     await FirebaseAuth.instance.currentUser!.reload();
     setState(() {
@@ -598,6 +619,12 @@ class _DetailsScreenState extends State<DetailsScreen> {
           (route) => false);
       showToast('Email Verified');
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserDetails();
   }
 
   @override

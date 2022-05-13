@@ -29,6 +29,7 @@ class Authenticate extends StatelessWidget {
   }
 }
 
+
 Future<User?> createAccount(
     String email, String password, String text, BuildContext context) async {
   FirebaseAuth _auth = FirebaseAuth.instance;
@@ -120,16 +121,48 @@ class GoogleSignInProvider extends ChangeNotifier {
       print(googleAuth.accessToken);
       print("Printed");
       await FirebaseAuth.instance.signInWithCredential(credential);
-      Navigator.pushAndRemoveUntil(
-          context,
-          PageTransition(
-              duration: Duration(milliseconds: 200),
-              curve: Curves.bounceInOut,
-              type: PageTransitionType.rightToLeft,
-              child: DetailsScreen()),
-          (route) => false);
-
-      showToast('Account Created');
+      DocumentSnapshot userDocs = await FirebaseFirestore.instance
+          .collection('Users')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .get();
+      if (userDocs.data() == null) {
+        Navigator.pushAndRemoveUntil(
+            context,
+            PageTransition(
+                duration: Duration(milliseconds: 200),
+                curve: Curves.bounceInOut,
+                type: PageTransitionType.rightToLeft,
+                child: DetailsScreen()),
+            (route) => false);
+        showToast('Account Created');
+      } else {
+        Navigator.pushAndRemoveUntil(
+            context,
+            PageTransition(
+                duration: Duration(milliseconds: 200),
+                curve: Curves.bounceInOut,
+                type: PageTransitionType.rightToLeft,
+                child: HomePage()),
+            (route) => false);
+      }
+      // ValueListenableBuilder(
+      //   valueListenable: Authenticate.userDocs,
+      //   builder: (BuildContext context, bool value, Widget? child) {
+      //     if (value) {
+      //       return HomePage();
+      //     } else {
+      //       return DetailsScreen();
+      //     }
+      //   },
+      // );
+      // Navigator.pushAndRemoveUntil(
+      //     context,
+      //     PageTransition(
+      //         duration: Duration(milliseconds: 200),
+      //         curve: Curves.bounceInOut,
+      //         type: PageTransitionType.rightToLeft,
+      //         child: DetailsScreen()),
+      //     (route) => false);
 
       return true;
     } catch (e) {
@@ -172,8 +205,8 @@ void userprofile(String name, var mobilenumber, var email) async {
     "id": _auth.currentUser!.uid,
     "password": "is it needed",
     "role": "student",
-    "couponCodeDetails" : {},
-    "payInPartsDetails":{},
-    'mentors':'Rahul Mishra'
+    "couponCodeDetails": {},
+    "payInPartsDetails": {},
+    'mentors': 'Rahul Mishra'
   });
 }

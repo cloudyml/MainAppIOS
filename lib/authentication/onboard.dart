@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloudyml_app2/authentication/email_signup.dart';
 import 'package:cloudyml_app2/authentication/firebase_auth.dart';
 import 'package:cloudyml_app2/authentication/login.dart';
 import 'package:cloudyml_app2/authentication/phone_auth.dart';
 import 'package:cloudyml_app2/globals.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:page_transition/page_transition.dart';
@@ -17,6 +19,14 @@ class OnBoard extends StatefulWidget {
 
 class _OnBoardState extends State<OnBoard> {
   bool? googleloading = false;
+
+
+  @override
+  // void initState() {
+  //   super.initState();
+  //   fetchUserDetails();
+  // }
+
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
