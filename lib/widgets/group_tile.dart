@@ -80,7 +80,7 @@ class _GroupTileState extends State<GroupTile> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
-                          width: width * 0.55,
+                          width: width * 0.50,
                           child: Text(
                             widget.groupData!["data"]["name"],
                             overflow: TextOverflow.ellipsis,
@@ -88,8 +88,9 @@ class _GroupTileState extends State<GroupTile> {
                                 fontSize: 18, fontWeight: FontWeight.bold),
                           ),
                         ),
+                       
                         Text(
-                          DateFormat('hh:mm a')
+                          item.isEmpty ? " " :DateFormat('hh:mm a')
                               .format(item[0]['data']['time'].toDate())
                               .toLowerCase(),
                           style: TextStyle(

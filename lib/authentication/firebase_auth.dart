@@ -171,6 +171,9 @@ void userprofile(String name, var mobilenumber, var email) async {
     "paid": "False",
     "id": _auth.currentUser!.uid,
     "password": "is it needed",
-    "role": "student"
+    "role": "student",
+    "couponCodeDetails" : {},
+    "payInPartsDetails":{},
+    'mentors':'Rahul Mishra'
   });
 }

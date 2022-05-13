@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloudyml_app2/combo/combo_course.dart';
+import 'package:cloudyml_app2/combo/combo_store.dart';
 import 'package:cloudyml_app2/course.dart';
 import 'package:cloudyml_app2/globals.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -18,8 +18,16 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String searchString = "";
+  // bool? whetherSubScribedToPayInParts = false;
+  String id = "";
+
+  // String daysLeftOfLimitedAccess = "";
   List<dynamic> courses = [];
+
+  Map userMap = Map<String, dynamic>();
+
   bool? load = true;
+
   void fetchCourses() async {
     await FirebaseFirestore.instance
         .collection('Users')
@@ -33,16 +41,82 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  // void dbCheckerForDaysLeftForLimitedAccess() async {
+  //   DocumentSnapshot snapshot = await FirebaseFirestore.instance
+  //       .collection('Users')
+  //       .doc(FirebaseAuth.instance.currentUser!.uid)
+  //       .get();
+  //   Map map = snapshot.data() as Map<String, dynamic>;
+  //   Duration daysLeft =
+  //       (map['endDateOfLimitedAccess'].difference(DateTime.now()).inDays());
+  //   setState(() {
+  //     daysLeftOfLimitedAccess = daysLeft.toString();
+  //   });
+  // }
+
+  void dbCheckerForPayInParts() async {
+    DocumentSnapshot userDocs = await FirebaseFirestore.instance
+        .collection('Users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get();
+    // print(map['payInPartsDetails'][id]['outStandingAmtPaid']);
+    setState(() {
+      userMap = userDocs.data() as Map<String, dynamic>;
+      // whetherSubScribedToPayInParts =
+      //     !(!(map['payInPartsDetails']['outStandingAmtPaid'] == null));
+    });
+  }
+
+  bool navigateToCatalogueScreen(String id) {
+    if (userMap['payInPartsDetails'][id] != null) {
+      final daysLeft = (DateTime.parse(
+              userMap['payInPartsDetails'][id]['endDateOfLimitedAccess'])
+          .difference(DateTime.now())
+          .inDays);
+      print(daysLeft);
+      return daysLeft < 0;
+      // final secondsLeft = (DateTime.parse(
+      //         userMap['payInPartsDetails'][id]['endDateOfLimitedAccess'])
+      //     .difference(DateTime.now())
+      //     .inSeconds);
+      // print(secondsLeft);
+      // return secondsLeft < 0;
+    } else {
+      return false;
+    }
+    // final secondsLeft = (DateTime.parse(
+    //         userMap['payInPartsDetails'][id]['endDateOfLimitedAccess'])
+    //     .difference(DateTime.now())
+    //     .inSeconds);
+    // print(secondsLeft);
+    // return secondsLeft < 0;
+  }
+
+  bool statusOfPayInParts(String id) {
+    if (!(userMap['payInPartsDetails'][id] == null)) {
+      if (userMap['payInPartsDetails'][id]['outStandingAmtPaid']) {
+        return false;
+      } else {
+        return true;
+      }
+    } else {
+      return false;
+    }
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     fetchCourses();
+    dbCheckerForPayInParts();
+    // dbCheckerForDaysLeftForLimitedAccess();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title:Text('My Courses'),elevation: 0,centerTitle: true,),
         backgroundColor: Colors.white,
         body: Column(
           mainAxisSize: MainAxisSize.max,
@@ -67,32 +141,69 @@ class _HomeScreenState extends State<HomeScreen> {
                             Map<String, dynamic> map =
                                 snapshot.data!.docs[index].data()
                                     as Map<String, dynamic>;
+                            // setState(() {
+                            //   id= map['id'];
+                            // });
                             if (map["name"].toString() == "null") {
                               return Container();
                             }
                             if (courses.contains(map['id'])) {
                               return InkWell(
                                 onTap: () {
-                                  if (!map['combo']) {
-                                    Navigator.push(
-                                      context,
-                                      PageTransition(
-                                          duration: Duration(milliseconds: 400),
+                                  // if()
+                                  if (navigateToCatalogueScreen(map['id']) &&
+                                      !(userMap['payInPartsDetails'][map['id']]
+                                          ['outStandingAmtPaid'])) {
+                                    if (!map['combo']) {
+                                      Navigator.push(
+                                        context,
+                                        PageTransition(
+                                            duration:
+                                                Duration(milliseconds: 100),
+                                            curve: Curves.bounceInOut,
+                                            type:
+                                                PageTransitionType.rightToLeft,
+                                            child: CatelogueScreen()),
+                                      );
+                                    } else {
+                                      Navigator.push(
+                                        context,
+                                        PageTransition(
+                                          duration: Duration(milliseconds: 100),
                                           curve: Curves.bounceInOut,
                                           type: PageTransitionType.rightToLeft,
-                                          child: Couse()),
-                                    );
+                                          child: ComboStore(
+                                            courses: map['courses'],
+                                          ),
+                                        ),
+                                      );
+                                    }
                                   } else {
-                                    Navigator.push(
-                                      context,
-                                      PageTransition(
+                                    if (!map['combo']) {
+                                      Navigator.push(
+                                        context,
+                                        PageTransition(
+                                            duration:
+                                                Duration(milliseconds: 400),
+                                            curve: Curves.bounceInOut,
+                                            type:
+                                                PageTransitionType.rightToLeft,
+                                            child: Couse()),
+                                      );
+                                    } else {
+                                      ComboCourse.comboId.value = map['id'];
+                                      Navigator.push(
+                                        context,
+                                        PageTransition(
                                           duration: Duration(milliseconds: 400),
                                           curve: Curves.bounceInOut,
                                           type: PageTransitionType.rightToLeft,
                                           child: ComboCourse(
                                             courses: map['courses'],
-                                          )),
-                                    );
+                                          ),
+                                        ),
+                                      );
+                                    }
                                   }
                                   setState(() {
                                     courseId = snapshot.data!.docs[index].id;
@@ -175,7 +286,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         fontSize: 20,
                                                         fontWeight:
                                                             FontWeight.w500),
-                                                            overflow: TextOverflow.ellipsis,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
                                                   ),
                                                 ),
                                                 SizedBox(
@@ -241,20 +353,126 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   height: 12,
                                                 ),
                                                 Container(
-                                                    width:
-                                                        MediaQuery.of(context)
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.45,
+                                                  child: Text(
+                                                    map['description'],
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: TextStyle(
+                                                        fontFamily: 'Regular',
+                                                        fontSize: 14,
+                                                        color: Colors.black),
+                                                  ),
+                                                ),
+                                                // Container(
+                                                //   width: MediaQuery.of(context)
+                                                //           .size
+                                                //           .width *
+                                                //       0.45,
+                                                //   child: Text('Days left'),
+                                                // ),
+                                                // !userMap['payInPartsDetails']
+                                                //                 [map['id']][
+                                                //             'outStandingAmtPaid'] ||
+                                                //         !(userMap['payInPartsDetails']
+                                                //                     [map['id']] ==
+                                                //             null)
+                                                // (userMap['payInPartsDetails']
+                                                //             [map['id']] ==
+                                                //         null) ? false : (userMap['payInPartsDetails']
+                                                //             [map['id']]['outStandingAmtPaid'])
+                                                statusOfPayInParts(map['id'])
+                                                    ? Container(
+                                                        width: MediaQuery.of(
+                                                                    context)
                                                                 .size
                                                                 .width *
                                                             0.45,
-                                                    child: Text(
-                                                      map['description'],
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      style: TextStyle(
-                                                          fontFamily: 'Regular',
-                                                          fontSize: 14,
-                                                          color: Colors.black),
-                                                    )),
+                                                        child:
+                                                            !navigateToCatalogueScreen(
+                                                                    map['id'])
+                                                                ? Container(
+                                                                    height: 40,
+                                                                    decoration: BoxDecoration(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(
+                                                                                10),
+                                                                        color: Colors
+                                                                            .white),
+                                                                    child: Row(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .spaceEvenly,
+                                                                      children: [
+                                                                        Text(
+                                                                          'Access ends in days : ',
+                                                                          style:
+                                                                              TextStyle(
+                                                                            color:
+                                                                                Color(0xFFaefb2a),
+                                                                            fontSize:
+                                                                                16,
+                                                                          ),
+                                                                        ),
+                                                                        Container(
+                                                                          decoration: BoxDecoration(
+                                                                              borderRadius: BorderRadius.circular(8),
+                                                                              color: Colors.grey.shade100),
+                                                                          width:
+                                                                              30,
+                                                                          height:
+                                                                              30,
+                                                                          // color:
+                                                                          //     Color(0xFFaefb2a),
+                                                                          child:
+                                                                              Center(
+                                                                            child:
+                                                                                Text(
+                                                                              '${(DateTime.parse(userMap['payInPartsDetails'][map['id']]['endDateOfLimitedAccess']).difference(DateTime.now()).inDays)}',
+                                                                              style: TextStyle(
+                                                                                color: Colors.deepOrange[600],
+                                                                                // fontSize: 16,
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  )
+                                                                : Container(
+                                                                    height: 40,
+                                                                    decoration: BoxDecoration(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(
+                                                                                10),
+                                                                        color: Colors
+                                                                            .white),
+                                                                    child:
+                                                                        Center(
+                                                                      child:
+                                                                          Text(
+                                                                        'Limited access expired !',
+                                                                        style:
+                                                                            TextStyle(
+                                                                          color:
+                                                                              Colors.deepOrange[600],
+                                                                          fontSize:
+                                                                              16,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                      )
+                                                    : Container(
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.45,
+                                                      ),
                                               ],
                                             ),
                                           ),
@@ -276,3 +494,5 @@ class _HomeScreenState extends State<HomeScreen> {
         ));
   }
 }
+
+class Textstyle {}

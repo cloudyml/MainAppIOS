@@ -6,12 +6,12 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
+import 'package:open_file/open_file.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:video_player/video_player.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../globals.dart';
 
 class AssignmentScreen extends StatefulWidget {
@@ -91,7 +91,7 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
     if (permissionStatus.isGranted) {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
-        allowedExtensions: ['pdf', 'doc'],
+        allowedExtensions: ['pdf', 'doc', 'ipynb'],
       );
       PlatformFile pdf;
       var fileName = result!.paths.toString().split('/').last;
@@ -101,7 +101,8 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
         });
         var snapshot = await _storage
             .ref()
-            .child('$fileName-${FirebaseAuth.instance.currentUser!.uid}')
+            .child(
+                'Submissions/$fileName-${FirebaseAuth.instance.currentUser!.uid}')
             .putFile(File(result.files.first.path!));
         var downloadUrl = await snapshot.ref.getDownloadURL();
         Map<String, dynamic> map = {
@@ -133,10 +134,97 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
     }
   }
 
+  void downloadAssignment(String id) async {
+    try {
+      final storageRef = FirebaseStorage.instance.ref();
+      final assignRef = storageRef.child("Assignments/${id}.ipynb");
+
+      print(assignRef);
+
+      final appDocDir = await getExternalStorageDirectory();
+      final filePath = "${appDocDir!.path}/${id}.ipynb";
+      final file = File(filePath);
+
+      print(filePath);
+      print(file);
+
+      await assignRef.writeToFile(file);
+      // downloadTask.snapshotEvents.listen((taskSnapshot) {
+      //   switch (taskSnapshot.state) {
+      //     case TaskState.running:
+      //       // TODO: Handle this case.
+      //       break;
+      //     case TaskState.paused:
+      showToast('File is downloaded');
+      OpenFile.open(filePath);
+      //     // TODO: Handle this case.
+      //     break;
+      //   case TaskState.success:
+      //     // TODO: Handle this case.
+      //     break;
+      //   case TaskState.canceled:
+      //     // TODO: Handle this case.
+      //     break;
+      //   case TaskState.error:
+      //     // TODO: Handle this case.
+      //     break;
+      // }
+    } catch (error) {
+      showToast(error.toString());
+    }
+  }
+
+  void downloadOutputPDF(String id) async {
+    try {
+      final storageRef = FirebaseStorage.instance.ref();
+      final outpuTPDFRef = storageRef.child("OuputPDF/${id}.pdf");
+
+      print(outpuTPDFRef);
+
+      final appDocDir = await getExternalStorageDirectory();
+      final filePath = "${appDocDir!.path}/${id}.pdf";
+      final file = File(filePath);
+
+      print(filePath);
+      print(file);
+
+      await outpuTPDFRef.writeToFile(file);
+      // downloadTask.snapshotEvents.listen((taskSnapshot) {
+      //   switch (taskSnapshot.state) {
+      //     case TaskState.running:
+      //       // TODO: Handle this case.
+      //       break;
+      //     case TaskState.paused:
+      showToast('File is downloaded');
+      OpenFile.open(filePath);
+      //     // TODO: Handle this case.
+      //     break;
+      //   case TaskState.success:
+      //     // TODO: Handle this case.
+      //     break;
+      //   case TaskState.canceled:
+      //     // TODO: Handle this case.
+      //     break;
+      //   case TaskState.error:
+      //     // TODO: Handle this case.
+      //     break;
+      // }
+    } catch (error) {
+      showToast(error.toString());
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     getData();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _videoController?.dispose();
+    _chewieController?.dispose();
   }
 
   @override
@@ -179,38 +267,57 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
                     ),
                   ),
                   Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 18.0),
-                      child: Linkify(
-                        onOpen: (link) async {
-                          if (await canLaunch(link.url)) {
-                            await launch(link.url);
-                          } else {
-                            showToast('Could not launch $link');
-                            throw 'Could not launch $link';
-                          }
-                        },
-                        text: data!['instructions']
-                            .toString()
-                            .replaceAll("<br>", "\n"),
-                        style: TextStyle(
-                            fontFamily: 'Regular',
-                            fontSize: 12,
-                            color: Colors.black),
-                        linkStyle: TextStyle(fontSize: 12, color: Colors.blue),
-                      )),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(18.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 18.0),
                     child: Text(
-                      data!['name'].toString().replaceAll("<br>", "\n"),
+                      data!['instructions'].toString().replaceAll("<br>", "\n"),
                       style: TextStyle(
-                          fontFamily: 'Bold',
-                          fontSize: 24,
+                          fontFamily: 'Regular',
+                          fontSize: 12,
                           color: Colors.black),
                     ),
                   ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(18.0),
+                        child: Text(
+                          data!['name'].toString().replaceAll("<br>", "\n"),
+                          style: TextStyle(
+                              fontFamily: 'Bold',
+                              fontSize: 24,
+                              color: Colors.black),
+                        ),
+                      ),
+                      TextButton(
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.resolveWith(
+                              (state) => Colors.grey.shade100),
+                        ),
+                        onPressed: () {
+                          downloadAssignment(data!['id']);
+                        },
+                        child: Row(
+                          children: [
+                            Text(
+                              'Download',
+                              style: TextStyle(
+                                color: Colors.grey.shade600,
+                                fontSize: 16,
+                              ),
+                            ),
+                            Icon(
+                              Icons.download,
+                              color: Color(0xFFaefb2a),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  
                   SizedBox(
                     height: 5,
                   ),
@@ -224,6 +331,32 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
                           color: Colors.black),
                     ),
                   ),
+                  SizedBox(height:5),
+                  TextButton(
+                                            onPressed: () {
+                                              downloadOutputPDF(data!['id']);
+                                            },
+                                            style: ButtonStyle(
+                                              backgroundColor:
+                                                  MaterialStateProperty
+                                                      .resolveWith((state) =>
+                                                          Colors.grey.shade100),
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  'Download Output PDF',
+                                                  style: TextStyle(
+                                                      color:
+                                                          Colors.grey.shade600),
+                                                ),
+                                                Icon(
+                                                  Icons.download,
+                                                  color: Color(0xFFaefb2a),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
                   SizedBox(
                     height: 10,
                   ),
@@ -352,16 +485,18 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
                                                           CrossAxisAlignment
                                                               .start,
                                                       children: [
-                                                        Text(
-                                                            'Uploading file...',
-                                                            style: TextStyle(
-                                                                fontFamily:
-                                                                    'Medium',
-                                                                fontSize: 14,
-                                                                color: Colors
-                                                                    .black
-                                                                    .withOpacity(
-                                                                        0.4))),
+                                                        Expanded(
+                                                          child: Text(
+                                                              'Uploading file...',
+                                                              style: TextStyle(
+                                                                  fontFamily:
+                                                                      'Medium',
+                                                                  fontSize: 14,
+                                                                  color: Colors
+                                                                      .black
+                                                                      .withOpacity(
+                                                                          0.4))),
+                                                        ),
                                                         ClipRRect(
                                                           borderRadius:
                                                               BorderRadius
@@ -382,34 +517,45 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
                               ),
                             ),
                             snapshot.data.docs.length != 0
-                                ? Padding(
-                                    padding: const EdgeInsets.all(18.0),
-                                    child: Text(
-                                      'Solution :',
-                                      style: TextStyle(
-                                          fontFamily: 'Bold',
-                                          fontSize: 20,
-                                          color: Colors.black),
-                                    ),
-                                  )
-                                : Container(),
-                            snapshot.data.docs.length != 0
-                                ? Padding(
-                                    padding: const EdgeInsets.all(18.0),
-                                    child: Container(
-                                        height:
-                                            (MediaQuery.of(context).size.width *
+                                ? Column(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.all(18.0),
+                                            child: Text(
+                                              'Solution :',
+                                              style: TextStyle(
+                                                  fontFamily: 'Bold',
+                                                  fontSize: 20,
+                                                  color: Colors.black),
+                                            ),
+                                          ),
+                                          
+                                        ],
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(18.0),
+                                        child: Container(
+                                            height: (MediaQuery.of(context)
+                                                        .size
+                                                        .width *
                                                     9) /
                                                 16,
-                                        width:
-                                            MediaQuery.of(context).size.width,
-                                        child: Theme(
-                                            data: ThemeData.light().copyWith(
-                                              platform: TargetPlatform.android,
-                                            ),
-                                            child: Chewie(
-                                                controller:
-                                                    _chewieController!))),
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            child: Theme(
+                                                data:
+                                                    ThemeData.light().copyWith(
+                                                  platform:
+                                                      TargetPlatform.android,
+                                                ),
+                                                child: Chewie(
+                                                    controller:
+                                                        _chewieController!))),
+                                      ),
+                                    ],
                                   )
                                 : Container(),
                           ],

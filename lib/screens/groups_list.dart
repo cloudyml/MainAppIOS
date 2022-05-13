@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../widgets/group_tile.dart';
 
+
 class GroupsList extends StatefulWidget {
   const GroupsList({Key? key}) : super(key: key);
 
@@ -18,9 +19,12 @@ class _GroupsListState extends State<GroupsList> {
   FirebaseAuth _auth = FirebaseAuth.instance;
 
   bool isLoading = false;
+ 
 
   List? groupsList = [];
   Map? userData = {};
+
+  
 
   void loadGroups() async {
     setState(() {
@@ -41,6 +45,7 @@ class _GroupsListState extends State<GroupsList> {
       setState(() {
         groupsList = groups;
       });
+      print('group list is--$groupsList');
     });
     setState(() {
       isLoading = false;
@@ -56,6 +61,7 @@ class _GroupsListState extends State<GroupsList> {
         .where("mentors", arrayContains: _auth.currentUser!.uid)
         .get()
         .then((value) {
+          print('group data is--{$value}');
       final groups = value.docs
           .map((doc) => {
                 "id": doc.id,
@@ -70,6 +76,7 @@ class _GroupsListState extends State<GroupsList> {
     setState(() {
       isLoading = false;
     });
+    print(groupsList);
   }
 
   loadUserData() async {

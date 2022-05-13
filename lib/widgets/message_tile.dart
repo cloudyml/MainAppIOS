@@ -31,15 +31,15 @@ Widget MessageTile(size, map, displayName) {
         //   ),
         // ],
         borderRadius: BorderRadius.circular(25),
-        gradient: const RadialGradient(
-            center: Alignment.topRight,
-            // near the top right
-            radius: 6,
-            colors: [
-              Colors.purple,
-              Colors.blue,
-            ]),
-        // color: map!["sendBy"] == displayName ? Colors.blue : Colors.grey,
+        // gradient: const RadialGradient(
+        //     center: Alignment.topRight,
+        //     // near the top right
+        //     radius: 6,
+        //     colors: [
+        //       Colors.purple,
+        //       Colors.blue,
+        //     ]),
+        color: map!["sendBy"] == displayName ? Colors.blue : Color.fromARGB(255, 195, 195, 195),
       ),
       constraints: BoxConstraints(
         maxWidth: size.width * 0.7,
