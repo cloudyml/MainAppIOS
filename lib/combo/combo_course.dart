@@ -67,7 +67,7 @@ class _ComboCourseState extends State<ComboCourse> {
           .difference(DateTime.now())
           .inDays);
       print(daysLeft);
-      return daysLeft < 0;
+      return daysLeft <= 0;
       // final secondsLeft = (DateTime.parse(
       //         userMap['payInPartsDetails'][id]['endDateOfLimitedAccess'])
       //     .difference(DateTime.now())
@@ -139,13 +139,17 @@ class _ComboCourseState extends State<ComboCourse> {
                                 setState(() {
                                   courseId = document.id;
                                 });
-                                if (userMap['payInPartsDetails'][map['id']]
-                                        ['outStandingAmtPaid'] &&
-                                    map['combo']) {
-                                  print(map['id']);
-                                }
+                                // print(navigateToCatalogueScreen(map['id']) &&
+                                //     map['id'] == 'CML2');
+                                print(navigateToCatalogueScreen(value));
+                                print(map['id'] == 'CML2');
+                                // if (userMap['payInPartsDetails'][value]
+                                //         ['outStandingAmtPaid'] &&
+                                //     map['combo']) {
+                                //   print(map['id']);
+                                // }
                                 if (!allowAccessAfterFPOPIP(value)) {
-                                  if (navigateToCatalogueScreen(map['id']) &&
+                                  if (!navigateToCatalogueScreen(value) &&
                                       map['id'] == 'CML2') {
                                     showToast(
                                         'To access this course you need pay the second part of the combo course');
