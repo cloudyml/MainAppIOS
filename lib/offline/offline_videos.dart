@@ -97,8 +97,8 @@ class _OfflineViewerState extends State<OfflineViewer> {
   VideoPlayerController? _videoController;
   bool? loading = true;
   void getData() async {
-    //--/data/user/0/com.example.cloudyml_app/app_flutter/file.mp4
-    //--/data/user/0/com.example.cloudyml_app/app_flutter/LogicalOperators.mp4
+    //--/data/user/0/com.cloudyml.cloudymlcourseapp/app_flutter/file.mp4
+    //--/data/user/0/com.cloudyml.cloudymlcourseapp/app_flutter/LogicalOperators.mp4
 
     File videoFile = File(widget.path!);
 

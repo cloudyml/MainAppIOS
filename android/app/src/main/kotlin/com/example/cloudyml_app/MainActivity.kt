@@ -1,4 +1,4 @@
-package com.example.cloudyml_app
+package com.cloudyml.cloudymlcourseapp
 
 import io.flutter.embedding.android.FlutterActivity
 
