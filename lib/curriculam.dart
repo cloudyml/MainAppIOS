@@ -21,6 +21,7 @@ class Curriculam extends StatefulWidget {
 }
 
 class _CurriculamState extends State<Curriculam> {
+  bool changeToggleIcon = false;
   bool showSec1 = false;
   bool showSec2 = false;
   bool showSec3 = false;
@@ -29,9 +30,6 @@ class _CurriculamState extends State<Curriculam> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width * 0.9,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10), color: Colors.grey.shade100),
       child: Padding(
         padding: const EdgeInsets.all(10.0),
         child: Column(
@@ -48,6 +46,9 @@ class _CurriculamState extends State<Curriculam> {
                 ),
               ),
             ),
+            SizedBox(height: 10),
+            Text(
+                '${widget.SectionsNames.length} sections-${widget.videoTitles.length} videos-${widget.assignmentTitles.length} assignments-${widget.quizTitles.length} quizzes'),
             Container(
               child: ListView.builder(
                 shrinkWrap: true,
@@ -55,10 +56,11 @@ class _CurriculamState extends State<Curriculam> {
                 itemBuilder: (context, index) {
                   return Column(
                     children: [
+                      SizedBox(height: 8),
                       Container(
                         height: 40,
                         child: Padding(
-                          padding: const EdgeInsets.all(10.0),
+                          padding: const EdgeInsets.symmetric(vertical: 10),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -74,6 +76,7 @@ class _CurriculamState extends State<Curriculam> {
                                   setState(() {
                                     if (index == 0) {
                                       showSec1 = !showSec1;
+                                      // changeToggleIcon=!changeToggleIcon;
                                     } else if (index == 1) {
                                       showSec2 = !showSec2;
                                     } else if (index == 2) {
