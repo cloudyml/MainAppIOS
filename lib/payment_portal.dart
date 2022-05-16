@@ -495,6 +495,20 @@ class _PaymentButtonState extends State<PaymentButton> with CouponCodeMixin {
                                                               isMinAmountCheckerPressed =
                                                                   !isMinAmountCheckerPressed;
                                                             });
+                                                            updateAmoutStringForUPI(
+                                                                isPayInPartsPressed,
+                                                                isMinAmountCheckerPressed,
+                                                                isOutStandingAmountCheckerPressed);
+                                                            updateAmoutStringForRP(
+                                                                isPayInPartsPressed,
+                                                                isMinAmountCheckerPressed,
+                                                                isOutStandingAmountCheckerPressed);
+                                                            print(
+                                                                isMinAmountCheckerPressed);
+                                                            print(
+                                                                "Print payinparts:${isPayInPartsPressed}");
+                                                            print(
+                                                                amountStringForUPI);
                                                           },
                                                           child: Padding(
                                                             padding:
@@ -575,6 +589,14 @@ class _PaymentButtonState extends State<PaymentButton> with CouponCodeMixin {
                                                               isOutStandingAmountCheckerPressed =
                                                                   !isOutStandingAmountCheckerPressed;
                                                             });
+                                                            updateAmoutStringForUPI(
+                                                                isPayInPartsPressed,
+                                                                isMinAmountCheckerPressed,
+                                                                isOutStandingAmountCheckerPressed);
+                                                            updateAmoutStringForRP(
+                                                                isPayInPartsPressed,
+                                                                isMinAmountCheckerPressed,
+                                                                isOutStandingAmountCheckerPressed);
                                                           },
                                                           child: Padding(
                                                             padding:

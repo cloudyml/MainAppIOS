@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloudyml_app2/coupon_code.dart';
+import 'package:cloudyml_app2/curriculam.dart';
 import 'package:cloudyml_app2/demo/demo_course.dart';
 import 'package:cloudyml_app2/globals.dart';
 import 'package:cloudyml_app2/home.dart';
@@ -50,6 +51,10 @@ class _CatelogueScreenState extends State<CatelogueScreen>
   bool isMinAmountCheckerPressed = false;
 
   bool isOutStandingAmountCheckerPressed = false;
+
+  bool showCurriculum = false;
+
+  bool showSec1 = false;
 
   // void whenCouponApplied() {
   //   if (couponCodeController.text.isNotEmpty) {
@@ -329,6 +334,16 @@ class _CatelogueScreenState extends State<CatelogueScreen>
                                 ),
                                 SizedBox(
                                   height: 65,
+                                ),
+                                Curriculam(
+                                  videoTitles: map['curriculum']['videoTitle'],
+                                  assignmentTitles: map['curriculum']
+                                      ['assignmentTitle'],
+                                  quizTitles: map['curriculum']['quizTitle'],
+                                  SectionsNames: map['curriculum']
+                                      ['sectionsName'],
+                                  interviewQuestions: map['curriculum']
+                                      ['interviewQuestions'],
                                 ),
                                 Text(
                                   "PRICE DETAILS",
