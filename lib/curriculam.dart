@@ -1,3 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloudyml_app2/demo_video.dart';
+import 'package:cloudyml_app2/globals.dart';
 import 'package:flutter/material.dart';
 
 class Curriculam extends StatefulWidget {
@@ -6,6 +9,7 @@ class Curriculam extends StatefulWidget {
   final List quizTitles;
   final List assignmentTitles;
   final List interviewQuestions;
+  final String id;
 
   const Curriculam({
     Key? key,
@@ -14,6 +18,7 @@ class Curriculam extends StatefulWidget {
     required this.quizTitles,
     required this.assignmentTitles,
     required this.interviewQuestions,
+    required this.id,
   }) : super(key: key);
 
   @override
@@ -21,12 +26,36 @@ class Curriculam extends StatefulWidget {
 }
 
 class _CurriculamState extends State<Curriculam> {
+  bool showMore = false;
   bool changeToggleIcon = false;
   bool showSec1 = false;
   bool showSec2 = false;
   bool showSec3 = false;
   bool showSec4 = false;
   bool showCurriculum = false;
+  String? modId;
+
+  void getModuleId() async {
+    var dt = await FirebaseFirestore.instance
+        .collection('courses')
+        .doc(courseId)
+        .collection('Modules')
+        // .where('firstType', isEqualTo: 'video')
+        .get()
+        .then((value) {
+      setState(() {
+        modId = value.docs[0].id;
+      });
+    });
+    print(dt);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getModuleId();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -51,6 +80,7 @@ class _CurriculamState extends State<Curriculam> {
                 '${widget.SectionsNames.length} sections-${widget.videoTitles.length} videos-${widget.assignmentTitles.length} assignments-${widget.quizTitles.length} quizzes'),
             Container(
               child: ListView.builder(
+                physics: BouncingScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: widget.SectionsNames.length,
                 itemBuilder: (context, index) {
@@ -62,7 +92,7 @@ class _CurriculamState extends State<Curriculam> {
                         child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 10),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
                                 widget.SectionsNames[index],
@@ -71,33 +101,39 @@ class _CurriculamState extends State<Curriculam> {
                                   fontFamily: 'Medium',
                                 ),
                               ),
-                              InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    if (index == 0) {
-                                      showSec1 = !showSec1;
-                                      // changeToggleIcon=!changeToggleIcon;
-                                    } else if (index == 1) {
-                                      showSec2 = !showSec2;
-                                    } else if (index == 2) {
-                                      showSec3 = !showSec3;
-                                    } else if (index == 3) {
-                                      showSec4 = !showSec4;
-                                    }
-                                    // showSec$index+=!showSec${index+1};
-                                  });
-                                },
-                                child: Icon(Icons.add),
-                              )
+                              // InkWell(
+                              //   onTap: () {
+                              //     setState(() {
+                              //       if (index == 0) {
+                              //         showSec1 = !showSec1;
+                              //         // changeToggleIcon=!changeToggleIcon;
+                              //       } else if (index == 1) {
+                              //         showSec2 = !showSec2;
+                              //       } else if (index == 2) {
+                              //         showSec3 = !showSec3;
+                              //       } else if (index == 3) {
+                              //         showSec4 = !showSec4;
+                              //       }
+                              //       // showSec$index+=!showSec${index+1};
+                              //     });
+                              //   },
+                              //   // child: Icon(Icons.add),
+                              // )
                             ],
                           ),
                         ),
                       ),
-                      showSec1
-                          ? index == 0
-                              ? Container(
-                                  height: 200,
+                      index == 0
+                          ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  height: showSec1 ? null : 200,
                                   child: ListView.builder(
+                                    // physics: allowScrolling
+                                    //     ? NeverScrollableScrollPhysics()
+                                    //     : BouncingScrollPhysics(),
+                                    physics: NeverScrollableScrollPhysics(),
                                     shrinkWrap: true,
                                     itemCount: widget.videoTitles.length,
                                     itemBuilder: (context, index) {
@@ -120,21 +156,101 @@ class _CurriculamState extends State<Curriculam> {
                                                   fontFamily: 'Medium',
                                                 ),
                                               ),
-                                              Icon(Icons.ondemand_video)
+                                              InkWell(
+                                                onTap: () async {
+                                                  // print(modId);
+                                                  String? modId;
+                                                  var dt =
+                                                      await FirebaseFirestore
+                                                          .instance
+                                                          .collection('courses')
+                                                          .doc(courseId)
+                                                          .collection('Modules')
+                                                          .where('firstType',
+                                                              isEqualTo:
+                                                                  'video')
+                                                          .get()
+                                                          .then((value) {
+                                                    modId = value.docs[0].id;
+                                                    // setState(() {
+                                                    //   // modId = value.docs[0].id;
+                                                    // });
+                                                  });
+                                                  print(modId);
+                                                  Map<String, dynamic>?
+                                                      topicDetails;
+                                                  await FirebaseFirestore
+                                                      .instance
+                                                      .collection('courses')
+                                                      .doc(courseId)
+                                                      .collection('Modules')
+                                                      .doc(modId)
+                                                      .collection('Topics')
+                                                      .where('sr',
+                                                          isEqualTo: index + 1)
+                                                      .get()
+                                                      .then((value) {
+                                                    // print(value.docs[0]);
+                                                    topicDetails =
+                                                        value.docs[0].data();
+                                                    print(topicDetails!['url']);
+                                                    // topicId = value.docs[0].id;
+                                                  });
+                                                  if (index < 3) {
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            VideoPlayerCustom(
+                                                                url:
+                                                                    topicDetails![
+                                                                        'url']),
+                                                      ),
+                                                    );
+                                                  }
+                                                },
+                                                child: Icon(
+                                                  Icons
+                                                      .play_circle_fill_outlined,
+                                                  color: index <= 2
+                                                      ? Color(0xFF7860DC)
+                                                      : null,
+                                                ),
+                                              )
                                             ],
                                           ),
                                         ),
                                       );
                                     },
                                   ),
-                                )
-                              : Container()
+                                ),
+                                widget.videoTitles.length > 4
+                                    ? Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 10),
+                                        child: TextButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              showSec1 = !showSec1;
+                                            });
+                                          },
+                                          child: !showSec1
+                                              ? Text('Show more')
+                                              : Text('Show less'),
+                                        ),
+                                      )
+                                    : Container(),
+                              ],
+                            )
                           : Container(),
-                      showSec2
-                          ? index == 1
-                              ? Container(
-                                  height: 200,
+                      index == 1
+                          ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  height: showSec2 ? null : 200,
                                   child: ListView.builder(
+                                    physics: NeverScrollableScrollPhysics(),
                                     shrinkWrap: true,
                                     itemCount: widget.assignmentTitles.length,
                                     itemBuilder: (context, index) {
@@ -157,21 +273,43 @@ class _CurriculamState extends State<Curriculam> {
                                                   fontFamily: 'Medium',
                                                 ),
                                               ),
-                                              Icon(Icons.assignment_rounded)
+                                              Icon(
+                                                Icons.assignment_rounded,
+                                              ),
                                             ],
                                           ),
                                         ),
                                       );
                                     },
                                   ),
-                                )
-                              : Container()
+                                ),
+                                widget.assignmentTitles.length > 4
+                                    ? Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 10),
+                                        child: TextButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              showSec2 = !showSec2;
+                                            });
+                                          },
+                                          child: !showSec2
+                                              ? Text('Show more')
+                                              : Text('Show less'),
+                                        ),
+                                      )
+                                    : Container(),
+                              ],
+                            )
                           : Container(),
-                      showSec3
-                          ? index == 2
-                              ? Container(
-                                  height: 200,
+                      index == 2
+                          ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  height: showSec3 ? null : 200,
                                   child: ListView.builder(
+                                    physics: NeverScrollableScrollPhysics(),
                                     shrinkWrap: true,
                                     itemCount: widget.quizTitles.length,
                                     itemBuilder: (context, index) {
@@ -201,14 +339,34 @@ class _CurriculamState extends State<Curriculam> {
                                       );
                                     },
                                   ),
-                                )
-                              : Container()
+                                ),
+                                widget.quizTitles.length > 4
+                                    ? Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 10),
+                                        child: TextButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              showSec3 = !showSec3;
+                                            });
+                                          },
+                                          child: !showSec3
+                                              ? Text('Show more')
+                                              : Text('Show less'),
+                                        ),
+                                      )
+                                    : Container(),
+                              ],
+                            )
                           : Container(),
-                      showSec4
-                          ? index == 3
-                              ? Container(
-                                  // height: 200,
+                      index == 3
+                          ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  height: showSec4 ? null : 200,
                                   child: ListView.builder(
+                                    physics: NeverScrollableScrollPhysics(),
                                     shrinkWrap: true,
                                     itemCount: widget.interviewQuestions.length,
                                     itemBuilder: (context, index) {
@@ -238,9 +396,44 @@ class _CurriculamState extends State<Curriculam> {
                                       );
                                     },
                                   ),
-                                )
-                              : Container()
+                                ),
+                                widget.interviewQuestions.length > 4
+                                    ? Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 10),
+                                        child: TextButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              showSec3 = !showSec3;
+                                            });
+                                          },
+                                          child: !showSec4
+                                              ? Text('Show more')
+                                              : Text('Show less'),
+                                        ),
+                                      )
+                                    : Container(),
+                              ],
+                            )
                           : Container(),
+                      // TextButton(
+                      //   onPressed: () {
+                      //     setState(() {
+                      //       if (index == 0) {
+                      //         showSec1 = !showSec1;
+                      //         // changeToggleIcon=!changeToggleIcon;
+                      //       } else if (index == 1) {
+                      //         showSec2 = !showSec2;
+                      //       } else if (index == 2) {
+                      //         showSec3 = !showSec3;
+                      //       } else if (index == 3) {
+                      //         showSec4 = !showSec4;
+                      //       }
+                      //       // showSec$index+=!showSec${index+1};
+                      //     });
+                      //   },
+                      //   child: showMore ? Text('Show less') : Text('Show more'),
+                      // ),
                     ],
                   );
                 },

@@ -3,6 +3,7 @@ import 'package:cloudyml_app2/combo/combo_store.dart';
 import 'package:cloudyml_app2/globals.dart';
 import 'package:cloudyml_app2/catalogue_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 class Store extends StatefulWidget {
   const Store({Key? key}) : super(key: key);
@@ -54,9 +55,10 @@ class _StoreState extends State<Store> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => ComboStore(
-                                        courses: map['courses'],
-                                      )),
+                                builder: (context) => ComboStore(
+                                  courses: map['courses'],
+                                ),
+                              ),
                             );
                           } else {
                             Navigator.push(
@@ -88,10 +90,10 @@ class _StoreState extends State<Store> {
                                       child: Container(
                                         height:
                                             MediaQuery.of(context).size.height *
-                                                0.13,
+                                                0.10,
                                         width:
                                             MediaQuery.of(context).size.height *
-                                                0.13,
+                                                0.10,
                                         child: Image.network(
                                           map['image_url'].toString(),
                                           fit: BoxFit.cover,
@@ -129,19 +131,21 @@ class _StoreState extends State<Store> {
                                               )
                                             : Container(),
                                         Container(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.45,
+                                          // width: MediaQuery.of(context)
+                                          //         .size
+                                          //         .width *
+                                          //     0.45,
                                           child: Text(
                                             map["name"],
                                             style: const TextStyle(
                                                 fontFamily: 'Bold',
                                                 fontSize: 17,
                                                 fontWeight: FontWeight.w500),
+                                            // maxLines: 2,
                                             overflow: TextOverflow.ellipsis,
                                           ),
                                         ),
+
                                         // SizedBox(
                                         //   height: 10,
                                         // ),
@@ -196,117 +200,41 @@ class _StoreState extends State<Store> {
                                         // SizedBox(
                                         //   height: 12,
                                         // ),
-                                        Row(
-                                          children: [
-                                            Container(
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.30,
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  SizedBox(
-                                                    height: 5,
-                                                  ),
-                                                  Text(
-                                                      'Instructor : ${map['created by']}'),
-                                                  SizedBox(
-                                                    height: 5,
-                                                  ),
-                                                  Text(
-                                                      'Mentors: ${map['mentors']}'),
-                                                  SizedBox(
-                                                    height: 5,
-                                                  ),
-                                                  Container(
-                                                    height: 35,
-                                                    // width: width * .25,
-                                                    decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(5),
-                                                        color: Colors.white),
-                                                    child: Center(
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(8.0),
-                                                        child: Text(
-                                                          map['Course Price'],
-                                                          style: TextStyle(
-                                                              fontFamily:
-                                                                  'Bold',
-                                                              color: Color(
-                                                                  0xFF6E5BD9),
-                                                              fontSize: 14),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: 10,
-                                            ),
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Container(
-                                                  height: 35,
-                                                  decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              5),
-                                                      color: Colors.grey.shade300),
-                                                  child: Center(
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Text(
-                                                        map['language'],
-                                                        style: TextStyle(
-                                                            fontFamily:
-                                                                'semiBold',
-                                                            color:
-                                                                Colors.black),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  height: 5,
-                                                ),
-                                                Container(
-                                                  height: 35,
-                                                  decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              5),
-                                                      color: Colors.grey.shade300),
-                                                  child: Center(
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Text(
-                                                        '${map['videosCount'].toString()} videos',
-                                                        style: TextStyle(
-                                                            fontFamily:
-                                                                'semiBold',
-                                                            color:
-                                                                Colors.black),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        Text(
+                                          'Instructor : ${map['created by']}',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            fontFamily: 'Medium',
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        // Text(
+                                        //     'Mentors: ${map['mentors']}'),
+                                        // SizedBox(
+                                        //   height: 5,
+                                        // ),
+                                        !map['combo']
+                                            ? Text(
+                                                '${map['curriculum']['videoTitle'].length} Lectures-${map['curriculum']['assignmentTitle'].length} assignments-${map['curriculum']['quizTitle'].length} quizzes')
+                                            : Text(
+                                                '${map['courses'].length} courses'),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        Text(
+                                          map['Course Price'],
+                                          style: TextStyle(
+                                              fontFamily: 'Bold',
+                                              color: Color(0xFF6E5BD9),
+                                              fontSize: 17),
+                                        ),
+                                        SizedBox(
+                                          width: 10,
                                         ),
                                         SizedBox(
                                           height: 5,

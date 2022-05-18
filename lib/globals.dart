@@ -13,6 +13,12 @@ String? moduleId;
 String? topicId;
 
 LinearGradient gradient = LinearGradient(
-    begin: Alignment.bottomLeft,
-    end: Alignment.topRight,
-    colors: [Color(0xFF57ebde), Color(0xFFaefb2a)]);
+
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [
+      Color(0xFF7860DC),
+      Color(0xFFC0AAF5),
+      Color(0xFFDDD2FB),
+      // Color.fromARGB(255, 241, 18, 186),
+    ]);
