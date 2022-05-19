@@ -73,6 +73,7 @@ dependencies:
   dotted_border: ^2.0.0+2
   upi_plugin: ^0.0.1
   auto_size_text: ^3.0.0
+  auto_orientation: ^2.2.1
   # floating_ribbon: ^1.0.1
 
 dev_dependencies:

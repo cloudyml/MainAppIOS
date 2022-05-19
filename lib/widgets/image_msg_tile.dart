@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../helpers/file_handler.dart';
-import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 
 class ImageMsgTile extends StatefulWidget {

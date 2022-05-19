@@ -14,10 +14,10 @@ class _PaymentScreenState extends State<PaymentScreen> with CouponCodeMixin {
   var amountcontroller = TextEditingController();
   final TextEditingController couponCodeController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
-  GlobalKey key = GlobalKey();
+  // GlobalKey key = GlobalKey();
   // final scaffoldState = GlobalKey<ScaffoldState>();
   ValueNotifier<bool> showBottomSheet = ValueNotifier(false);
-  VoidCallback? _showPersistentBottomSheetCallBack;
+  // VoidCallback? _showPersistentBottomSheetCallBack;
 
   String? id;
 

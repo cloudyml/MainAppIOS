@@ -80,6 +80,8 @@ class _CatelogueScreenState extends State<CatelogueScreen>
     print(_scrollController.position.pixels);
     // print(k);
     if (_scrollController.position.pixels > 0.0) {
+      // &&
+      //  _scrollController.position.pixels < y
       showBottomSheet.value = true;
     } else {
       showBottomSheet.value = false;
