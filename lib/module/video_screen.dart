@@ -132,7 +132,7 @@ class _VideoScreenState extends State<VideoScreen> {
   Widget progressIndicator() {
     return Positioned(
       // top:0,
-      bottom: 24,
+      bottom: 27,
       left: 0,
       right: 0,
       child: Padding(
