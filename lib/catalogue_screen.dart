@@ -66,12 +66,7 @@ class _CatelogueScreenState extends State<CatelogueScreen>
   @override
   void initState() {
     super.initState();
-    // _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
-    // _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
-    // _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
     _tabController = TabController(length: 2, vsync: this);
-    // openBottomSheet();
-    // print(_scrollController.position.pixels);
   }
 
   void _scrollListener() {
@@ -81,8 +76,8 @@ class _CatelogueScreenState extends State<CatelogueScreen>
     // print(y);
     print(_scrollController.position.pixels);
     // print(k);
-    if (_scrollController.position.pixels > 0.0
-        // &&
+    if (_scrollController.position.pixels > 0.0 &&
+            _scrollController.position.pixels < 520
         // _scrollController.position.pixels < y
         ) {
       showBottomSheet.value = true;
@@ -157,7 +152,6 @@ class _CatelogueScreenState extends State<CatelogueScreen>
                       if (map["name"].toString() == "null") {
                         return Container();
                       }
-                      // print(_scrollController.position.pixels);
                       if (document.id == courseId) {
                         CatelogueScreen.coursePrice.value = map['Course Price'];
                         CatelogueScreen.map!.value = map;

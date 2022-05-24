@@ -188,7 +188,7 @@ class _CurriculamState extends State<Curriculam> {
                                                   print(topicDetails!['url']);
                                                   // topicId = value.docs[0].id;
                                                 });
-                                                if (index < 3) {
+                                                if (index < 3 && index1 == 0) {
                                                   Navigator.push(
                                                     context,
                                                     MaterialPageRoute(
@@ -225,7 +225,9 @@ class _CurriculamState extends State<Curriculam> {
                               ? TextButton(
                                   onPressed: () {
                                     setState(() {
-                                      showMore = !showMore;
+                                      if (index1 == index1) {
+                                        showMore = !showMore;
+                                      }
                                     });
                                   },
                                   child: showMore
