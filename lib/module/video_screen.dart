@@ -390,80 +390,103 @@ class _VideoScreenState extends State<VideoScreen> {
                             AsyncSnapshot<dynamic> snapshot) {
                           if (ConnectionState.done ==
                               snapshot.connectionState) {
-                            return Stack(
-                              children: [
-                                Center(
-                                  child: AspectRatio(
-                                    aspectRatio: 16 / 9,
-                                    child: VideoPlayer(_videoController!),
-                                  ),
-                                ),
-                                enablePauseScreen
-                                    ? Stack(
-                                        children: [
-                                          Center(
-                                            child: AspectRatio(
-                                              aspectRatio: 16 / 9,
-                                              child: Container(
-                                                width: MediaQuery.of(context)
-                                                    .size
-                                                    .width,
-                                                color: Color.fromARGB(
-                                                    102, 0, 0, 0),
-                                              ),
+                            return !switchTOAssignment
+                                ? Stack(
+                                    children: [
+                                      Center(
+                                        child: AspectRatio(
+                                          aspectRatio: 16 / 9,
+                                          child: VideoPlayer(_videoController!),
+                                        ),
+                                      ),
+                                      enablePauseScreen
+                                          ? Stack(
+                                              children: [
+                                                Center(
+                                                  child: AspectRatio(
+                                                    aspectRatio: 16 / 9,
+                                                    child: Container(
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                              .size
+                                                              .width,
+                                                      color: Color.fromARGB(
+                                                          102, 0, 0, 0),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Positioned(
+                                                  top: 0,
+                                                  bottom: 0,
+                                                  left: 0,
+                                                  right: 0,
+                                                  child: IconButton(
+                                                    onPressed: () {
+                                                      if (_isPlaying) {
+                                                        setState(() {
+                                                          _videoController!
+                                                              .pause();
+                                                        });
+                                                      } else {
+                                                        setState(() {
+                                                          enablePauseScreen =
+                                                              !enablePauseScreen;
+                                                          _videoController!
+                                                              .play();
+                                                        });
+                                                      }
+                                                    },
+                                                    icon: Icon(
+                                                      _isPlaying
+                                                          ? Icons.pause
+                                                          : Icons.play_arrow,
+                                                      color: Colors.white,
+                                                      size: 50,
+                                                    ),
+                                                  ),
+                                                ),
+                                                replay10(
+                                                    videoController:
+                                                        _videoController),
+                                                fastForward10(
+                                                    videoController:
+                                                        _videoController),
+                                                IconButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    icon: Icon(Icons
+                                                        .arrow_back_ios_new),
+                                                    color: Colors.white),
+                                                timeElapsedString(),
+                                                timeRemainingString(),
+                                                progressIndicator(),
+                                                fullScreenIcon(
+                                                    isPortrait: isPortrait),
+                                              ],
+                                            )
+                                          : Container(),
+                                    ],
+                                  )
+                                : Center(
+                                    child: AspectRatio(
+                                      aspectRatio: 16 / 9,
+                                      child: Container(
+                                        color: Colors.black,
+                                        child: Center(
+                                          child: Text(
+                                            'Watch solution after submission',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 18,
+                                              fontFamily: "Medium",
                                             ),
                                           ),
-                                          Positioned(
-                                            top: 0,
-                                            bottom: 0,
-                                            left: 0,
-                                            right: 0,
-                                            child: IconButton(
-                                              onPressed: () {
-                                                if (_isPlaying) {
-                                                  setState(() {
-                                                    _videoController!.pause();
-                                                  });
-                                                } else {
-                                                  setState(() {
-                                                    enablePauseScreen =
-                                                        !enablePauseScreen;
-                                                    _videoController!.play();
-                                                  });
-                                                }
-                                              },
-                                              icon: Icon(
-                                                _isPlaying
-                                                    ? Icons.pause
-                                                    : Icons.play_arrow,
-                                                color: Colors.white,
-                                                size: 50,
-                                              ),
-                                            ),
-                                          ),
-                                          replay10(
-                                              videoController:
-                                                  _videoController),
-                                          fastForward10(
-                                              videoController:
-                                                  _videoController),
-                                          IconButton(
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              },
-                                              icon: Icon(
-                                                  Icons.arrow_back_ios_new),
-                                              color: Colors.white),
-                                          timeElapsedString(),
-                                          timeRemainingString(),
-                                          progressIndicator(),
-                                          fullScreenIcon(
-                                              isPortrait: isPortrait),
-                                        ],
-                                      )
-                                    : Container(),
-                              ],
-                            );
+                                        ),
+                                      ),
+                                    ),
+                                  );
                           } else {
                             return Center(
                               child: CircularProgressIndicator(
