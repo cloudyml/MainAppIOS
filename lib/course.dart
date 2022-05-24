@@ -3,6 +3,7 @@ import 'package:cloudyml_app2/globals.dart';
 import 'package:cloudyml_app2/module/assignment_screen.dart';
 import 'package:cloudyml_app2/module/quiz_screen.dart';
 import 'package:cloudyml_app2/module/video_screen.dart';
+import 'package:cloudyml_app2/screens/chat_group.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
@@ -90,30 +91,33 @@ class _CouseState extends State<Couse> {
                           padding: const EdgeInsets.all(18.0),
                           child: InkWell(
                             onTap: () {
+                              print('working'); 
                               if (map['firstType'] == 'video') {
                                 Navigator.push(
                                   context,
                                   PageTransition(
-                                      duration: Duration(milliseconds: 400),
-                                      curve: Curves.bounceInOut,
-                                      type: PageTransitionType.rightToLeft,
-                                      child: VideoScreen(
-                                        isdemo: false,
-                                        sr: 1,
-                                      )),
+                                    duration: Duration(milliseconds: 400),
+                                    curve: Curves.bounceInOut,
+                                    type: PageTransitionType.rightToLeft,
+                                    child: VideoScreen(
+                                      isdemo: false,
+                                      sr: 1,
+                                      courseName: name,
+                                    ),
+                                  ),
                                 );
                               } else if (map['firstType'] == 'assignment') {
-                                Navigator.push(
-                                  context,
-                                  PageTransition(
-                                      duration: Duration(milliseconds: 400),
-                                      curve: Curves.bounceInOut,
-                                      type: PageTransitionType.rightToLeft,
-                                      child: AssignmentScreen(
-                                        isdemo: false,
-                                        sr: 1,
-                                      )),
-                                );
+                                // Navigator.push(
+                                //   context,
+                                //   PageTransition(
+                                //       duration: Duration(milliseconds: 400),
+                                //       curve: Curves.bounceInOut,
+                                //       type: PageTransitionType.rightToLeft,
+                                //       child: AssignmentScreen(
+                                //         isdemo: false,
+                                //         sr: 1,
+                                //       )),
+                                // );
                               } else {
                                 Navigator.push(
                                   context,

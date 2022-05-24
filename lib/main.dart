@@ -1,15 +1,12 @@
 import 'dart:async';
 
 import 'package:cloudyml_app2/authentication/firebase_auth.dart';
-import 'package:cloudyml_app2/home_screen.dart';
-import 'package:cloudyml_app2/store.dart';
 import 'package:cloudyml_app2/globals.dart';
 import 'package:cloudyml_app2/offline/offline_videos.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
-import 'package:cloudyml_app2/screens/groups_list.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';

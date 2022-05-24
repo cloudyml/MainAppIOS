@@ -63,6 +63,7 @@ dependencies:
   record: ^3.0.0
   flutter_vibrate: ^1.1.0
   just_audio: ^0.9.11
+  flutter_vlc_player: ^7.1.4
 
 
   # The following adds the Cupertino Icons font to your application.

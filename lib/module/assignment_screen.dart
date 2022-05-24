@@ -17,7 +17,9 @@ import '../globals.dart';
 class AssignmentScreen extends StatefulWidget {
   final int? sr;
   final bool isdemo;
-  const AssignmentScreen({required this.isdemo, this.sr});
+  final Function playSolVideo;
+  const AssignmentScreen(
+      {required this.isdemo, this.sr, required this.playSolVideo});
 
   @override
   State<AssignmentScreen> createState() => _AssignmentScreenState();
@@ -230,26 +232,28 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: InkWell(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: Icon(
-            Icons.arrow_back,
-            color: Colors.black,
-          ),
-        ),
-      ),
+      // appBar: AppBar(
+      //   backgroundColor: Colors.white,
+      //   elevation: 0,
+      //   leading: InkWell(
+      //     onTap: () {
+      //       Navigator.pop(context);
+      //     },
+      //     child: Icon(
+      //       Icons.arrow_back,
+      //       color: Colors.black,
+      //     ),
+      //   ),
+      // ),
       body: loading!
-          ? Center(
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                color: Color(0xFFaefb2a),
+          ? SafeArea(
+            child: Center(
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: Color(0xFF7860DC),
+                ),
               ),
-            )
+          )
           : SingleChildScrollView(
               primary: true,
               physics: BouncingScrollPhysics(),
@@ -257,12 +261,12 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(18.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 18.0,vertical:10),
                     child: Text(
                       'Instructions :',
                       style: TextStyle(
                           fontFamily: 'Bold',
-                          fontSize: 20,
+                          fontSize: 17,
                           color: Colors.black),
                     ),
                   ),
@@ -276,21 +280,40 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
                           color: Colors.black),
                     ),
                   ),
-                  SizedBox(
-                    height: 20,
-                  ),
+                  // SizedBox(
+                  //   height: 10,
+                  // ),
                   Row(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.all(18.0),
-                        child: Text(
-                          data!['name'].toString().replaceAll("<br>", "\n"),
-                          style: TextStyle(
-                              fontFamily: 'Bold',
-                              fontSize: 24,
-                              color: Colors.black),
-                        ),
+                      SizedBox(
+                        width: 18,
                       ),
+                      Text(
+                        data!['name'].toString().replaceAll("<br>", "\n"),
+                        style: TextStyle(
+                            fontFamily: 'Bold',
+                            fontSize: 20,
+                            color: Colors.black),
+                      ),
+                    ],
+                  ),
+                  // SizedBox(
+                  //   height: 5,
+                  // ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                    child: Text(
+                      data!['question'].toString().replaceAll("<br>", "\n"),
+                      style: TextStyle(
+                          fontFamily: 'Medium',
+                          fontSize: 17,
+                          color: Colors.black),
+                    ),
+                  ),
+                  SizedBox(height: 5),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
                       TextButton(
                         style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.resolveWith(
@@ -302,7 +325,7 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
                         child: Row(
                           children: [
                             Text(
-                              'Download',
+                              '(.ipynb)',
                               style: TextStyle(
                                 color: Colors.grey.shade600,
                                 fontSize: 16,
@@ -310,56 +333,46 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
                             ),
                             Icon(
                               Icons.download,
-                              color: Color(0xFFaefb2a),
+                              color: Color(0xFF7860DC),
                             ),
                           ],
                         ),
                       ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                        child: TextButton(
+                          onPressed: () {
+                            downloadOutputPDF(data!['id']);
+                          },
+                          child: Row(
+                            children: [
+                              Text(
+                                'Output PDF',
+                                style: TextStyle(color: Colors.grey.shade600),
+                              ),
+                              Icon(
+                                Icons.download,
+                                color: Color(0xFF7860DC),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ],
-                  ),
-                  
-                  SizedBox(
-                    height: 5,
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 18.0),
                     child: Text(
-                      data!['question'].toString().replaceAll("<br>", "\n"),
+                      'Submit and watch the Solution : ',
                       style: TextStyle(
                           fontFamily: 'Medium',
-                          fontSize: 20,
+                          fontSize: 17,
                           color: Colors.black),
                     ),
                   ),
-                  SizedBox(height:5),
-                  TextButton(
-                                            onPressed: () {
-                                              downloadOutputPDF(data!['id']);
-                                            },
-                                            style: ButtonStyle(
-                                              backgroundColor:
-                                                  MaterialStateProperty
-                                                      .resolveWith((state) =>
-                                                          Colors.grey.shade100),
-                                            ),
-                                            child: Row(
-                                              children: [
-                                                Text(
-                                                  'Download Output PDF',
-                                                  style: TextStyle(
-                                                      color:
-                                                          Colors.grey.shade600),
-                                                ),
-                                                Icon(
-                                                  Icons.download,
-                                                  color: Color(0xFFaefb2a),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                  SizedBox(
-                    height: 10,
-                  ),
+                  // SizedBox(
+                  //   height: 10,
+                  // ),
                   StreamBuilder(
                       stream: FirebaseFirestore.instance
                           .collection('courses')
@@ -381,11 +394,17 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            SizedBox(
+                              height: 10,
+                            ),
                             Padding(
-                              padding: const EdgeInsets.all(18.0),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 18.0),
                               child: InkWell(
                                 onTap: () async {
-                                  await addSubmission();
+                                  await snapshot.data.docs.length != 0
+                                      ? widget.playSolVideo()
+                                      : addSubmission();
                                 },
                                 child: Row(
                                   children: [
@@ -410,20 +429,24 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
                                                       Colors.black
                                                           .withOpacity(0.4)
                                                     ])),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(18.0),
-                                        child: Text(
-                                          snapshot.data.docs.length != 0
-                                              ? '✓ Submitted'
-                                              : '+ Add Submission',
-                                          style: TextStyle(
-                                              fontFamily: 'Medium',
-                                              fontSize: 20,
-                                              color:
-                                                  snapshot.data.docs.length != 0
-                                                      ? Colors.white
-                                                      : Colors.black
-                                                          .withOpacity(0.4)),
+                                      child: Center(
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 18.0),
+                                          child: Text(
+                                            snapshot.data.docs.length != 0
+                                                ? 'Watch Solution.'
+                                                : '+ Add Submission',
+                                            style: TextStyle(
+                                                fontFamily: 'Medium',
+                                                fontSize: 17,
+                                                color:
+                                                    snapshot.data.docs.length !=
+                                                            0
+                                                        ? Colors.white
+                                                        : Colors.black
+                                                            .withOpacity(0.4)),
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -434,7 +457,10 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
                                         ? Flexible(
                                             child: InkWell(
                                               onTap: () {
-                                                //addSubmission();
+                                                // snapshot.data.docs.length == 0
+                                                //     ? widget.playSolVideo()
+                                                //     : addSubmission();
+                                                addSubmission();
                                               },
                                               child: Container(
                                                 height: 60,
@@ -516,186 +542,185 @@ class _AssignmentScreenState extends State<AssignmentScreen> {
                                 ),
                               ),
                             ),
-                            snapshot.data.docs.length != 0
-                                ? Column(
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.all(18.0),
-                                            child: Text(
-                                              'Solution :',
-                                              style: TextStyle(
-                                                  fontFamily: 'Bold',
-                                                  fontSize: 20,
-                                                  color: Colors.black),
-                                            ),
-                                          ),
-                                          
-                                        ],
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(18.0),
-                                        child: Container(
-                                            height: (MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    9) /
-                                                16,
-                                            width: MediaQuery.of(context)
-                                                .size
-                                                .width,
-                                            child: Theme(
-                                                data:
-                                                    ThemeData.light().copyWith(
-                                                  platform:
-                                                      TargetPlatform.android,
-                                                ),
-                                                child: Chewie(
-                                                    controller:
-                                                        _chewieController!))),
-                                      ),
-                                    ],
-                                  )
-                                : Container(),
+                            // snapshot.data.docs.length != 0
+                            //     ? Column(
+                            //         children: [
+                            //           Row(
+                            //             children: [
+                            //               Padding(
+                            //                 padding: const EdgeInsets.all(18.0),
+                            //                 child: Text(
+                            //                   'Solution :',
+                            //                   style: TextStyle(
+                            //                       fontFamily: 'Bold',
+                            //                       fontSize: 20,
+                            //                       color: Colors.black),
+                            //                 ),
+                            //               ),
+                            //             ],
+                            //           ),
+                            // Padding(
+                            //   padding: const EdgeInsets.all(18.0),
+                            //   child: Container(
+                            //       height: (MediaQuery.of(context)
+                            //                   .size
+                            //                   .width *
+                            //               9) /
+                            //           16,
+                            //       width: MediaQuery.of(context)
+                            //           .size
+                            //           .width,
+                            //       child: Theme(
+                            //           data:
+                            //               ThemeData.light().copyWith(
+                            //             platform:
+                            //                 TargetPlatform.android,
+                            //           ),
+                            //           child: Chewie(
+                            //               controller:
+                            //                   _chewieController!))),
+                            // ),
+                            //     ],
+                            //   )
+                            // : Container(),
                           ],
                         );
                       }),
                   SizedBox(
                     height: 60,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 18.0),
-                    child: Text(
-                      'Next Topics',
-                      style: TextStyle(
-                          fontFamily: 'SemiBold',
-                          fontSize: 24,
-                          color: Colors.black),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Container(
-                    color: Colors.black.withOpacity(0.04),
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height * 0.4,
-                    child: StreamBuilder(
-                      stream: FirebaseFirestore.instance
-                          .collection('courses')
-                          .doc(courseId)
-                          .collection('Modules')
-                          .doc(moduleId)
-                          .collection('Topics')
-                          .orderBy('sr')
-                          .snapshots(),
-                      builder: (BuildContext context, AsyncSnapshot snapshot) {
-                        if (snapshot.data != null) {
-                          return ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: snapshot.data!.docs.length,
-                              itemBuilder: (context, index) {
-                                Map<String, dynamic> map =
-                                    snapshot.data!.docs[index].data();
-                                if (widget.isdemo) {
-                                  if (map['demo']) {
-                                    return InkWell(
-                                        onTap: () {
-                                          setState(() {
-                                            topicId =
-                                                snapshot.data!.docs[index].id;
-                                          });
-                                          if (map['type'] == 'video') {
-                                            Navigator.push(
-                                              context,
-                                              PageTransition(
-                                                  duration: Duration(
-                                                      milliseconds: 400),
-                                                  curve: Curves.bounceInOut,
-                                                  type: PageTransitionType
-                                                      .rightToLeft,
-                                                  child: VideoScreen(
-                                                    isdemo: widget.isdemo,
-                                                    sr: map['sr'],
-                                                  )),
-                                            );
-                                          } else if (map['type'] ==
-                                              'assignment') {
-                                            Navigator.push(
-                                              context,
-                                              PageTransition(
-                                                  duration: Duration(
-                                                      milliseconds: 400),
-                                                  curve: Curves.bounceInOut,
-                                                  type: PageTransitionType
-                                                      .rightToLeft,
-                                                  child: AssignmentScreen(
-                                                    sr: map['sr'],
-                                                    isdemo: widget.isdemo,
-                                                  )),
-                                            );
-                                          }
-                                        },
-                                        child: NextItem(
-                                            title: map['name'],
-                                            type: map['type'],
-                                            sr: map['sr'],
-                                            thisSr: widget.sr));
-                                  } else {
-                                    return Container();
-                                  }
-                                } else {
-                                  return InkWell(
-                                      onTap: () {
-                                        setState(() {
-                                          topicId =
-                                              snapshot.data!.docs[index].id;
-                                        });
-                                        if (map['type'] == 'video') {
-                                          Navigator.push(
-                                            context,
-                                            PageTransition(
-                                                duration:
-                                                    Duration(milliseconds: 400),
-                                                curve: Curves.bounceInOut,
-                                                type: PageTransitionType
-                                                    .rightToLeft,
-                                                child: VideoScreen(
-                                                  isdemo: widget.isdemo,
-                                                  sr: map['sr'],
-                                                )),
-                                          );
-                                        } else if (map['type'] ==
-                                            'assignment') {
-                                          Navigator.push(
-                                            context,
-                                            PageTransition(
-                                                duration:
-                                                    Duration(milliseconds: 400),
-                                                curve: Curves.bounceInOut,
-                                                type: PageTransitionType
-                                                    .rightToLeft,
-                                                child: AssignmentScreen(
-                                                  sr: map['sr'],
-                                                  isdemo: widget.isdemo,
-                                                )),
-                                          );
-                                        }
-                                      },
-                                      child: NextItem(
-                                          title: map['name'],
-                                          type: map['type'],
-                                          sr: map['sr'],
-                                          thisSr: widget.sr));
-                                }
-                              });
-                        } else {
-                          return Container();
-                        }
-                      },
-                    ),
-                  ),
+                  // Padding(
+                  //   padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                  //   child: Text(
+                  //     'Next Topics',
+                  //     style: TextStyle(
+                  //         fontFamily: 'SemiBold',
+                  //         fontSize: 24,
+                  //         color: Colors.black),
+                  //   ),
+                  // ),
+                  // SizedBox(
+                  //   height: 10,
+                  // ),
+                  // Container(
+                  //   color: Colors.black.withOpacity(0.04),
+                  //   width: MediaQuery.of(context).size.width,
+                  //   height: MediaQuery.of(context).size.height * 0.4,
+                  //   child: StreamBuilder(
+                  //     stream: FirebaseFirestore.instance
+                  //         .collection('courses')
+                  //         .doc(courseId)
+                  //         .collection('Modules')
+                  //         .doc(moduleId)
+                  //         .collection('Topics')
+                  //         .orderBy('sr')
+                  //         .snapshots(),
+                  //     builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  //       if (snapshot.data != null) {
+                  //         return ListView.builder(
+                  //             shrinkWrap: true,
+                  //             itemCount: snapshot.data!.docs.length,
+                  //             itemBuilder: (context, index) {
+                  //               Map<String, dynamic> map =
+                  //                   snapshot.data!.docs[index].data();
+                  //               if (widget.isdemo) {
+                  //                 if (map['demo']) {
+                  //                   return InkWell(
+                  //                       onTap: () {
+                  //                         setState(() {
+                  //                           topicId =
+                  //                               snapshot.data!.docs[index].id;
+                  //                         });
+                  //                         if (map['type'] == 'video') {
+                  //                           Navigator.push(
+                  //                             context,
+                  //                             PageTransition(
+                  //                                 duration: Duration(
+                  //                                     milliseconds: 400),
+                  //                                 curve: Curves.bounceInOut,
+                  //                                 type: PageTransitionType
+                  //                                     .rightToLeft,
+                  //                                 child: VideoScreen(
+                  //                                   isdemo: widget.isdemo,
+                  //                                   sr: map['sr'],
+                  //                                 )),
+                  //                           );
+                  //                         } else if (map['type'] ==
+                  //                             'assignment') {
+                  //                           Navigator.push(
+                  //                             context,
+                  //                             PageTransition(
+                  //                                 duration: Duration(
+                  //                                     milliseconds: 400),
+                  //                                 curve: Curves.bounceInOut,
+                  //                                 type: PageTransitionType
+                  //                                     .rightToLeft,
+                  //                                 child: AssignmentScreen(
+                  //                                   sr: map['sr'],
+                  //                                   isdemo: widget.isdemo,
+                  //                                 )),
+                  //                           );
+                  //                         }
+                  //                       },
+                  //                       child: NextItem(
+                  //                           title: map['name'],
+                  //                           type: map['type'],
+                  //                           sr: map['sr'],
+                  //                           thisSr: widget.sr));
+                  //                 } else {
+                  //                   return Container();
+                  //                 }
+                  //               } else {
+                  //                 return InkWell(
+                  //                     onTap: () {
+                  //                       setState(() {
+                  //                         topicId =
+                  //                             snapshot.data!.docs[index].id;
+                  //                       });
+                  //                       if (map['type'] == 'video') {
+                  //                         Navigator.push(
+                  //                           context,
+                  //                           PageTransition(
+                  //                               duration:
+                  //                                   Duration(milliseconds: 400),
+                  //                               curve: Curves.bounceInOut,
+                  //                               type: PageTransitionType
+                  //                                   .rightToLeft,
+                  //                               child: VideoScreen(
+                  //                                 isdemo: widget.isdemo,
+                  //                                 sr: map['sr'],
+                  //                               )),
+                  //                         );
+                  //                       } else if (map['type'] ==
+                  //                           'assignment') {
+                  //                         Navigator.push(
+                  //                           context,
+                  //                           PageTransition(
+                  //                               duration:
+                  //                                   Duration(milliseconds: 400),
+                  //                               curve: Curves.bounceInOut,
+                  //                               type: PageTransitionType
+                  //                                   .rightToLeft,
+                  //                               child: AssignmentScreen(
+                  //                                 sr: map['sr'],
+                  //                                 isdemo: widget.isdemo,
+                  //                               )),
+                  //                         );
+                  //                       }
+                  //                     },
+                  //                     child: NextItem(
+                  //                         title: map['name'],
+                  //                         type: map['type'],
+                  //                         sr: map['sr'],
+                  //                         thisSr: widget.sr));
+                  //               }
+                  //             });
+                  //       } else {
+                  //         return Container();
+                  //       }
+                  //     },
+                  //   ),
+                  // ),
                   SizedBox(
                     height: 20,
                   )

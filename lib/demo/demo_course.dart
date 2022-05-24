@@ -104,17 +104,17 @@ class _DemoCourseState extends State<DemoCourse> {
                                         )),
                                   );
                                 } else if (map['firstType'] == 'assignment') {
-                                  Navigator.push(
-                                    context,
-                                    PageTransition(
-                                        duration: Duration(milliseconds: 400),
-                                        curve: Curves.bounceInOut,
-                                        type: PageTransitionType.rightToLeft,
-                                        child: AssignmentScreen(
-                                          isdemo: true,
-                                          sr: 1,
-                                        )),
-                                  );
+                                  // Navigator.push(
+                                  //   context,
+                                  //   PageTransition(
+                                  //       duration: Duration(milliseconds: 400),
+                                  //       curve: Curves.bounceInOut,
+                                  //       type: PageTransitionType.rightToLeft,
+                                  //       child: AssignmentScreen(
+                                  //         isdemo: true,
+                                  //         sr: 1,
+                                  //       )),
+                                  // );
                                 } else {
                                   Navigator.push(
                                     context,

@@ -30,7 +30,7 @@ class _CatelogueScreenState extends State<CatelogueScreen>
   var amountcontroller = TextEditingController();
   final TextEditingController couponCodeController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
-  GlobalKey key = GlobalKey();
+  GlobalKey positionKey = GlobalKey();
   // final scaffoldState = GlobalKey<ScaffoldState>();
   ValueNotifier<bool> showBottomSheet = ValueNotifier(false);
   VoidCallback? _showPersistentBottomSheetCallBack;
@@ -61,6 +61,8 @@ class _CatelogueScreenState extends State<CatelogueScreen>
 
   bool showCurriculum = false;
 
+  bool bottomSheet = false;
+
   @override
   void initState() {
     super.initState();
@@ -73,19 +75,21 @@ class _CatelogueScreenState extends State<CatelogueScreen>
   }
 
   void _scrollListener() {
-    // RenderBox box = key.currentContext!.findRenderObject() as RenderBox;
+    // RenderBox box = positionKey.currentContext!.findRenderObject() as RenderBox;
     // Offset position = box.localToGlobal(Offset.zero); //this is global position
     // double y = position.dy;
     // print(y);
     print(_scrollController.position.pixels);
     // print(k);
-    if (_scrollController.position.pixels > 0.0) {
-      // &&
-      //  _scrollController.position.pixels < y
+    if (_scrollController.position.pixels > 0.0
+        // &&
+        // _scrollController.position.pixels < y
+        ) {
       showBottomSheet.value = true;
     } else {
       showBottomSheet.value = false;
     }
+    // _scrollController.removeListener(_scrollListener);
   }
 
   @override
@@ -93,6 +97,7 @@ class _CatelogueScreenState extends State<CatelogueScreen>
     super.dispose();
     _tabController!.dispose();
     couponCodeController.dispose();
+    _scrollController.removeListener(_scrollListener);
     _scrollController.dispose();
   }
 
@@ -104,9 +109,7 @@ class _CatelogueScreenState extends State<CatelogueScreen>
     size = MediaQuery.of(context).size;
     height = size.height;
     width = size.width;
-
     _scrollController.addListener(_scrollListener);
-
     return ValueListenableBuilder(
       valueListenable: showBottomSheet,
       builder: (BuildContext context, bool value, Widget? child) {
@@ -155,9 +158,9 @@ class _CatelogueScreenState extends State<CatelogueScreen>
                         return Container();
                       }
                       // print(_scrollController.position.pixels);
-                      CatelogueScreen.coursePrice.value = map['Course Price'];
-                      CatelogueScreen.map!.value = map;
                       if (document.id == courseId) {
+                        CatelogueScreen.coursePrice.value = map['Course Price'];
+                        CatelogueScreen.map!.value = map;
                         return Stack(
                           children: [
                             Padding(
@@ -238,18 +241,11 @@ class _CatelogueScreenState extends State<CatelogueScreen>
                                     SizedBox(
                                       height: 65,
                                     ),
-                                    Curriculam(
-                                      videoTitles: map['curriculum']
-                                          ['videoTitle'],
-                                      assignmentTitles: map['curriculum']
-                                          ['assignmentTitle'],
-                                      quizTitles: map['curriculum']
-                                          ['quizTitle'],
-                                      SectionsNames: map['curriculum']
-                                          ['sectionsName'],
-                                      interviewQuestions: map['curriculum']
-                                          ['interviewQuestions'],
-                                      id: map['id'],
+                                    Container(
+                                      key: positionKey,
+                                      child: Curriculam(
+                                        map: map,
+                                      ),
                                     ),
                                     // Container(
                                     //   key: key,

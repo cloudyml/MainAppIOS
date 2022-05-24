@@ -218,11 +218,11 @@ class _StoreState extends State<Store> {
                                         // SizedBox(
                                         //   height: 5,
                                         // ),
-                                        !map['combo']
-                                            ? Text(
-                                                '${map['curriculum']['videoTitle'].length} Lectures-${map['curriculum']['assignmentTitle'].length} assignments-${map['curriculum']['quizTitle'].length} quizzes')
-                                            : Text(
-                                                '${map['courses'].length} courses'),
+                                        // !map['combo']
+                                        //     ? Text(
+                                        //         '${map['curriculum']['videoTitle'].length} Lectures-${map['curriculum']['assignmentTitle'].length} assignments-${map['curriculum']['quizTitle'].length} quizzes')
+                                        //     : Text(
+                                        //         '${map['courses'].length} courses'),
                                         SizedBox(
                                           height: 5,
                                         ),

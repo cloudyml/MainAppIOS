@@ -86,8 +86,8 @@ class _VideoPlayerCustomState extends State<VideoPlayerCustom> {
                       ),
                     ),
                     Positioned(
-                      top:0,
-                      right:0,
+                      top: 0,
+                      right: 0,
                       child: SafeArea(
                         child: IconButton(
                           onPressed: () {
@@ -107,6 +107,15 @@ class _VideoPlayerCustomState extends State<VideoPlayerCustom> {
                         ),
                       ),
                     ),
+                    // Positioned(
+                    //   bottom: 10,
+                    //   left: 0,
+                    //   right: 0,
+                    //   child: Text(
+                    //     'Duration : ${_controller!.value.duration.toString().substring(3,7)}',
+                    //     style: TextStyle(color: Colors.blue),
+                    //   ),
+                    // )
                   ],
                 );
               },

@@ -4,21 +4,23 @@ import 'package:cloudyml_app2/globals.dart';
 import 'package:flutter/material.dart';
 
 class Curriculam extends StatefulWidget {
-  final List videoTitles;
-  final List SectionsNames;
-  final List quizTitles;
-  final List assignmentTitles;
-  final List interviewQuestions;
-  final String id;
+  // final List videoTitles;
+  // final List SectionsNames;
+  // final List quizTitles;
+  // final List assignmentTitles;
+  // final List interviewQuestions;
+  // final String id;
+  final Map<String, dynamic>? map;
 
   const Curriculam({
     Key? key,
-    required this.videoTitles,
-    required this.SectionsNames,
-    required this.quizTitles,
-    required this.assignmentTitles,
-    required this.interviewQuestions,
-    required this.id,
+    required this.map,
+    // required this.videoTitles,
+    // required this.SectionsNames,
+    // required this.quizTitles,
+    // required this.assignmentTitles,
+    // required this.interviewQuestions,
+    // required this.id,
   }) : super(key: key);
 
   @override
@@ -27,12 +29,12 @@ class Curriculam extends StatefulWidget {
 
 class _CurriculamState extends State<Curriculam> {
   bool showMore = false;
-  bool changeToggleIcon = false;
-  bool showSec1 = false;
-  bool showSec2 = false;
-  bool showSec3 = false;
-  bool showSec4 = false;
-  bool showCurriculum = false;
+  // bool changeToggleIcon = false;
+  // bool showSec1 = false;
+  // bool showSec2 = false;
+  // bool showSec3 = false;
+  // bool showSec4 = false;
+  // bool showFullCurriculum = false;
   String? modId;
 
   void getModuleId() async {
@@ -76,346 +78,457 @@ class _CurriculamState extends State<Curriculam> {
               ),
             ),
             SizedBox(height: 10),
-            Text(
-                '${widget.SectionsNames.length} sections-${widget.videoTitles.length} videos-${widget.assignmentTitles.length} assignments-${widget.quizTitles.length} quizzes'),
+            // Text(
+            //     '${widget.SectionsNames.length} sections-${widget.videoTitles.length} videos-${widget.assignmentTitles.length} assignments-${widget.quizTitles.length} quizzes'),
             Container(
               child: ListView.builder(
                 physics: BouncingScrollPhysics(),
                 shrinkWrap: true,
-                itemCount: widget.SectionsNames.length,
-                itemBuilder: (context, index) {
+                itemCount: widget.map!['curriculum']['sectionsName'].length,
+                itemBuilder: (context, index1) {
                   return Column(
                     children: [
                       SizedBox(height: 8),
                       Container(
-                        height: 40,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 10),
-                          child: Row(
-                            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                widget.SectionsNames[index],
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  fontFamily: 'Medium',
-                                ),
+                        // height: 30,
+                        child: Row(
+                          children: [
+                            Text(
+                              widget.map!['curriculum']['sectionsName'][index1],
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontFamily: 'Medium',
                               ),
-                              // InkWell(
-                              //   onTap: () {
-                              //     setState(() {
-                              //       if (index == 0) {
-                              //         showSec1 = !showSec1;
-                              //         // changeToggleIcon=!changeToggleIcon;
-                              //       } else if (index == 1) {
-                              //         showSec2 = !showSec2;
-                              //       } else if (index == 2) {
-                              //         showSec3 = !showSec3;
-                              //       } else if (index == 3) {
-                              //         showSec4 = !showSec4;
-                              //       }
-                              //       // showSec$index+=!showSec${index+1};
-                              //     });
-                              //   },
-                              //   // child: Icon(Icons.add),
-                              // )
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
-                      index == 0
-                          ? Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  height: showSec1 ? null : 200,
-                                  child: ListView.builder(
-                                    // physics: allowScrolling
-                                    //     ? NeverScrollableScrollPhysics()
-                                    //     : BouncingScrollPhysics(),
-                                    physics: NeverScrollableScrollPhysics(),
-                                    shrinkWrap: true,
-                                    itemCount: widget.videoTitles.length,
-                                    itemBuilder: (context, index) {
-                                      return Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(0),
-                                          color: Colors.white,
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(15.0),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                '${index + 1}. ${widget.videoTitles[index]}',
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontFamily: 'Medium',
-                                                ),
-                                              ),
-                                              InkWell(
-                                                onTap: () async {
-                                                  // print(modId);
-                                                  String? modId;
-                                                  var dt =
-                                                      await FirebaseFirestore
-                                                          .instance
-                                                          .collection('courses')
-                                                          .doc(courseId)
-                                                          .collection('Modules')
-                                                          .where('firstType',
-                                                              isEqualTo:
-                                                                  'video')
-                                                          .get()
-                                                          .then((value) {
-                                                    modId = value.docs[0].id;
-                                                    // setState(() {
-                                                    //   // modId = value.docs[0].id;
-                                                    // });
-                                                  });
-                                                  print(modId);
-                                                  Map<String, dynamic>?
-                                                      topicDetails;
-                                                  await FirebaseFirestore
-                                                      .instance
-                                                      .collection('courses')
-                                                      .doc(courseId)
-                                                      .collection('Modules')
-                                                      .doc(modId)
-                                                      .collection('Topics')
-                                                      .where('sr',
-                                                          isEqualTo: index + 1)
-                                                      .get()
-                                                      .then((value) {
-                                                    // print(value.docs[0]);
-                                                    topicDetails =
-                                                        value.docs[0].data();
-                                                    print(topicDetails!['url']);
-                                                    // topicId = value.docs[0].id;
-                                                  });
-                                                  if (index < 3) {
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            VideoPlayerCustom(
-                                                                url:
-                                                                    topicDetails![
-                                                                        'url']),
-                                                      ),
-                                                    );
-                                                  }
-                                                },
-                                                child: Icon(
-                                                  Icons
-                                                      .play_circle_fill_outlined,
-                                                  color: index <= 2
-                                                      ? Color(0xFF7860DC)
-                                                      : null,
-                                                ),
-                                              )
-                                            ],
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            height: showMore ? null : 200,
+                            child: ListView.builder(
+                              physics: NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount: widget
+                                  .map!['curriculum'][
+                                      '${widget.map!['curriculum']['sectionsName'][index1]}']
+                                  .length,
+                              itemBuilder: ((context, index) {
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SizedBox(
+                                      height: 22,
+                                    ),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(0),
+                                        color: Colors.white,
+                                      ),
+                                      child: Row(
+                                        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          SizedBox(
+                                            width: 20,
                                           ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                                widget.videoTitles.length > 4
-                                    ? Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 10),
-                                        child: TextButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              showSec1 = !showSec1;
-                                            });
-                                          },
-                                          child: !showSec1
-                                              ? Text('Show more')
-                                              : Text('Show less'),
-                                        ),
-                                      )
-                                    : Container(),
-                              ],
-                            )
-                          : Container(),
-                      index == 1
-                          ? Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  height: showSec2 ? null : 200,
-                                  child: ListView.builder(
-                                    physics: NeverScrollableScrollPhysics(),
-                                    shrinkWrap: true,
-                                    itemCount: widget.assignmentTitles.length,
-                                    itemBuilder: (context, index) {
-                                      return Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(0),
-                                          color: Colors.white,
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(15.0),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                '${index + 1}. ${widget.assignmentTitles[index]}',
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontFamily: 'Medium',
-                                                ),
-                                              ),
-                                              Icon(
-                                                Icons.assignment_rounded,
-                                              ),
-                                            ],
+                                          Expanded(
+                                            flex: 1, //
+                                            child: Text('${index + 1} : '),
                                           ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                                widget.assignmentTitles.length > 4
-                                    ? Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 10),
-                                        child: TextButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              showSec2 = !showSec2;
-                                            });
-                                          },
-                                          child: !showSec2
-                                              ? Text('Show more')
-                                              : Text('Show less'),
-                                        ),
-                                      )
-                                    : Container(),
-                              ],
-                            )
-                          : Container(),
-                      index == 2
-                          ? Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  height: showSec3 ? null : 200,
-                                  child: ListView.builder(
-                                    physics: NeverScrollableScrollPhysics(),
-                                    shrinkWrap: true,
-                                    itemCount: widget.quizTitles.length,
-                                    itemBuilder: (context, index) {
-                                      return Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(0),
-                                          color: Colors.white,
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(15.0),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                '${index + 1}. ${widget.quizTitles[index]}',
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontFamily: 'Medium',
-                                                ),
+                                          Expanded(
+                                            flex: 10,
+                                            child: Text(
+                                              widget.map!['curriculum'][
+                                                      '${widget.map!['curriculum']['sectionsName'][index1]}']
+                                                  [index],
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                fontFamily: 'Medium',
                                               ),
-                                              Icon(Icons.quiz),
-                                            ],
+                                            ),
                                           ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                                widget.quizTitles.length > 4
-                                    ? Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 10),
-                                        child: TextButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              showSec3 = !showSec3;
-                                            });
-                                          },
-                                          child: !showSec3
-                                              ? Text('Show more')
-                                              : Text('Show less'),
-                                        ),
-                                      )
-                                    : Container(),
-                              ],
-                            )
-                          : Container(),
-                      index == 3
-                          ? Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  height: showSec4 ? null : 200,
-                                  child: ListView.builder(
-                                    physics: NeverScrollableScrollPhysics(),
-                                    shrinkWrap: true,
-                                    itemCount: widget.interviewQuestions.length,
-                                    itemBuilder: (context, index) {
-                                      return Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(0),
-                                          color: Colors.white,
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(15.0),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                '${index + 1}. ${widget.interviewQuestions[index]}',
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontFamily: 'Medium',
-                                                ),
+                                          Expanded(
+                                            flex: 1,
+                                            child: InkWell(
+                                              onTap: () async {
+                                                // print(modId);
+                                                String? modId;
+                                                var dt = await FirebaseFirestore
+                                                    .instance
+                                                    .collection('courses')
+                                                    .doc(courseId)
+                                                    .collection('Modules')
+                                                    .where('firstType',
+                                                        isEqualTo: 'video')
+                                                    .get()
+                                                    .then((value) {
+                                                  modId = value.docs[0].id;
+                                                  // setState(() {
+                                                  //   // modId = value.docs[0].id;
+                                                  // });
+                                                });
+                                                print(modId);
+                                                Map<String, dynamic>?
+                                                    topicDetails;
+                                                await FirebaseFirestore.instance
+                                                    .collection('courses')
+                                                    .doc(courseId)
+                                                    .collection('Modules')
+                                                    .doc(modId)
+                                                    .collection('Topics')
+                                                    .where('sr',
+                                                        isEqualTo: index + 1)
+                                                    .get()
+                                                    .then((value) {
+                                                  // print(value.docs[0]);
+                                                  topicDetails =
+                                                      value.docs[0].data();
+                                                  print(topicDetails!['url']);
+                                                  // topicId = value.docs[0].id;
+                                                });
+                                                if (index < 3) {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          VideoPlayerCustom(
+                                                              url:
+                                                                  topicDetails![
+                                                                      'url']),
+                                                    ),
+                                                  );
+                                                }
+                                              },
+                                              child: Icon(
+                                                Icons.play_circle_fill_outlined,
+                                                color: index <= 2 && index1 == 0
+                                                    ? Color(0xFF7860DC)
+                                                    : null,
                                               ),
-                                              Icon(Icons.question_answer),
-                                            ],
+                                            ),
                                           ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                                widget.interviewQuestions.length > 4
-                                    ? Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 10),
-                                        child: TextButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              showSec3 = !showSec3;
-                                            });
-                                          },
-                                          child: !showSec4
-                                              ? Text('Show more')
-                                              : Text('Show less'),
-                                        ),
-                                      )
-                                    : Container(),
-                              ],
-                            )
-                          : Container(),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              }),
+                            ),
+                          ),
+                          widget
+                                      .map!['curriculum'][
+                                          '${widget.map!['curriculum']['sectionsName'][index1]}']
+                                      .length >
+                                  4
+                              ? TextButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      showMore = !showMore;
+                                    });
+                                  },
+                                  child: showMore
+                                      ? Text('Show less')
+                                      : Text('Show more'),
+                                )
+                              : Container()
+                        ],
+                      )
+
+                      // index == 0
+                      //     ? Column(
+                      //         crossAxisAlignment: CrossAxisAlignment.start,
+                      //         children: [
+                      //           Container(
+                      //             height: showSec1 ? null : 200,
+                      //             child: ListView.builder(
+                      //               // physics: allowScrolling
+                      //               //     ? NeverScrollableScrollPhysics()
+                      //               //     : BouncingScrollPhysics(),
+                      //               physics: NeverScrollableScrollPhysics(),
+                      //               shrinkWrap: true,
+                      //               itemCount: widget.videoTitles.length,
+                      //               itemBuilder: (context, index) {
+                      //                 return Container(
+                      //                   decoration: BoxDecoration(
+                      //                     borderRadius:
+                      //                         BorderRadius.circular(0),
+                      //                     color: Colors.white,
+                      //                   ),
+                      //                   child: Padding(
+                      //                     padding: const EdgeInsets.all(15.0),
+                      //                     child: Row(
+                      //                       mainAxisAlignment:
+                      //                           MainAxisAlignment.spaceBetween,
+                      //                       children: [
+                      //                         Text(
+                      //                           '${index + 1}. ${widget.videoTitles[index]}',
+                      //                           style: TextStyle(
+                      //                             fontSize: 14,
+                      //                             fontFamily: 'Medium',
+                      //                           ),
+                      //                         ),
+                      //                         InkWell(
+                      //                           onTap: () async {
+                      //                             // print(modId);
+                      //                             String? modId;
+                      //                             var dt =
+                      //                                 await FirebaseFirestore
+                      //                                     .instance
+                      //                                     .collection('courses')
+                      //                                     .doc(courseId)
+                      //                                     .collection('Modules')
+                      //                                     .where('firstType',
+                      //                                         isEqualTo:
+                      //                                             'video')
+                      //                                     .get()
+                      //                                     .then((value) {
+                      //                               modId = value.docs[0].id;
+                      //                               // setState(() {
+                      //                               //   // modId = value.docs[0].id;
+                      //                               // });
+                      //                             });
+                      //                             print(modId);
+                      //                             Map<String, dynamic>?
+                      //                                 topicDetails;
+                      //                             await FirebaseFirestore
+                      //                                 .instance
+                      //                                 .collection('courses')
+                      //                                 .doc(courseId)
+                      //                                 .collection('Modules')
+                      //                                 .doc(modId)
+                      //                                 .collection('Topics')
+                      //                                 .where('sr',
+                      //                                     isEqualTo: index + 1)
+                      //                                 .get()
+                      //                                 .then((value) {
+                      //                               // print(value.docs[0]);
+                      //                               topicDetails =
+                      //                                   value.docs[0].data();
+                      //                               print(topicDetails!['url']);
+                      //                               // topicId = value.docs[0].id;
+                      //                             });
+                      //                             if (index < 3) {
+                      //                               Navigator.push(
+                      //                                 context,
+                      //                                 MaterialPageRoute(
+                      //                                   builder: (context) =>
+                      //                                       VideoPlayerCustom(
+                      //                                           url:
+                      //                                               topicDetails![
+                      //                                                   'url']),
+                      //                                 ),
+                      //                               );
+                      //                             }
+                      //                           },
+                      //                           child: Icon(
+                      //                             Icons
+                      //                                 .play_circle_fill_outlined,
+                      //                             color: index <= 2
+                      //                                 ? Color(0xFF7860DC)
+                      //                                 : null,
+                      //                           ),
+                      //                         )
+                      //                       ],
+                      //                     ),
+                      //                   ),
+                      //                 );
+                      //               },
+                      //             ),
+                      //           ),
+                      //           widget.videoTitles.length > 4
+                      //               ? Padding(
+                      //                   padding:
+                      //                       const EdgeInsets.only(left: 10),
+                      //                   child: TextButton(
+                      //                     onPressed: () {
+                      //                       setState(() {
+                      //                         showSec1 = !showSec1;
+                      //                       });
+                      //                     },
+                      //                     child: !showSec1
+                      //                         ? Text('Show more')
+                      //                         : Text('Show less'),
+                      //                   ),
+                      //                 )
+                      //               : Container(),
+                      //         ],
+                      //       )
+                      //     : Container(),
+                      // index == 1
+                      //     ? Column(
+                      //         crossAxisAlignment: CrossAxisAlignment.start,
+                      //         children: [
+                      //           Container(
+                      //             height: showSec2 ? null : 200,
+                      //             child: ListView.builder(
+                      //               physics: NeverScrollableScrollPhysics(),
+                      //               shrinkWrap: true,
+                      //               itemCount: widget.assignmentTitles.length,
+                      //               itemBuilder: (context, index) {
+                      //                 return Container(
+                      //                   decoration: BoxDecoration(
+                      //                     borderRadius:
+                      //                         BorderRadius.circular(0),
+                      //                     color: Colors.white,
+                      //                   ),
+                      //                   child: Padding(
+                      //                     padding: const EdgeInsets.all(15.0),
+                      //                     child: Row(
+                      //                       mainAxisAlignment:
+                      //                           MainAxisAlignment.spaceBetween,
+                      //                       children: [
+                      //                         Text(
+                      //                           '${index + 1}. ${widget.assignmentTitles[index]}',
+                      //                           style: TextStyle(
+                      //                             fontSize: 14,
+                      //                             fontFamily: 'Medium',
+                      //                           ),
+                      //                         ),
+                      //                         Icon(
+                      //                           Icons.assignment_rounded,
+                      //                         ),
+                      //                       ],
+                      //                     ),
+                      //                   ),
+                      //                 );
+                      //               },
+                      //             ),
+                      //           ),
+                      //           widget.assignmentTitles.length > 4
+                      //               ? Padding(
+                      //                   padding:
+                      //                       const EdgeInsets.only(left: 10),
+                      //                   child: TextButton(
+                      //                     onPressed: () {
+                      //                       setState(() {
+                      //                         showSec2 = !showSec2;
+                      //                       });
+                      //                     },
+                      //                     child: !showSec2
+                      //                         ? Text('Show more')
+                      //                         : Text('Show less'),
+                      //                   ),
+                      //                 )
+                      //               : Container(),
+                      //         ],
+                      //       )
+                      //     : Container(),
+                      // index == 2
+                      //     ? Column(
+                      //         crossAxisAlignment: CrossAxisAlignment.start,
+                      //         children: [
+                      //           Container(
+                      //             height: showSec3 ? null : 200,
+                      //             child: ListView.builder(
+                      //               physics: NeverScrollableScrollPhysics(),
+                      //               shrinkWrap: true,
+                      //               itemCount: widget.quizTitles.length,
+                      //               itemBuilder: (context, index) {
+                      //                 return Container(
+                      //                   decoration: BoxDecoration(
+                      //                     borderRadius:
+                      //                         BorderRadius.circular(0),
+                      //                     color: Colors.white,
+                      //                   ),
+                      //                   child: Padding(
+                      //                     padding: const EdgeInsets.all(15.0),
+                      //                     child: Row(
+                      //                       mainAxisAlignment:
+                      //                           MainAxisAlignment.spaceBetween,
+                      //                       children: [
+                      //                         Text(
+                      //                           '${index + 1}. ${widget.quizTitles[index]}',
+                      //                           style: TextStyle(
+                      //                             fontSize: 14,
+                      //                             fontFamily: 'Medium',
+                      //                           ),
+                      //                         ),
+                      //                         Icon(Icons.quiz),
+                      //                       ],
+                      //                     ),
+                      //                   ),
+                      //                 );
+                      //               },
+                      //             ),
+                      //           ),
+                      //           widget.quizTitles.length > 4
+                      //               ? Padding(
+                      //                   padding:
+                      //                       const EdgeInsets.only(left: 10),
+                      //                   child: TextButton(
+                      //                     onPressed: () {
+                      //                       setState(() {
+                      //                         showSec3 = !showSec3;
+                      //                       });
+                      //                     },
+                      //                     child: !showSec3
+                      //                         ? Text('Show more')
+                      //                         : Text('Show less'),
+                      //                   ),
+                      //                 )
+                      //               : Container(),
+                      //         ],
+                      //       )
+                      //     : Container(),
+                      // index == 3
+                      //     ? Column(
+                      //         crossAxisAlignment: CrossAxisAlignment.start,
+                      //         children: [
+                      //           Container(
+                      //             height: showSec4 ? null : 200,
+                      //             child: ListView.builder(
+                      //               physics: NeverScrollableScrollPhysics(),
+                      //               shrinkWrap: true,
+                      //               itemCount: widget.interviewQuestions.length,
+                      //               itemBuilder: (context, index) {
+                      //                 return Container(
+                      //                   decoration: BoxDecoration(
+                      //                     borderRadius:
+                      //                         BorderRadius.circular(0),
+                      //                     color: Colors.white,
+                      //                   ),
+                      //                   child: Padding(
+                      //                     padding: const EdgeInsets.all(15.0),
+                      //                     child: Row(
+                      //                       mainAxisAlignment:
+                      //                           MainAxisAlignment.spaceBetween,
+                      //                       children: [
+                      //                         Text(
+                      //                           '${index + 1}. ${widget.interviewQuestions[index]}',
+                      //                           style: TextStyle(
+                      //                             fontSize: 14,
+                      //                             fontFamily: 'Medium',
+                      //                           ),
+                      //                         ),
+                      //                         Icon(Icons.question_answer),
+                      //                       ],
+                      //                     ),
+                      //                   ),
+                      //                 );
+                      //               },
+                      //             ),
+                      //           ),
+                      //           widget.interviewQuestions.length > 4
+                      //               ? Padding(
+                      //                   padding:
+                      //                       const EdgeInsets.only(left: 10),
+                      //                   child: TextButton(
+                      //                     onPressed: () {
+                      //                       setState(() {
+                      //                         showSec3 = !showSec3;
+                      //                       });
+                      //                     },
+                      //                     child: !showSec4
+                      //                         ? Text('Show more')
+                      //                         : Text('Show less'),
+                      //                   ),
+                      //                 )
+                      //               : Container(),
+                      //         ],
+                      //       )
+                      //     : Container(),
                       // TextButton(
                       //   onPressed: () {
                       //     setState(() {
