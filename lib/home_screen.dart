@@ -5,7 +5,6 @@ import 'package:cloudyml_app2/course.dart';
 import 'package:cloudyml_app2/globals.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:page_transition/page_transition.dart';
 
 import 'catalogue_screen.dart';
@@ -107,7 +106,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     fetchCourses();
     dbCheckerForPayInParts();
@@ -116,7 +114,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var math;
     return Scaffold(
         // appBar: AppBar(title:Text('My Courses'),elevation: 0,centerTitle: true,),
         //   backgroundColor: Colors.white,
@@ -368,6 +365,179 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                       ),
                                     ),
+                                    map['combo']
+                                        ? Stack(
+                                            children: [
+                                              Positioned(
+                                                top: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.51,
+                                                left: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.05,
+                                                child: Container(
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.15,
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.08,
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                    color: Color(0xFF7860DC),
+                                                  ),
+                                                  child: Center(
+                                                    child: Text(
+                                                      'COMBO',
+                                                      style: const TextStyle(
+                                                        fontFamily: 'Bold',
+                                                        fontSize: 13,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              statusOfPayInParts(map['id'])
+                                                  ? Positioned(
+                                                      top:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
+                                                              0.41,
+                                                      left:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
+                                                              0.05,
+                                                      child: Container(
+                                                        // width: MediaQuery.of(
+                                                        //             context)
+                                                        //         .size
+                                                        //         .width *
+                                                        //     0.45,
+                                                        child:
+                                                            !navigateToCatalogueScreen(
+                                                                    map['id'])
+                                                                ? Container(
+                                                                    // width: MediaQuery.of(context)
+                                                                    //         .size
+                                                                    //         .width *
+                                                                    //     0.3,
+                                                                    height: MediaQuery.of(context)
+                                                                            .size
+                                                                            .width *
+                                                                        0.08,
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              10),
+                                                                      color: Color(
+                                                                          0xFFC0AAF5),
+                                                                    ),
+                                                                    child: Row(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .spaceEvenly,
+                                                                      children: [
+                                                                        SizedBox(
+                                                                          width:
+                                                                              10,
+                                                                        ),
+                                                                        Text(
+                                                                          'Access ends in days : ',
+                                                                          style: TextStyle(
+                                                                              color: Colors.white,
+                                                                              fontSize: 13,
+                                                                              fontWeight: FontWeight.bold),
+                                                                        ),
+                                                                        Container(
+                                                                          decoration: BoxDecoration(
+                                                                              borderRadius: BorderRadius.circular(10),
+                                                                              color: Colors.grey.shade100),
+                                                                          width:
+                                                                              30,
+                                                                          height:
+                                                                              30,
+                                                                          // color:
+                                                                          //     Color(0xFFaefb2a),
+                                                                          child:
+                                                                              Center(
+                                                                            child:
+                                                                                Text(
+                                                                              '${(DateTime.parse(userMap['payInPartsDetails'][map['id']]['endDateOfLimitedAccess']).difference(DateTime.now()).inDays)}',
+                                                                              style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold
+                                                                                  // fontSize: 16,
+                                                                                  ),
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  )
+                                                                : Positioned(
+                                                                    top: MediaQuery.of(context)
+                                                                            .size
+                                                                            .width *
+                                                                        0.41,
+                                                                    left: MediaQuery.of(context)
+                                                                            .size
+                                                                            .width *
+                                                                        0.05,
+                                                                    child:
+                                                                        Container(
+                                                                      height: MediaQuery.of(context)
+                                                                              .size
+                                                                              .width *
+                                                                          0.08,
+                                                                      decoration:
+                                                                          BoxDecoration(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(10),
+                                                                        color: Color(
+                                                                            0xFFC0AAF5),
+                                                                      ),
+                                                                      child:
+                                                                          Center(
+                                                                        child:
+                                                                            Text(
+                                                                          'Limited access expired !',
+                                                                          style:
+                                                                              TextStyle(
+                                                                            color:
+                                                                                Colors.deepOrange[600],
+                                                                            fontSize:
+                                                                                13,
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                      ),
+                                                    )
+                                                  : Positioned(
+                                                      child: Container(
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.45,
+                                                      ),
+                                                    ),
+                                            ],
+                                          )
+                                        : Positioned(
+                                            child: Container(),
+                                          ),
                                   ],
                                 ),
                               ),
@@ -443,8 +613,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          const CatelogueScreen()),
+                                    builder: (context) =>
+                                        const CatelogueScreen(),
+                                  ),
                                 );
                               }
                             },
@@ -460,6 +631,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(25),
                                     color: Color(0xFFE9E1FC),
+                                    // boxShadow: [
+                                    //   BoxShadow(
+                                    //       color: Color.fromRGBO(
+                                    //           29, 28, 30, 0.30000001192092896),
+                                    //       offset: Offset(2, 2),
+                                    //       // spreadRadius: 5,
+                                    //       blurStyle: BlurStyle.outer,
+                                    //       blurRadius: 35)
+                                    // ],
                                   ),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
@@ -532,10 +712,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 overflow: TextOverflow.ellipsis,
                                               ),
                                             ),
-
-                                            // SizedBox(
-                                            //   height: 10,
-                                            // ),
+                                            SizedBox(
+                                              height: 5,
+                                            ),
                                             Container(
                                               width: MediaQuery.of(context)
                                                       .size
@@ -581,32 +760,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 ],
                                               ),
                                             ),
-                                            // SizedBox(
-                                            //   height: 12,
-                                            // ),
-                                            // SizedBox(
-                                            //   height: 5,
-                                            // ),
-                                            // Text(
-                                            //   'Instructor : ${map['created by']}',
-                                            //   style: TextStyle(
-                                            //     fontSize: 12,
-                                            //     fontFamily: 'Medium',
-                                            //   ),
-                                            // ),
-                                            // SizedBox(
-                                            //   height: 5,
-                                            // ),
-                                            // Text(
-                                            //     'Mentors: ${map['mentors']}'),
-                                            // SizedBox(
-                                            //   height: 5,
-                                            // ),
-                                            // !map['combo']
-                                            //     ? Text(
-                                            //         '${map['curriculum']['videoTitle'].length} Lectures-${map['curriculum']['assignmentTitle'].length} assignments-${map['curriculum']['quizTitle'].length} quizzes')
-                                            //     : Text(
-                                            //         '${map['courses'].length} courses'),
                                             SizedBox(
                                               height: 5,
                                             ),
@@ -617,12 +770,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   color: Color(0xFF6E5BD9),
                                                   fontSize: 17),
                                             ),
-                                            SizedBox(
-                                              width: 10,
-                                            ),
-                                            SizedBox(
-                                              height: 5,
-                                            ),
+                                            // SizedBox(
+                                            //   width: 40,
+                                            // ),
                                           ],
                                         ),
                                       ),

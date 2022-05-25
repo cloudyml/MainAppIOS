@@ -56,7 +56,7 @@ class _ComboCourseState extends State<ComboCourse> {
     if (userMap['payInPartsDetails'][id] != null) {
       return userMap['payInPartsDetails'][id]['outStandingAmtPaid'];
     } else {
-      return false;
+      return true;
     }
   }
 
