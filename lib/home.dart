@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloudyml_app2/aboutus.dart';
 import 'package:cloudyml_app2/authentication/firebase_auth.dart';
-import 'package:cloudyml_app2/my_courses.dart';
 import 'package:cloudyml_app2/newhome.dart';
 import 'package:cloudyml_app2/payments_history.dart';
 import 'package:cloudyml_app2/globals.dart';
