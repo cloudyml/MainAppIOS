@@ -48,6 +48,7 @@ class _VideoScreenState extends State<VideoScreen> {
   Duration? _duration;
   Duration? _position;
   bool switchTOAssignment = false;
+  bool showAssignSol = false;
 
   var _delayToInvokeonControlUpdate = 0;
   var _progress = 0.0;
@@ -131,7 +132,6 @@ class _VideoScreenState extends State<VideoScreen> {
 
   Widget progressIndicator() {
     return Positioned(
-      // top:0,
       bottom: 27,
       left: 0,
       right: 0,
@@ -155,11 +155,6 @@ class _VideoScreenState extends State<VideoScreen> {
             tickMarkShape: RoundSliderTickMarkShape(),
             activeTickMarkColor: Color(0xFFC0AAF5),
             inactiveTickMarkColor: Color(0xFFDDD2FB),
-            // valueIndicatorShape: PaddleSliderValueIndicatorShape(),
-            // valueIndicatorColor: Colors.white,
-            // valueIndicatorTextStyle: TextStyle(
-            //   color: Colors.white,
-            // ),
           ),
           child: Slider(
             value: max(0, min(_progress * 100, 100)),
@@ -390,7 +385,7 @@ class _VideoScreenState extends State<VideoScreen> {
                             AsyncSnapshot<dynamic> snapshot) {
                           if (ConnectionState.done ==
                               snapshot.connectionState) {
-                            return !switchTOAssignment
+                            return !showAssignSol
                                 ? Stack(
                                     children: [
                                       Center(
@@ -545,6 +540,7 @@ class _VideoScreenState extends State<VideoScreen> {
                                     onTap: () {
                                       setState(() {
                                         switchTOAssignment = false;
+                                        showAssignSol = false;
                                       });
                                     },
                                     child: Container(
@@ -578,6 +574,7 @@ class _VideoScreenState extends State<VideoScreen> {
                                     onTap: () {
                                       setState(() {
                                         switchTOAssignment = true;
+                                        showAssignSol = true;
                                       });
                                     },
                                     child: Container(
@@ -760,6 +757,8 @@ class _VideoScreenState extends State<VideoScreen> {
                                 playSolVideo: () {
                                   setState(() {
                                     showAssignment = false;
+                                    showAssignSol = false;
+                                    // switchTOAssignment = false;
                                   });
                                   intializeVidController(assignVideoUrl!);
                                 },

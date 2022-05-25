@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloudyml_app2/aboutus.dart';
 import 'package:cloudyml_app2/authentication/firebase_auth.dart';
+import 'package:cloudyml_app2/my_courses.dart';
 import 'package:cloudyml_app2/newhome.dart';
 import 'package:cloudyml_app2/payments_history.dart';
 import 'package:cloudyml_app2/globals.dart';
@@ -31,12 +32,7 @@ class _HomePageState extends State<HomePage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   int? _selectedIndex = 0;
   bool openPaymentHistory = false;
-  List<Widget> screens = [
-    Home(),
-    Store(),
-    VideoScreenOffline(),
-    GroupsList()
-  ];
+  List<Widget> screens = [Home(), Store(), VideoScreenOffline(), GroupsList()];
   List<String> titles = [
     'Home',
     'Store',
@@ -66,7 +62,7 @@ class _HomePageState extends State<HomePage> {
         ),
         elevation: 0,
         backgroundColor: Colors.white,
-        title:  openPaymentHistory
+        title: openPaymentHistory
             ? Text(
                 'Payment History',
                 style: TextStyle(fontFamily: 'SemiBold', color: Colors.black),
@@ -77,7 +73,7 @@ class _HomePageState extends State<HomePage> {
               ),
       ),
       body: PageView.builder(itemBuilder: (ctx, index) {
-       if (openPaymentHistory) {
+        if (openPaymentHistory) {
           return PaymentHistory();
         } else {
           return screens[_selectedIndex!];
@@ -196,13 +192,12 @@ class _HomePageState extends State<HomePage> {
                     // ),
                     OutlinedButton(
                         onPressed: () {
-                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const PaymentHistory()),
-                            );
-                         
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const PaymentHistory()),
+                          );
+
                           // print(openPaymentHistory);
                           // setState(() {
                           //   openPaymentHistory = true;
@@ -251,21 +246,22 @@ class _HomePageState extends State<HomePage> {
                     //       color: Colors.black),
                     // ),
                     OutlinedButton(
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const HomeScreen()),
-                            );
-                        },
-                        child: Text(
-                          'My Courses',
-                          style: TextStyle(
-                              fontFamily: 'Medium',
-                              fontSize: 18,
-                              color: Colors.black),
-                        ))
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => HomeScreen(),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        'My Courses',
+                        style: TextStyle(
+                            fontFamily: 'Medium',
+                            fontSize: 18,
+                            color: Colors.black),
+                      ),
+                    )
                   ],
                 ),
               ),
@@ -327,11 +323,10 @@ class _HomePageState extends State<HomePage> {
                     OutlinedButton(
                         onPressed: () {
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const PrivacyPolicy()),
-                            );
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const PrivacyPolicy()),
+                          );
                         },
                         child: Text(
                           'Privacy Policy',
@@ -420,11 +415,9 @@ class _HomePageState extends State<HomePage> {
                     OutlinedButton(
                         onPressed: () {
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                       AboutUs()),
-                            );
+                            context,
+                            MaterialPageRoute(builder: (context) => AboutUs()),
+                          );
                         },
                         child: Text(
                           'About Us',
@@ -608,7 +601,7 @@ class _HomePageState extends State<HomePage> {
             onTap: (int index) {
               setState(() {
                 _selectedIndex = index;
-                 openPaymentHistory = false;
+                openPaymentHistory = false;
               });
             },
             currentIndex: _selectedIndex!,

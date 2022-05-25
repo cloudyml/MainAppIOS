@@ -165,9 +165,6 @@ class _CurriculamState extends State<Curriculam> {
                                                     .get()
                                                     .then((value) {
                                                   modId = value.docs[0].id;
-                                                  // setState(() {
-                                                  //   // modId = value.docs[0].id;
-                                                  // });
                                                 });
                                                 print(modId);
                                                 Map<String, dynamic>?
