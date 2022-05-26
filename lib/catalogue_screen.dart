@@ -18,7 +18,7 @@ class CatelogueScreen extends StatefulWidget {
   const CatelogueScreen({Key? key}) : super(key: key);
   static ValueNotifier<String> coursePrice = ValueNotifier('');
   static ValueNotifier<Map<String, dynamic>>? map = ValueNotifier({});
-
+  static ValueNotifier<double> _currentPosition = ValueNotifier<double>(0.0);
   @override
   State<CatelogueScreen> createState() => _CatelogueScreenState();
 }
@@ -67,6 +67,7 @@ class _CatelogueScreenState extends State<CatelogueScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    _scrollController.addListener(_scrollListener);
   }
 
   void _scrollListener() {
@@ -75,15 +76,16 @@ class _CatelogueScreenState extends State<CatelogueScreen>
     // double y = position.dy;
     // print(y);
     print(_scrollController.position.pixels);
-    // print(k);
-    if (_scrollController.position.pixels > 0.0 &&
-            _scrollController.position.pixels < 520
-        // _scrollController.position.pixels < y
-        ) {
-      showBottomSheet.value = true;
-    } else {
-      showBottomSheet.value = false;
-    }
+    // // print(k);
+    // if (_scrollController.position.pixels > 0.0 &&
+    //         _scrollController.position.pixels < 520
+    //     // _scrollController.position.pixels < y
+    //     ) {
+    //   showBottomSheet.value = true;
+    // } else {
+    //   showBottomSheet.value = false;
+    // }
+    CatelogueScreen._currentPosition.value = _scrollController.position.pixels;
     // _scrollController.removeListener(_scrollListener);
   }
 
@@ -104,456 +106,447 @@ class _CatelogueScreenState extends State<CatelogueScreen>
     size = MediaQuery.of(context).size;
     height = size.height;
     width = size.width;
-    _scrollController.addListener(_scrollListener);
-    return ValueListenableBuilder(
-      valueListenable: showBottomSheet,
-      builder: (BuildContext context, bool value, Widget? child) {
-        return Scaffold(
-          appBar: AppBar(
-            backgroundColor: Colors.white,
-            elevation: 0,
-            leading: InkWell(
-              onTap: () {
-                Navigator.of(context).pop();
-                // print('Check');
-              },
-              child: Padding(
-                padding: EdgeInsets.only(left: 15.0, bottom: 20),
-                child: Icon(
-                  Icons.arrow_back,
-                  color: Colors.black,
-                ),
-              ),
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: InkWell(
+          onTap: () {
+            Navigator.of(context).pop();
+            // print('Check');
+          },
+          child: Padding(
+            padding: EdgeInsets.only(left: 15.0, bottom: 20),
+            child: Icon(
+              Icons.arrow_back,
+              color: Colors.black,
             ),
           ),
-          bottomSheet: value ? PayNowBottomSheet() : null,
-          backgroundColor: Colors.white,
-          body: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 10),
-              Expanded(
-                  child: StreamBuilder<QuerySnapshot>(
-                stream: FirebaseFirestore.instance
-                    .collection("courses")
-                    .snapshots(),
-                builder: (BuildContext context,
-                    AsyncSnapshot<QuerySnapshot> snapshot) {
-                  if (!snapshot.hasData) return const SizedBox.shrink();
-                  return ListView.builder(
-                    controller: _scrollController,
-                    itemCount: snapshot.data!.docs.length,
-                    itemBuilder: (BuildContext context, index) {
-                      DocumentSnapshot document = snapshot.data!.docs[index];
-                      Map<String, dynamic> map = snapshot.data!.docs[index]
-                          .data() as Map<String, dynamic>;
-                      if (map["name"].toString() == "null") {
-                        return Container();
-                      }
-                      if (document.id == courseId) {
-                        CatelogueScreen.coursePrice.value = map['Course Price'];
-                        CatelogueScreen.map!.value = map;
-                        return Stack(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 00.0, right: 18, left: 18, bottom: 10),
-                              child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    SingleChildScrollView(
-                                      child: Column(
+        ),
+      ),
+      bottomSheet: PayNowBottomSheet(),
+      backgroundColor: Colors.white,
+      body: Column(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(height: 10),
+          Expanded(
+              child: StreamBuilder<QuerySnapshot>(
+            stream:
+                FirebaseFirestore.instance.collection("courses").snapshots(),
+            builder:
+                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (!snapshot.hasData) return const SizedBox.shrink();
+              return ListView.builder(
+                controller: _scrollController,
+                itemCount: snapshot.data!.docs.length,
+                itemBuilder: (BuildContext context, index) {
+                  DocumentSnapshot document = snapshot.data!.docs[index];
+                  Map<String, dynamic> map =
+                      snapshot.data!.docs[index].data() as Map<String, dynamic>;
+                  if (map["name"].toString() == "null") {
+                    return Container();
+                  }
+                  if (document.id == courseId) {
+                    CatelogueScreen.coursePrice.value = map['Course Price'];
+                    CatelogueScreen.map!.value = map;
+                    return Stack(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              top: 00.0, right: 18, left: 18, bottom: 10),
+                          child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                SingleChildScrollView(
+                                  child: Column(
+                                    children: [
+                                      Row(
                                         children: [
-                                          Row(
+                                          ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(28),
+                                            child: Container(
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.12,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.12,
+                                              child: Image.network(
+                                                map['image_url'],
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: 20,
+                                          ),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
-                                              ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(28),
-                                                child: Container(
-                                                  height: MediaQuery.of(context)
-                                                          .size
-                                                          .height *
-                                                      0.12,
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .height *
-                                                      0.12,
-                                                  child: Image.network(
-                                                    map['image_url'],
-                                                    fit: BoxFit.cover,
-                                                  ),
+                                              Container(
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.58,
+                                                child: Text(
+                                                  map['name'],
+                                                  style: TextStyle(
+                                                      fontFamily: 'Bold',
+                                                      color: Colors.black,
+                                                      fontSize: 24),
                                                 ),
                                               ),
                                               SizedBox(
-                                                width: 20,
+                                                height: 10,
                                               ),
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Container(
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width *
-                                                            0.58,
-                                                    child: Text(
-                                                      map['name'],
-                                                      style: TextStyle(
-                                                          fontFamily: 'Bold',
-                                                          color: Colors.black,
-                                                          fontSize: 24),
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 10,
-                                                  ),
-                                                  Container(
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width *
-                                                            0.58,
-                                                    child: Text(
-                                                      map['description'],
-                                                      style: TextStyle(
-                                                          fontFamily: 'Regular',
-                                                          color: Colors.black,
-                                                          fontSize: 14),
-                                                    ),
-                                                  ),
-                                                ],
+                                              Container(
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.58,
+                                                child: Text(
+                                                  map['description'],
+                                                  style: TextStyle(
+                                                      fontFamily: 'Regular',
+                                                      color: Colors.black,
+                                                      fontSize: 14),
+                                                ),
                                               ),
                                             ],
                                           ),
                                         ],
                                       ),
-                                    ),
-                                    SizedBox(
-                                      height: 65,
-                                    ),
-                                    Container(
-                                      key: positionKey,
-                                      child: Curriculam(
-                                        map: map,
-                                      ),
-                                    ),
-                                    // Container(
-                                    //   key: key,
-                                    //   child: Text(
-                                    //     "PRICE DETAILS",
-                                    //     style: TextStyle(
-                                    //       fontFamily: 'Bold',
-                                    //       fontSize: 18,
-                                    //     ),
-                                    //   ),
-                                    // ),
-                                    // SizedBox(
-                                    //   height: 25,
-                                    // ),
-                                    // Align(
-                                    //   alignment: Alignment.topLeft,
-                                    //   child: Text(
-                                    //     'Coupon code',
-                                    //     style: TextStyle(fontFamily: 'Medium'),
-                                    //   ),
-                                    // ),
-                                    // TextField(
-                                    //   enabled: NoCouponApplied ? true : false,
-                                    //   controller: couponCodeController,
-                                    //   style: TextStyle(
-                                    //     fontSize: 16,
-                                    //     letterSpacing: 1.2,
-                                    //     fontFamily: 'Medium',
-                                    //   ),
-                                    //   decoration: InputDecoration(
-                                    //     suffixIcon: TextButton(
-                                    //       child: Text(
-                                    //         'Apply',
-                                    //         style: TextStyle(
-                                    //           color: Color(0xFFaefb2a),
-                                    //           fontFamily: 'Medium',
-                                    //           fontSize: 18,
-                                    //         ),
-                                    //       ),
-                                    //       onPressed: () {
-                                    //         setState(() {
-                                    //           NoCouponApplied =
-                                    //               whetherCouponApplied(
-                                    //             couponCodeText:
-                                    //                 couponCodeController.text,
-                                    //           );
-                                    //           couponAppliedResponse =
-                                    //               whenCouponApplied(
-                                    //             couponCodeText:
-                                    //                 couponCodeController.text,
-                                    //           );
-                                    //           finalamountToDisplay =
-                                    //               amountToDisplayAfterCCA(
-                                    //             amountPayable:
-                                    //                 map['Amount Payable'],
-                                    //             couponCodeText:
-                                    //                 couponCodeController.text,
-                                    //           );
-                                    //           finalAmountToPay =
-                                    //               amountToPayAfterCCA(
-                                    //             couponCodeText:
-                                    //                 couponCodeController.text,
-                                    //             amountPayable:
-                                    //                 map['Amount Payable'],
-                                    //           );
-                                    //           discountedPrice =
-                                    //               discountAfterCCA(
-                                    //                   couponCodeText:
-                                    //                       couponCodeController
-                                    //                           .text,
-                                    //                   amountPayable: map[
-                                    //                       'Amount Payable']);
-                                    //         });
-                                    //         print('Button working');
-                                    //       },
-                                    //     ),
-                                    //     fillColor: Colors.grey.shade100,
-                                    //     filled: true,
-                                    //     suffixIconConstraints: BoxConstraints(
-                                    //         maxHeight: 50, minWidth: 100),
-                                    //     // contentPadding: EdgeInsets.symmetric(horizontal: 0.0,vertical: 0),
-                                    //     enabledBorder: InputBorder.none,
-                                    //     focusedBorder: InputBorder.none,
-                                    //     disabledBorder: InputBorder.none,
-                                    //   ),
-                                    // ),
-                                    // Align(
-                                    //   alignment: Alignment.bottomLeft,
-                                    //   child: Text(
-                                    //     couponAppliedResponse,
-                                    //     style: TextStyle(
-                                    //       color: Colors.deepOrange,
-                                    //     ),
-                                    //   ),
-                                    // ),
-                                    // SizedBox(
-                                    //   height: 15,
-                                    // ),
-                                    // Padding(
-                                    //   padding: const EdgeInsets.only(
-                                    //       top: 20.0, bottom: 10, right: 18),
-                                    //   child: Row(
-                                    //     mainAxisAlignment:
-                                    //         MainAxisAlignment.spaceBetween,
-                                    //     children: [
-                                    //       Text(
-                                    //         "Course Price",
-                                    //         style: TextStyle(
-                                    //           fontFamily: 'Medium',
-                                    //           fontSize: 18,
-                                    //         ),
-                                    //       ),
-                                    //       Text(
-                                    //         map["Course Price"],
-                                    //         style: TextStyle(
-                                    //           fontFamily: 'Medium',
-                                    //           fontSize: 15,
-                                    //         ),
-                                    //       ),
-                                    //     ],
-                                    //   ),
-                                    // ),
-                                    // Padding(
-                                    //   padding: const EdgeInsets.only(
-                                    //       top: 5.0, bottom: 10, right: 18),
-                                    //   child: Row(
-                                    //     mainAxisAlignment:
-                                    //         MainAxisAlignment.spaceBetween,
-                                    //     children: [
-                                    //       Text(
-                                    //         "Discount",
-                                    //         style: TextStyle(
-                                    //           fontFamily: 'Medium',
-                                    //           fontSize: 18,
-                                    //         ),
-                                    //       ),
-                                    //       Text(
-                                    //         NoCouponApplied
-                                    //             ? '₹${map["Discount"]} /-'
-                                    //             : discountedPrice,
-                                    //         style: TextStyle(
-                                    //           fontFamily: 'Medium',
-                                    //           fontSize: 15,
-                                    //         ),
-                                    //       ),
-                                    //     ],
-                                    //   ),
-                                    // ),
-                                    // Divider(
-                                    //   height: 20,
-                                    //   thickness: 1,
-                                    //   indent: 0,
-                                    //   endIndent: 0,
-                                    //   color: Colors.black.withOpacity(0.5),
-                                    // ),
-                                    // Padding(
-                                    //   padding: const EdgeInsets.only(
-                                    //       top: 5.0, bottom: 10, right: 18),
-                                    //   child: Row(
-                                    //     mainAxisAlignment:
-                                    //         MainAxisAlignment.spaceBetween,
-                                    //     children: [
-                                    //       const Text(
-                                    //         "Amount Payable",
-                                    //         style: TextStyle(
-                                    //           fontFamily: 'Medium',
-                                    //           fontSize: 15,
-                                    //         ),
-                                    //       ),
-                                    //       Container(
-                                    //         decoration: BoxDecoration(
-                                    //             borderRadius:
-                                    //                 BorderRadius.circular(30),
-                                    //             color: Colors.grey.shade300),
-                                    //         child: Center(
-                                    //           child: Padding(
-                                    //             padding:
-                                    //                 const EdgeInsets.all(14.0),
-                                    //             child: Text(
-                                    //               NoCouponApplied
-                                    //                   ? '₹${map["Amount Payable"]} /-'
-                                    //                   : finalamountToDisplay,
-                                    //               style: TextStyle(
-                                    //                 fontFamily: 'Medium',
-                                    //                 fontSize: 10,
-                                    //               ),
-                                    //             ),
-                                    //           ),
-                                    //         ),
-                                    //       ),
-                                    //     ],
-                                    //   ),
-                                    // ),
-                                    // SizedBox(
-                                    //   height: 60,
-                                    // ),
-                                    // // map['demo'] == true
-                                    // //     ? InkWell(
-                                    // //         onTap: () {
-                                    // //           Navigator.push(
-                                    // //             context,
-                                    // //             PageTransition(
-                                    // //                 duration: Duration(
-                                    // //                     milliseconds: 400),
-                                    // //                 curve: Curves.bounceInOut,
-                                    // //                 type: PageTransitionType
-                                    // //                     .rightToLeft,
-                                    // //                 child: DemoCourse()),
-                                    // //           );
-                                    // //         },
-                                    // //         child: Container(
-                                    // //           //try demo button
-                                    // //           height: height * .06,
-                                    // //           width: width * .85,
-                                    // //           color: Colors.transparent,
-                                    // //           child: Container(
-                                    // //               decoration: BoxDecoration(
-                                    // //                   gradient: gradient,
-                                    // //                   borderRadius:
-                                    // //                       BorderRadius.all(
-                                    // //                           Radius.circular(
-                                    // //                               50.0))),
-                                    // //               child: const Center(
-                                    // //                 child: Text(
-                                    // //                   "Try Demo",
-                                    // //                   style: TextStyle(
-                                    // //                       fontFamily: 'Bold',
-                                    // //                       fontSize: 15,
-                                    // //                       fontWeight:
-                                    // //                           FontWeight.bold),
-                                    // //                   textAlign:
-                                    // //                       TextAlign.center,
-                                    // //                 ),
-                                    // //               )),
-                                    // //         ),
-                                    // //       )
-                                    // //     : Container(),
-                                    // SizedBox(
-                                    //   height: 20,
-                                    // ),
-                                    // PaymentButton(
-                                    //   amountString: (double.parse(
-                                    //               NoCouponApplied
-                                    //                   ? map['Amount_Payablepay']
-                                    //                   : finalAmountToPay) *
-                                    //           100)
-                                    //       .toString(),
-                                    //   buttonText:
-                                    //       "Buy Now for ${map['Course Price']}",
-                                    //   buttonTextForCode:
-                                    //       "Buy Now for $finalamountToDisplay",
-                                    //   changeState: () {
-                                    //     setState(() {
-                                    //       isPayButtonPressed =
-                                    //           !isPayButtonPressed;
-                                    //     });
-                                    //   },
-                                    //   courseDescription: map['description'],
-                                    //   courseName: map['name'],
-                                    //   isPayButtonPressed: isPayButtonPressed,
-                                    //   NoCouponApplied: NoCouponApplied,
-                                    //   // razorpay: _razorpay,
-                                    //   scrollController: _scrollController,
-                                    //   updateCourseIdToCouponDetails: () {
-                                    //     void addCourseId() {
-                                    //       setState(() {
-                                    //         id = map['id'];
-                                    //       });
-                                    //     }
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 65,
+                                ),
+                                Container(
+                                  key: positionKey,
+                                  child: Curriculam(
+                                    map: map,
+                                  ),
+                                ),
+                                // Container(
+                                //   key: key,
+                                //   child: Text(
+                                //     "PRICE DETAILS",
+                                //     style: TextStyle(
+                                //       fontFamily: 'Bold',
+                                //       fontSize: 18,
+                                //     ),
+                                //   ),
+                                // ),
+                                // SizedBox(
+                                //   height: 25,
+                                // ),
+                                // Align(
+                                //   alignment: Alignment.topLeft,
+                                //   child: Text(
+                                //     'Coupon code',
+                                //     style: TextStyle(fontFamily: 'Medium'),
+                                //   ),
+                                // ),
+                                // TextField(
+                                //   enabled: NoCouponApplied ? true : false,
+                                //   controller: couponCodeController,
+                                //   style: TextStyle(
+                                //     fontSize: 16,
+                                //     letterSpacing: 1.2,
+                                //     fontFamily: 'Medium',
+                                //   ),
+                                //   decoration: InputDecoration(
+                                //     suffixIcon: TextButton(
+                                //       child: Text(
+                                //         'Apply',
+                                //         style: TextStyle(
+                                //           color: Color(0xFFaefb2a),
+                                //           fontFamily: 'Medium',
+                                //           fontSize: 18,
+                                //         ),
+                                //       ),
+                                //       onPressed: () {
+                                //         setState(() {
+                                //           NoCouponApplied =
+                                //               whetherCouponApplied(
+                                //             couponCodeText:
+                                //                 couponCodeController.text,
+                                //           );
+                                //           couponAppliedResponse =
+                                //               whenCouponApplied(
+                                //             couponCodeText:
+                                //                 couponCodeController.text,
+                                //           );
+                                //           finalamountToDisplay =
+                                //               amountToDisplayAfterCCA(
+                                //             amountPayable:
+                                //                 map['Amount Payable'],
+                                //             couponCodeText:
+                                //                 couponCodeController.text,
+                                //           );
+                                //           finalAmountToPay =
+                                //               amountToPayAfterCCA(
+                                //             couponCodeText:
+                                //                 couponCodeController.text,
+                                //             amountPayable:
+                                //                 map['Amount Payable'],
+                                //           );
+                                //           discountedPrice =
+                                //               discountAfterCCA(
+                                //                   couponCodeText:
+                                //                       couponCodeController
+                                //                           .text,
+                                //                   amountPayable: map[
+                                //                       'Amount Payable']);
+                                //         });
+                                //         print('Button working');
+                                //       },
+                                //     ),
+                                //     fillColor: Colors.grey.shade100,
+                                //     filled: true,
+                                //     suffixIconConstraints: BoxConstraints(
+                                //         maxHeight: 50, minWidth: 100),
+                                //     // contentPadding: EdgeInsets.symmetric(horizontal: 0.0,vertical: 0),
+                                //     enabledBorder: InputBorder.none,
+                                //     focusedBorder: InputBorder.none,
+                                //     disabledBorder: InputBorder.none,
+                                //   ),
+                                // ),
+                                // Align(
+                                //   alignment: Alignment.bottomLeft,
+                                //   child: Text(
+                                //     couponAppliedResponse,
+                                //     style: TextStyle(
+                                //       color: Colors.deepOrange,
+                                //     ),
+                                //   ),
+                                // ),
+                                // SizedBox(
+                                //   height: 15,
+                                // ),
+                                // Padding(
+                                //   padding: const EdgeInsets.only(
+                                //       top: 20.0, bottom: 10, right: 18),
+                                //   child: Row(
+                                //     mainAxisAlignment:
+                                //         MainAxisAlignment.spaceBetween,
+                                //     children: [
+                                //       Text(
+                                //         "Course Price",
+                                //         style: TextStyle(
+                                //           fontFamily: 'Medium',
+                                //           fontSize: 18,
+                                //         ),
+                                //       ),
+                                //       Text(
+                                //         map["Course Price"],
+                                //         style: TextStyle(
+                                //           fontFamily: 'Medium',
+                                //           fontSize: 15,
+                                //         ),
+                                //       ),
+                                //     ],
+                                //   ),
+                                // ),
+                                // Padding(
+                                //   padding: const EdgeInsets.only(
+                                //       top: 5.0, bottom: 10, right: 18),
+                                //   child: Row(
+                                //     mainAxisAlignment:
+                                //         MainAxisAlignment.spaceBetween,
+                                //     children: [
+                                //       Text(
+                                //         "Discount",
+                                //         style: TextStyle(
+                                //           fontFamily: 'Medium',
+                                //           fontSize: 18,
+                                //         ),
+                                //       ),
+                                //       Text(
+                                //         NoCouponApplied
+                                //             ? '₹${map["Discount"]} /-'
+                                //             : discountedPrice,
+                                //         style: TextStyle(
+                                //           fontFamily: 'Medium',
+                                //           fontSize: 15,
+                                //         ),
+                                //       ),
+                                //     ],
+                                //   ),
+                                // ),
+                                // Divider(
+                                //   height: 20,
+                                //   thickness: 1,
+                                //   indent: 0,
+                                //   endIndent: 0,
+                                //   color: Colors.black.withOpacity(0.5),
+                                // ),
+                                // Padding(
+                                //   padding: const EdgeInsets.only(
+                                //       top: 5.0, bottom: 10, right: 18),
+                                //   child: Row(
+                                //     mainAxisAlignment:
+                                //         MainAxisAlignment.spaceBetween,
+                                //     children: [
+                                //       const Text(
+                                //         "Amount Payable",
+                                //         style: TextStyle(
+                                //           fontFamily: 'Medium',
+                                //           fontSize: 15,
+                                //         ),
+                                //       ),
+                                //       Container(
+                                //         decoration: BoxDecoration(
+                                //             borderRadius:
+                                //                 BorderRadius.circular(30),
+                                //             color: Colors.grey.shade300),
+                                //         child: Center(
+                                //           child: Padding(
+                                //             padding:
+                                //                 const EdgeInsets.all(14.0),
+                                //             child: Text(
+                                //               NoCouponApplied
+                                //                   ? '₹${map["Amount Payable"]} /-'
+                                //                   : finalamountToDisplay,
+                                //               style: TextStyle(
+                                //                 fontFamily: 'Medium',
+                                //                 fontSize: 10,
+                                //               ),
+                                //             ),
+                                //           ),
+                                //         ),
+                                //       ),
+                                //     ],
+                                //   ),
+                                // ),
+                                // SizedBox(
+                                //   height: 60,
+                                // ),
+                                // // map['demo'] == true
+                                // //     ? InkWell(
+                                // //         onTap: () {
+                                // //           Navigator.push(
+                                // //             context,
+                                // //             PageTransition(
+                                // //                 duration: Duration(
+                                // //                     milliseconds: 400),
+                                // //                 curve: Curves.bounceInOut,
+                                // //                 type: PageTransitionType
+                                // //                     .rightToLeft,
+                                // //                 child: DemoCourse()),
+                                // //           );
+                                // //         },
+                                // //         child: Container(
+                                // //           //try demo button
+                                // //           height: height * .06,
+                                // //           width: width * .85,
+                                // //           color: Colors.transparent,
+                                // //           child: Container(
+                                // //               decoration: BoxDecoration(
+                                // //                   gradient: gradient,
+                                // //                   borderRadius:
+                                // //                       BorderRadius.all(
+                                // //                           Radius.circular(
+                                // //                               50.0))),
+                                // //               child: const Center(
+                                // //                 child: Text(
+                                // //                   "Try Demo",
+                                // //                   style: TextStyle(
+                                // //                       fontFamily: 'Bold',
+                                // //                       fontSize: 15,
+                                // //                       fontWeight:
+                                // //                           FontWeight.bold),
+                                // //                   textAlign:
+                                // //                       TextAlign.center,
+                                // //                 ),
+                                // //               )),
+                                // //         ),
+                                // //       )
+                                // //     : Container(),
+                                // SizedBox(
+                                //   height: 20,
+                                // ),
+                                // PaymentButton(
+                                //   amountString: (double.parse(
+                                //               NoCouponApplied
+                                //                   ? map['Amount_Payablepay']
+                                //                   : finalAmountToPay) *
+                                //           100)
+                                //       .toString(),
+                                //   buttonText:
+                                //       "Buy Now for ${map['Course Price']}",
+                                //   buttonTextForCode:
+                                //       "Buy Now for $finalamountToDisplay",
+                                //   changeState: () {
+                                //     setState(() {
+                                //       isPayButtonPressed =
+                                //           !isPayButtonPressed;
+                                //     });
+                                //   },
+                                //   courseDescription: map['description'],
+                                //   courseName: map['name'],
+                                //   isPayButtonPressed: isPayButtonPressed,
+                                //   NoCouponApplied: NoCouponApplied,
+                                //   // razorpay: _razorpay,
+                                //   scrollController: _scrollController,
+                                //   updateCourseIdToCouponDetails: () {
+                                //     void addCourseId() {
+                                //       setState(() {
+                                //         id = map['id'];
+                                //       });
+                                //     }
 
-                                    //     addCourseId();
-                                    //     print(NoCouponApplied);
-                                    //   },
-                                    //   // isPayInPartsPressed: isPayInPartsPressed,
-                                    //   outStandingAmountString: (double.parse(
-                                    //               NoCouponApplied
-                                    //                   ? map['Amount_Payablepay']
-                                    //                   : finalAmountToPay) -
-                                    //           1000)
-                                    //       .toStringAsFixed(2),
-                                    //   courseId: map['id'],
-                                    //   couponCodeText: couponCodeController.text,
-                                    //   isItComboCourse: false,
-                                    //   whichCouponCode: '',
-                                    // ),
-                                    // SizedBox(
-                                    //   height: 20,
-                                    // ),
-                                    // Container(
-                                    //   width: 200,
-                                    //   child: Text(
-                                    //     "* Amount payable is inclusive of taxes. TERMS & CONDITIONS APPLY",
-                                    //     textAlign: TextAlign.center,
-                                    //     style: TextStyle(
-                                    //       fontFamily: 'Regular',
-                                    //       fontSize: 12,
-                                    //     ),
-                                    //   ),
-                                    // ),
-                                  ]),
-                            ),
-                          ],
-                        );
-                      } else {
-                        return Container();
-                      }
-                    },
-                  );
+                                //     addCourseId();
+                                //     print(NoCouponApplied);
+                                //   },
+                                //   // isPayInPartsPressed: isPayInPartsPressed,
+                                //   outStandingAmountString: (double.parse(
+                                //               NoCouponApplied
+                                //                   ? map['Amount_Payablepay']
+                                //                   : finalAmountToPay) -
+                                //           1000)
+                                //       .toStringAsFixed(2),
+                                //   courseId: map['id'],
+                                //   couponCodeText: couponCodeController.text,
+                                //   isItComboCourse: false,
+                                //   whichCouponCode: '',
+                                // ),
+                                // SizedBox(
+                                //   height: 20,
+                                // ),
+                                // Container(
+                                //   width: 200,
+                                //   child: Text(
+                                //     "* Amount payable is inclusive of taxes. TERMS & CONDITIONS APPLY",
+                                //     textAlign: TextAlign.center,
+                                //     style: TextStyle(
+                                //       fontFamily: 'Regular',
+                                //       fontSize: 12,
+                                //     ),
+                                //   ),
+                                // ),
+                              ]),
+                        ),
+                      ],
+                    );
+                  } else {
+                    return Container();
+                  }
                 },
-              ))
-            ],
-          ),
-        );
-      },
+              );
+            },
+          ))
+        ],
+      ),
     );
   }
 }
@@ -570,64 +563,75 @@ class PayNowBottomSheet extends StatelessWidget {
       curve: Curves.easeIn,
       child: BottomSheet(
         builder: (BuildContext context) {
-          return Container(
-            height: 80,
-            width: MediaQuery.of(context).size.width,
-            // duration: Duration(milliseconds: 1000),
-            // curve: Curves.easeIn,
-            child: Center(
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 40,
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: Text(
-                      CatelogueScreen.coursePrice.value,
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Medium',
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => PaymentScreen(
-                                  map: CatelogueScreen.map!.value)),
-                        );
-                      },
-                      child: Container(
-                        height: 60,
-                        // width: 300,
-                        color: Color(0xFF7860DC),
-                        child: Center(
+          return ValueListenableBuilder(
+            valueListenable: CatelogueScreen._currentPosition,
+            builder: (BuildContext context, double value, Widget? child) {
+              if (value > 0.0 && value <  500.00) {
+                return Container(
+                  height: 80,
+                  width: MediaQuery.of(context).size.width,
+                  // duration: Duration(milliseconds: 1000),
+                  // curve: Curves.easeIn,
+                  child: Center(
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 40,
+                        ),
+                        Expanded(
+                          flex: 1,
                           child: Text(
-                            'Pay Now',
+                            CatelogueScreen.coursePrice.value,
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                               fontFamily: 'Medium',
-                              color: Colors.white,
+                              color: Colors.black,
                             ),
                           ),
                         ),
-                      ),
+                        Expanded(
+                          flex: 2,
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => PaymentScreen(
+                                        map: CatelogueScreen.map!.value)),
+                              );
+                            },
+                            child: Container(
+                              height: 60,
+                              // width: 300,
+                              color: Color(0xFF7860DC),
+                              child: Center(
+                                child: Text(
+                                  'Pay Now',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'Medium',
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                      ],
                     ),
                   ),
-                  SizedBox(
-                    width: 20,
-                  ),
-                ],
-              ),
-            ),
+                );
+              } else {
+                return Container(
+                  height: 0.1,
+                );
+              }
+            },
           );
         },
         onClosing: () {},
