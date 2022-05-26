@@ -1,6 +1,6 @@
 import 'package:auto_orientation/auto_orientation.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
+import 'dart:math';
 import 'package:video_player/video_player.dart';
 
 class VideoPlayerCustom extends StatefulWidget {
@@ -14,16 +14,114 @@ class VideoPlayerCustom extends StatefulWidget {
 class _VideoPlayerCustomState extends State<VideoPlayerCustom> {
   VideoPlayerController? _controller;
   Future<void>? _video;
+  Duration? _position;
+  Duration? _duration;
+  bool _disposed = false;
+  bool _isPlaying = false;
+  var _delayToInvokeonControlUpdate = 0;
 
   @override
   void initState() {
     super.initState();
     _controller = VideoPlayerController.network(widget.url);
-    _video = _controller!.initialize().then((_) => _controller!.play());
+    _video = _controller!.initialize().then((_) {
+      _controller?.addListener(_onVideoControllerUpdate);
+      _controller!.play();
+    });
+  }
+
+  void _onVideoControllerUpdate() {
+    if (_disposed) {
+      return;
+    }
+    // _delayToInvokeonControlUpdate = 0;
+    final now = DateTime.now().microsecondsSinceEpoch;
+    if (_delayToInvokeonControlUpdate > now) {
+      return;
+    }
+    _delayToInvokeonControlUpdate = now + 500;
+    final controller = _controller;
+    if (controller == null) {
+      debugPrint("The video controller is null");
+      return;
+    }
+    if (!controller.value.isInitialized) {
+      debugPrint("The video controller cannot be initialized");
+      return;
+    }
+    if (_duration == null) {
+      _duration = _controller!.value.duration;
+    }
+    var duration = _duration;
+    if (duration == null) return;
+    setState(() {});
+
+    var position = _controller?.value.position;
+    setState(() {
+      _position = position;
+    });
+    final playing = controller.value.isPlaying;
+    // if (playing) {
+    //   if (_disposed) return;
+    //   setState(() {
+    //     _progress = position!.inMilliseconds.ceilToDouble() /
+    //         duration.inMilliseconds.ceilToDouble();
+    //   });
+    // }
+    _isPlaying = playing;
+  }
+
+  String convertToTwoDigits(int value) {
+    return value < 10 ? "0$value" : "$value";
+  }
+
+  Widget timeRemainingString() {
+    var timeRemaining = _duration?.toString().substring(2, 7);
+    final duration = _duration?.inSeconds ?? 0;
+    final currentPosition = _position?.inSeconds ?? 0;
+    final timeRemained = max(0, duration - currentPosition);
+    final mins = convertToTwoDigits(timeRemained ~/ 60);
+    final seconds = convertToTwoDigits(timeRemained % 60);
+    timeRemaining = '$mins:$seconds';
+    return Positioned(
+      bottom: 33,
+      // left: 0,
+      right: 20,
+      child: Text(
+        timeRemaining,
+        style: TextStyle(
+            color: Colors.white,
+            // fontSize: 12,
+            fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+
+  Widget timeElapsedString() {
+    var timeElapsedString = "00.00";
+    // final duration = _duration?.inSeconds ?? 0;
+    final currentPosition = _position?.inSeconds ?? 0;
+    final mins = convertToTwoDigits(currentPosition ~/ 60);
+    final seconds = convertToTwoDigits(currentPosition % 60);
+    timeElapsedString = '$mins:$seconds';
+    return Positioned(
+      bottom: 33,
+      left: 20,
+      right: 0,
+      child: Text(
+        timeElapsedString,
+        style: TextStyle(
+            color: Colors.white,
+            // fontSize: 12,
+            fontWeight: FontWeight.bold),
+      ),
+    );
   }
 
   @override
   void dispose() {
+    _disposed = true;
+    _controller?.removeListener(_onVideoControllerUpdate);
     _controller!.dispose();
   }
 
@@ -99,7 +197,7 @@ class _VideoPlayerCustomState extends State<VideoPlayerCustom> {
                           },
                           icon: Icon(
                             isPortrait
-                                ? Icons.fullscreen_sharp
+                                ? Icons.open_in_full_sharp
                                 : Icons.close_fullscreen_outlined,
                             color: Color(0xFFC0AAF5),
                             size: 30,
@@ -107,6 +205,8 @@ class _VideoPlayerCustomState extends State<VideoPlayerCustom> {
                         ),
                       ),
                     ),
+                    timeElapsedString(),
+                    timeRemainingString()
                     // Positioned(
                     //   bottom: 10,
                     //   left: 0,
