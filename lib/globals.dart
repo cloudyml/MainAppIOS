@@ -12,8 +12,10 @@ String? courseId;
 String? moduleId;
 String? topicId;
 
-LinearGradient gradient = LinearGradient(
+const mockUpHeight = 896;
+const mockUpWidth = 414;
 
+LinearGradient gradient = LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
     colors: [

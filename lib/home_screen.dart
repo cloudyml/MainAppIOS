@@ -173,8 +173,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   Positioned(
-                    top: 142.00001525878906,
-                    left: 102.00000762939453,
+                    top: MediaQuery.of(context).size.height * 0.15,
+                    left: MediaQuery.of(context).size.width * 0.21,
                     child: Text(
                       'My Courses',
                       textAlign: TextAlign.center,
@@ -189,8 +189,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   Positioned(
-                    top: 142.00001525878906,
-                    left: 62.00000762939453,
+                    top: MediaQuery.of(context).size.height * 0.15,
+                    left: MediaQuery.of(context).size.width * 0.14,
                     child: InkWell(
                       onTap: () {
                         Navigator.of(context).pop();
@@ -327,8 +327,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ),
                                     ),
                                     Positioned(
-                                      top: 20,
-                                      left: 20,
+                                      top: MediaQuery.of(context).size.height *
+                                          0.02,
+                                      left: MediaQuery.of(context).size.width *
+                                          0.09,
                                       child: Container(
                                         height:
                                             MediaQuery.of(context).size.height *
@@ -553,7 +555,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             Positioned(
-              top: MediaQuery.of(context).size.height * 0.58,
+              top: MediaQuery.of(context).size.height * 0.65,
               left: MediaQuery.of(context).size.width * 0.1,
               child: Text(
                 'Popular Courses',
@@ -569,7 +571,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             Positioned(
-              top: MediaQuery.of(context).size.height * 0.6,
+              top: MediaQuery.of(context).size.height * 0.68,
               child: StreamBuilder<QuerySnapshot>(
                 stream: FirebaseFirestore.instance
                     .collection('courses')
