@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloudyml_app2/catalogue_screen.dart';
 import 'package:cloudyml_app2/combo/combo_store.dart';
@@ -94,10 +96,11 @@ class _PaymentHistoryState extends State<PaymentHistory> {
           ),
           Positioned(
             top: 115 * verticalScale,
-            left: 57.000003814697266 * horizontalScale,
+            left: 57 * horizontalScale,
             child: Text(
               'Payment History',
               textAlign: TextAlign.center,
+              textScaleFactor: min(horizontalScale, verticalScale),
               style: TextStyle(
                   color: Color.fromRGBO(255, 255, 255, 1),
                   fontFamily: 'Poppins',
@@ -112,8 +115,8 @@ class _PaymentHistoryState extends State<PaymentHistory> {
             top: 26.000001907348633 * verticalScale,
             left: 294.0000305175781 * horizontalScale,
             child: Container(
-              width: 29.999998092651367 * horizontalScale,
-              height: 29.999998092651367 * verticalScale,
+              width: 29.999998092651367 * min(horizontalScale, verticalScale),
+              height: 29.999998092651367 * min(horizontalScale, verticalScale),
               decoration: BoxDecoration(
                 color: Color.fromRGBO(127, 106, 228, 1),
                 borderRadius: BorderRadius.all(
@@ -125,8 +128,8 @@ class _PaymentHistoryState extends State<PaymentHistory> {
             top: 101.00000762939453 * verticalScale,
             left: 358.0000305175781 * horizontalScale,
             child: Container(
-              width: 19.999998092651367 * horizontalScale,
-              height: 19.999998092651367 * verticalScale,
+              width: 19.999998092651367 * min(horizontalScale, verticalScale),
+              height: 19.999998092651367 * min(horizontalScale, verticalScale),
               decoration: BoxDecoration(
                 color: Color.fromRGBO(127, 106, 228, 1),
                 borderRadius: BorderRadius.all(
@@ -138,8 +141,8 @@ class _PaymentHistoryState extends State<PaymentHistory> {
             top: 206.00001525878906 * verticalScale,
             left: 378.0000305175781 * horizontalScale,
             child: Container(
-              width: 7.999999523162842 * horizontalScale,
-              height: 7.999999523162842 * verticalScale,
+              width: 7.999999523162842 * min(horizontalScale, verticalScale),
+              height: 7.999999523162842 * min(horizontalScale, verticalScale),
               decoration: BoxDecoration(
                 color: Color.fromRGBO(127, 106, 228, 1),
                 borderRadius: BorderRadius.all(
@@ -152,8 +155,8 @@ class _PaymentHistoryState extends State<PaymentHistory> {
             top: 179.00001525878906 * verticalScale,
             left: 310.0000305175781 * horizontalScale,
             child: Container(
-              width: 13.999999046325684 * horizontalScale,
-              height: 14.999999046325684 * verticalScale,
+              width: 13.999999046325684 * min(horizontalScale, verticalScale),
+              height: 14.999999046325684 * min(horizontalScale, verticalScale),
               decoration: BoxDecoration(
                 color: Color.fromRGBO(127, 106, 228, 1),
                 borderRadius: BorderRadius.all(
@@ -206,8 +209,8 @@ class _PaymentHistoryState extends State<PaymentHistory> {
             top: 232.00001525878906 * verticalScale,
             left: 133.00001525878906 * horizontalScale,
             child: Container(
-              width: 37.000003814697266 * horizontalScale,
-              height: 37.000003814697266 * verticalScale,
+              width: 37 * min(horizontalScale, verticalScale),
+              height: 37 * min(horizontalScale, verticalScale),
               decoration: BoxDecoration(
                 color: Color(0xFF14F5A4),
                 borderRadius: BorderRadius.circular(100),
@@ -236,8 +239,8 @@ class _PaymentHistoryState extends State<PaymentHistory> {
             top: 232.00001525878906 * verticalScale,
             right: 133.00001525878906 * horizontalScale,
             child: Container(
-              width: 37.000003814697266 * horizontalScale,
-              height: 37.000003814697266 * verticalScale,
+              width: 37 * min(horizontalScale, verticalScale),
+              height: 37 * min(horizontalScale, verticalScale),
               decoration: BoxDecoration(
                 color: Color.fromRGBO(241, 54, 88, 1),
                 borderRadius: BorderRadius.all(
@@ -258,8 +261,8 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                           AsyncSnapshot<QuerySnapshot> snapshot) {
                         if (!snapshot.hasData) return const SizedBox.shrink();
                         return Container(
-                          width: 414,
-                          height: 896,
+                          width: screenWidth,
+                          height: screenHeight,
                           child: ListView.builder(
                             scrollDirection: Axis.horizontal,
                             // shrinkWrap: true,
@@ -287,8 +290,10 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                               width: 20,
                                             ),
                                             Container(
-                                              width: 176.99998474121094,
-                                              height: 91.99999237060547,
+                                              width: 176.99998474121094 *
+                                                  horizontalScale,
+                                              height: 91.99999237060547 *
+                                                  verticalScale,
                                               decoration: BoxDecoration(
                                                 borderRadius: BorderRadius.only(
                                                   topLeft: Radius.circular(25),
@@ -520,7 +525,9 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                         Column(
                                           children: [
                                             SizedBox(
-                                              height: 520 * verticalScale,
+                                              height: 510 *
+                                                  min(horizontalScale,
+                                                      verticalScale),
                                             ),
                                             userMap['payInPartsDetails']
                                                             [map['id']] !=
@@ -529,10 +536,12 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                                             [map['id']]
                                                         ['outStandingAmtPaid']
                                                 ? Container(
-                                                    width: 37.000003814697266 *
-                                                        horizontalScale,
-                                                    height: 37.000003814697266 *
-                                                        verticalScale,
+                                                    width: 37 *
+                                                        min(horizontalScale,
+                                                            verticalScale),
+                                                    height: 37 *
+                                                        min(horizontalScale,
+                                                            verticalScale),
                                                     decoration: BoxDecoration(
                                                       color: Color.fromRGBO(
                                                           241, 54, 88, 1),
@@ -543,10 +552,12 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                                     child: Container(),
                                                   )
                                                 : Container(
-                                                    width: 37.000003814697266 *
-                                                        horizontalScale,
-                                                    height: 37.000003814697266 *
-                                                        verticalScale,
+                                                    width: 37 *
+                                                        min(horizontalScale,
+                                                            verticalScale),
+                                                    height: 37 *
+                                                        min(horizontalScale,
+                                                            verticalScale),
                                                     decoration: BoxDecoration(
                                                       color: Color(0xFF14F5A4),
                                                       borderRadius: BorderRadius
@@ -577,10 +588,11 @@ class _PaymentHistoryState extends State<PaymentHistory> {
             child: Text(
               'Explore more',
               textAlign: TextAlign.left,
+              textScaleFactor: min(horizontalScale, verticalScale),
               style: TextStyle(
                   color: Color.fromRGBO(0, 0, 0, 1),
                   fontFamily: 'Poppins',
-                  fontSize: 20,
+                  fontSize: 24,
                   letterSpacing:
                       0 /*percentages not used in flutter. defaulting to zero*/,
                   fontWeight: FontWeight.w500,
@@ -695,6 +707,9 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                                             4.0),
                                                     child: Text(
                                                       'COMBO',
+                                                      textScaleFactor: min(
+                                                          horizontalScale,
+                                                          verticalScale),
                                                       style: TextStyle(
                                                           fontFamily:
                                                               'SemiBold',
@@ -716,6 +731,9 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                                   fontSize: 17,
                                                   fontWeight: FontWeight.w500),
                                               // maxLines: 2,
+                                              textScaleFactor: min(
+                                                  horizontalScale,
+                                                  verticalScale),
                                               overflow: TextOverflow.ellipsis,
                                             ),
                                           ),
@@ -735,6 +753,9 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                                 Container(
                                                   child: Text(
                                                     map["language"],
+                                                    textScaleFactor: min(
+                                                        horizontalScale,
+                                                        verticalScale),
                                                     style: TextStyle(
                                                         fontFamily: 'Medium',
                                                         color: Colors.black
@@ -751,6 +772,9 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                                   child: Center(
                                                     child: Text(
                                                       '${map['videosCount']} videos',
+                                                      textScaleFactor: min(
+                                                          horizontalScale,
+                                                          verticalScale),
                                                       style: TextStyle(
                                                           fontFamily: 'Medium',
                                                           color: Colors.black
@@ -770,6 +794,8 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                           ),
                                           Text(
                                             map['Course Price'],
+                                            textScaleFactor: min(
+                                                horizontalScale, verticalScale),
                                             style: TextStyle(
                                                 fontFamily: 'Bold',
                                                 color: Color(0xFF6E5BD9),
