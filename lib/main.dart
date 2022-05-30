@@ -10,7 +10,7 @@ import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
-
+ 
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

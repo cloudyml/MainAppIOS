@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cloudyml_app2/globals.dart';
 import 'package:cloudyml_app2/screens/group_info.dart';
 import 'package:cloudyml_app2/widgets/audio_msg_tile.dart';
 import 'package:cloudyml_app2/widgets/bottom_sheet.dart';
@@ -302,7 +303,18 @@ class _ChatScreenState extends State<ChatScreen> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         titleSpacing: 0,
-        backgroundColor: Colors.purple[800],
+
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            color: Color(0xFF7860DC),
+            //     gradient: LinearGradient(
+            // begin: Alignment.bottomLeft,
+            // end: Alignment.topRight,
+            // colors: [Color(0xFF7860DC),Color(0xFF7860DC)]),
+          ),
+        ),
+
+        // backgroundColor: Colors.purple[800],
         elevation: 0,
         title: Container(
           padding: EdgeInsets.only(left: 0),
@@ -378,12 +390,19 @@ class _ChatScreenState extends State<ChatScreen> {
       body: appStorage == null
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
+              reverse: true,
               child: Column(
                 children: [
                   //Chats container
                   Container(
-                    height: size.height / 1.27,
+                    height: size.height / 1.33,
                     width: size.width,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                          image: AssetImage('assets/g8.png'),
+                          opacity: 0.16,
+                          fit: BoxFit.cover),
+                    ),
                     child: StreamBuilder<List<DocumentSnapshot>>(
                       stream: listenToChatsRealTime(),
                       builder: (context, snapshot) {
@@ -421,16 +440,17 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                   //Message Text Field container
                   Container(
-                    height: size.height / 10,
+                    margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                    height: size.height / 9,
                     width: size.width * 1.2,
                     alignment: Alignment.bottomCenter,
                     child: Container(
-                      height: size.height / 12,
+                      height: size.height / 10,
                       width: size.width / 1.1,
                       child: Row(children: [
                         Container(
                           height: size.height / 12,
-                          width: size.width / 1.3,
+                          width: size.width / 1.35,
                           child: TextField(
                             onChanged: (text) {
                               setState(() {
@@ -448,21 +468,24 @@ class _ChatScreenState extends State<ChatScreen> {
                             cursorColor: Colors.purple,
                             decoration: InputDecoration(
                               suffixIcon: Container(
-                                width: width * 0.3,
+                                width: width * 0.25,
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
-                                    IconButton(
-                                      onPressed: () => getFile(),
-                                      icon: const Icon(
-                                        Icons.attach_file,
-                                        color: Colors.purple,
+                                    SizedBox(
+                                      width: 27,
+                                      child: IconButton(
+                                        onPressed: () => getFile(),
+                                        icon: const Icon(
+                                          Icons.attach_file,
+                                          color: Color(0xFF7860DC),
+                                        ),
                                       ),
                                     ),
                                     IconButton(
                                       icon: const Icon(Icons.photo),
                                       onPressed: () => getImage(),
-                                      color: Colors.purple,
+                                      color: Color(0xFF7860DC),
                                     ),
                                   ],
                                 ),
@@ -474,7 +497,10 @@ class _ChatScreenState extends State<ChatScreen> {
                                     width: 2.0),
                                 borderRadius: BorderRadius.circular(15.0),
                               ),
-                              hintText: "Type A Message",
+                              hintText: "Ask Your Doubt...",
+                              hintStyle: TextStyle(
+                                  fontSize: 13.0,
+                                  color: Color.fromARGB(255, 183, 183, 183)),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(
                                   (10),
@@ -484,12 +510,13 @@ class _ChatScreenState extends State<ChatScreen> {
                           ),
                         ),
                         const SizedBox(
-                          width: 2,
+                          width: 8,
                         ),
                         Ink(
-                          decoration: const ShapeDecoration(
-                            color: Color.fromARGB(255, 141, 5, 136),
-                            shape: CircleBorder(),
+                          decoration: ShapeDecoration(
+                            color: Color(0xFF7860DC),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
                           ),
                           child: IconButton(
                             focusColor: Colors.blue,

@@ -80,6 +80,51 @@ class _PaymentButtonState extends State<PaymentButton> with CouponCodeMixin {
 
   String? amountStringForRp;
   String? amountStringForUPI;
+  List? courseList = [];
+  bool isLoading = false;
+  FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  String? id;
+
+  void loadCourses() async {
+    setState(() {
+      isLoading = true;
+    });
+    await _firestore
+        .collection("courses")
+        .where('id', isEqualTo: widget.courseId)
+        .get()
+        .then((value) {
+      print(value.docs);
+      final courses = value.docs
+          .map((doc) => {
+                "id": doc.id,
+                "data": doc.data(),
+              })
+          .toList();
+      setState(() {
+        courseList = courses;
+      });
+      print('the list is---$courseList');
+    });
+    setState(() {
+      isLoading = false;
+    });
+
+    Map<String, dynamic> groupData = {
+      "name": courseList![0]["data"]["name"],
+      "icon": courseList![0]["data"]["image_url"],
+      "mentors": courseList![0]["data"]["mentors"],
+      "student_id": _auth.currentUser!.uid,
+      "student_name": _auth.currentUser!.displayName,
+    };
+
+    // Fluttertoast.showToast(msg: "Creating group...");
+
+    await _firestore.collection("groups").add(groupData);
+
+    // Fluttertoast.showToast(msg: "Group Created");
+  }
 
   void updateAmoutStringForUPI(bool isPayInPartsPressed,
       bool isMinAmountCheckerPressed, bool isOutStandingAmountCheckerPressed) {
@@ -155,6 +200,7 @@ class _PaymentButtonState extends State<PaymentButton> with CouponCodeMixin {
       isMinAmountCheckerPressed,
       isOutStandingAmountCheckerPressed,
     );
+    loadCourses();
     pushToHome();
     // disableMinAmtBtn();
     // enableoutStandingAmtBtn();

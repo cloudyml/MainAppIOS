@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloudyml_app2/coupon_code.dart';
 import 'package:cloudyml_app2/curriculam.dart';
 import 'package:cloudyml_app2/demo/demo_course.dart';
+import 'package:cloudyml_app2/fun.dart';
 import 'package:cloudyml_app2/globals.dart';
 import 'package:cloudyml_app2/home.dart';
 import 'package:cloudyml_app2/payment_portal.dart';
@@ -13,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:ribbon_widget/ribbon_widget.dart';
 
 class CatelogueScreen extends StatefulWidget {
   const CatelogueScreen({Key? key}) : super(key: key);
@@ -230,10 +232,111 @@ class _CatelogueScreenState extends State<CatelogueScreen>
                                 SizedBox(
                                   height: 65,
                                 ),
+                                includes(),
                                 Container(
-                                  key: positionKey,
+                                  // key: positionKey,
                                   child: Curriculam(
                                     map: map,
+                                  ),
+                                ),
+                                Container(
+                                  key: positionKey,
+                                ),
+                                Ribbon(
+                                  nearLength: 1,
+                                  farLength: .5,
+                                  title: ' ',
+                                  titleStyle: TextStyle(
+                                      color: Colors.black,
+                                      // Colors.white,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                  color: Color.fromARGB(255, 11, 139, 244),
+                                  location: RibbonLocation.topStart,
+                                  child: Container(
+                                    //  key:key,
+                                    // width: width * .9,
+                                    // height: height * .5,
+                                    color: Color.fromARGB(255, 24, 4, 104),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(40.0),
+                                      child: Column(
+                                        //  key:Gkey,
+                                        children: [
+                                          SizedBox(
+                                            height: height * .03,
+                                          ),
+                                          Text(
+                                            'Complete Course Fee',
+                                            style: TextStyle(
+                                                fontFamily: 'Bold',
+                                                fontSize: 21,
+                                                color: Colors.white),
+                                          ),
+                                          SizedBox(
+                                            height: 5,
+                                          ),
+                                          Text(
+                                            '( Everything with Lifetime Access )',
+                                            style: TextStyle(
+                                                fontFamily: 'Bold',
+                                                fontSize: 11,
+                                                color: Colors.white),
+                                          ),
+                                          SizedBox(
+                                            height: 30,
+                                          ),
+                                          Text(
+                                            map["Course Price"],
+                                            style: TextStyle(
+                                                fontFamily: 'Medium',
+                                                fontSize: 30,
+                                                color: Colors.white),
+                                          ),
+                                          SizedBox(height: 35),
+                                          InkWell(
+                                            onTap: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        PaymentScreen(
+                                                            map: CatelogueScreen
+                                                                .map!.value)),
+                                              );
+                                            },
+                                            child: Container(
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(30),
+                                                    // boxShadow: [
+                                                    //   BoxShadow(
+                                                    //     color: Color.fromARGB(255, 176, 224, 250)
+                                                    //         .withOpacity(0.3),
+                                                    //     spreadRadius: 2,
+                                                    //     blurRadius: 3,
+                                                    //     offset: Offset(3,
+                                                    //         6), // changes position of shadow
+                                                    //   ),
+                                                    // ],
+                                                    color: Color.fromARGB(
+                                                        255, 119, 191, 249),
+                                                    gradient: gradient),
+                                                height: height * .08,
+                                                width: width * .6,
+                                                child: Center(
+                                                  child: Text(
+                                                    'Buy Now',
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 20),
+                                                  ),
+                                                )),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   ),
                                 ),
                                 // Container(
@@ -566,7 +669,7 @@ class PayNowBottomSheet extends StatelessWidget {
           return ValueListenableBuilder(
             valueListenable: CatelogueScreen._currentPosition,
             builder: (BuildContext context, double value, Widget? child) {
-              if (value > 0.0 && value <  500.00) {
+              if (value > 0.0 && value < 500.00) {
                 return Container(
                   height: 80,
                   width: MediaQuery.of(context).size.width,
