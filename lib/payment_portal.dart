@@ -689,118 +689,118 @@ class _PaymentButtonState extends State<PaymentButton> with CouponCodeMixin {
                             ),
                           )
                         : Container(),
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(25, 10, 240, 10),
-                      child: Text('Pay with UPI'),
-                    ),
-                    Container(
-                      width: 300,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                          color: Colors.grey.shade200,
-                          width: 1.1,
-                        ),
-                        color: Colors.white,
-                      ),
-                      child: Column(
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              intiateUpiTransaction(UpiApps.GooglePay);
-                            },
-                            child: Container(
-                              height: 60,
-                              child: Row(
-                                // mainAxisAlignment:MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                      top: 10,
-                                      left: 20,
-                                      right: 15,
-                                    ),
-                                    child: Image.asset(
-                                      'assets/Google_Pay.png',
-                                      width: 45,
-                                      height: 45,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                      top: 10,
-                                    ),
-                                    child: Text(
-                                      'Google Pay',
-                                      style: TextStyle(fontSize: 17),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                      left: 100,
-                                      top: 10,
-                                    ),
-                                    child: Icon(
-                                      Icons.keyboard_arrow_right,
-                                      color: Colors.grey.shade300,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          Divider(),
-                          InkWell(
-                            onTap: () {
-                              intiateUpiTransaction(UpiApps.PhonePe);
-                            },
-                            child: Container(
-                              height: 60,
-                              child: Row(
-                                // mainAxisAlignment:MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                      bottom: 10,
-                                      left: 20,
-                                      right: 15,
-                                    ),
-                                    child: Image.asset(
-                                      'assets/phonepe.png',
-                                      width: 45,
-                                      height: 45,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                      bottom: 10,
-                                    ),
-                                    child: Text(
-                                      'PhonePe',
-                                      style: TextStyle(fontSize: 17),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                      left: 116,
-                                      bottom: 10,
-                                    ),
-                                    child: Icon(
-                                      Icons.keyboard_arrow_right,
-                                      color: Colors.grey.shade300,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(25, 10, 170, 10),
-                      child: Text('Other payment methods'),
-                    ),
+                    // Padding(
+                    //   padding: EdgeInsets.fromLTRB(25, 10, 240, 10),
+                    //   child: Text('Pay with UPI'),
+                    // ),
+                    // Container(
+                    //   width: 300,
+                    //   decoration: BoxDecoration(
+                    //     borderRadius: BorderRadius.circular(10),
+                    //     border: Border.all(
+                    //       color: Colors.grey.shade200,
+                    //       width: 1.1,
+                    //     ),
+                    //     color: Colors.white,
+                    //   ),
+                    //   child: Column(
+                    //     children: [
+                    //       InkWell(
+                    //         onTap: () {
+                    //           intiateUpiTransaction(UpiApps.GooglePay);
+                    //         },
+                    //         child: Container(
+                    //           height: 60,
+                    //           child: Row(
+                    //             // mainAxisAlignment:MainAxisAlignment.spaceBetween,
+                    //             children: [
+                    //               Padding(
+                    //                 padding: const EdgeInsets.only(
+                    //                   top: 10,
+                    //                   left: 20,
+                    //                   right: 15,
+                    //                 ),
+                    //                 child: Image.asset(
+                    //                   'assets/Google_Pay.png',
+                    //                   width: 45,
+                    //                   height: 45,
+                    //                 ),
+                    //               ),
+                    //               Padding(
+                    //                 padding: const EdgeInsets.only(
+                    //                   top: 10,
+                    //                 ),
+                    //                 child: Text(
+                    //                   'Google Pay',
+                    //                   style: TextStyle(fontSize: 17),
+                    //                 ),
+                    //               ),
+                    //               Padding(
+                    //                 padding: const EdgeInsets.only(
+                    //                   left: 100,
+                    //                   top: 10,
+                    //                 ),
+                    //                 child: Icon(
+                    //                   Icons.keyboard_arrow_right,
+                    //                   color: Colors.grey.shade300,
+                    //                 ),
+                    //               ),
+                    //             ],
+                    //           ),
+                    //         ),
+                    //       ),
+                    //       Divider(),
+                    //       InkWell(
+                    //         onTap: () {
+                    //           intiateUpiTransaction(UpiApps.PhonePe);
+                    //         },
+                    //         child: Container(
+                    //           height: 60,
+                    //           child: Row(
+                    //             // mainAxisAlignment:MainAxisAlignment.spaceBetween,
+                    //             children: [
+                    //               Padding(
+                    //                 padding: const EdgeInsets.only(
+                    //                   bottom: 10,
+                    //                   left: 20,
+                    //                   right: 15,
+                    //                 ),
+                    //                 child: Image.asset(
+                    //                   'assets/phonepe.png',
+                    //                   width: 45,
+                    //                   height: 45,
+                    //                 ),
+                    //               ),
+                    //               Padding(
+                    //                 padding: const EdgeInsets.only(
+                    //                   bottom: 10,
+                    //                 ),
+                    //                 child: Text(
+                    //                   'PhonePe',
+                    //                   style: TextStyle(fontSize: 17),
+                    //                 ),
+                    //               ),
+                    //               Padding(
+                    //                 padding: const EdgeInsets.only(
+                    //                   left: 116,
+                    //                   bottom: 10,
+                    //                 ),
+                    //                 child: Icon(
+                    //                   Icons.keyboard_arrow_right,
+                    //                   color: Colors.grey.shade300,
+                    //                 ),
+                    //               ),
+                    //             ],
+                    //           ),
+                    //         ),
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
+                    // Padding(
+                    //   padding: EdgeInsets.fromLTRB(25, 10, 170, 10),
+                    //   child: Text('Other payment methods'),
+                    // ),
                     InkWell(
                       onTap: () {
                         // setState(() {

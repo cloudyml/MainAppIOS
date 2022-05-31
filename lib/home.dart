@@ -179,15 +179,15 @@ class _HomePageState extends State<HomePage> {
                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>HomePage()));
               },
             ),
-            InkWell(
-              child: ListTile(
-                title: Text('My Account'),
-                leading: Icon(
-                  Icons.person,
-                  color: HexColor('6153D3'),
-                ),
-              ),
-            ),
+            // InkWell(
+            //   child: ListTile(
+            //     title: Text('My Account'),
+            //     leading: Icon(
+            //       Icons.person,
+            //       color: HexColor('6153D3'),
+            //     ),
+            //   ),
+            // ),
             InkWell(
               child: ListTile(
                 title: Text('My Courses'),
