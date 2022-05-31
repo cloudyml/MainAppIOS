@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloudyml_app2/authentication/email_signup.dart';
 import 'package:cloudyml_app2/authentication/login.dart';
 import 'package:cloudyml_app2/authentication/onboard.dart';
+import 'package:cloudyml_app2/authentication/onboardnew.dart';
 import 'package:cloudyml_app2/globals.dart';
 import 'package:cloudyml_app2/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -17,18 +18,28 @@ final GoogleSignIn googleSignIn = GoogleSignIn();
 String? gname;
 String? gemail;
 String? gimageUrl;
-
+// bool emailsigned=false;
+// bool isVerifyy=false;
+// ValueNotifier<bool> emailsigned=ValueNotifier(false);
+// ValueNotifier<bool> isVerifyy=ValueNotifier(false);
 class Authenticate extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (_auth.currentUser != null) {
-      return HomePage();
+      // if(emailsigned){
+      //   if(isVerifyy){
+      //     return HomePage();
+      //   }else{
+      //     return Onboardew();
+      //   }
+      // }else{
+        return HomePage();
+      //}
     } else {
-      return OnBoard();
+      return Onboardew();
     }
   }
 }
-
 
 Future<User?> createAccount(
     String email, String password, String text, BuildContext context) async {
@@ -36,12 +47,10 @@ Future<User?> createAccount(
 
   try {
     User? user = (await _auth.createUserWithEmailAndPassword(
-            email: email, password: password))
+        email: email, password: password))
         .user;
     if (user != null) {
       print("Account Created Successful");
-      Navigator.push(
-          context, MaterialPageRoute(builder: (_) => DetailsScreen()));
       return user;
     } else {
       print("Account Creation Failed");
@@ -58,7 +67,7 @@ Future<User?> logIn(String email, String password) async {
 
   try {
     User? user = (await _auth.signInWithEmailAndPassword(
-            email: email, password: password))
+        email: email, password: password))
         .user;
 
     if (user != null) {
@@ -80,13 +89,13 @@ Future logOut(BuildContext context) async {
   try {
     try {
       final provider =
-          Provider.of<GoogleSignInProvider>(context, listen: false);
+      Provider.of<GoogleSignInProvider>(context, listen: false);
       provider.googlelogout(context);
     } catch (e) {
       await _auth.signOut().then((value) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => OnBoard()),
+          MaterialPageRoute(builder: (context) => Onboardew()),
         );
       });
     }
@@ -105,12 +114,12 @@ class GoogleSignInProvider extends ChangeNotifier {
   Future googleLogin(context) async {
     try {
       final googleUser = await googleSignIn.signIn();
+      showToast('Please wait while we are fetching info...');
       if (googleUser == null) return;
       _user = googleUser;
       print('user...');
       print(_user);
       final googleAuth = await googleUser.authentication;
-      showToast('Please wait while we are fetching info...');
       print("this is goooogle-- $googleAuth");
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
@@ -121,48 +130,17 @@ class GoogleSignInProvider extends ChangeNotifier {
       print(googleAuth.accessToken);
       print("Printed");
       await FirebaseAuth.instance.signInWithCredential(credential);
-      DocumentSnapshot userDocs = await FirebaseFirestore.instance
-          .collection('Users')
-          .doc(FirebaseAuth.instance.currentUser!.uid)
-          .get();
-      if (userDocs.data() == null) {
-        Navigator.pushAndRemoveUntil(
-            context,
-            PageTransition(
-                duration: Duration(milliseconds: 200),
-                curve: Curves.bounceInOut,
-                type: PageTransitionType.rightToLeft,
-                child: DetailsScreen()),
-            (route) => false);
-        showToast('Account Created');
-      } else {
-        Navigator.pushAndRemoveUntil(
-            context,
-            PageTransition(
-                duration: Duration(milliseconds: 200),
-                curve: Curves.bounceInOut,
-                type: PageTransitionType.rightToLeft,
-                child: HomePage()),
-            (route) => false);
-      }
-      // ValueListenableBuilder(
-      //   valueListenable: Authenticate.userDocs,
-      //   builder: (BuildContext context, bool value, Widget? child) {
-      //     if (value) {
-      //       return HomePage();
-      //     } else {
-      //       return DetailsScreen();
-      //     }
-      //   },
-      // );
-      // Navigator.pushAndRemoveUntil(
-      //     context,
-      //     PageTransition(
-      //         duration: Duration(milliseconds: 200),
-      //         curve: Curves.bounceInOut,
-      //         type: PageTransitionType.rightToLeft,
-      //         child: DetailsScreen()),
-      //     (route) => false);
+      userprofile(name:_user?.displayName,email: _user?.email);
+      Navigator.pushAndRemoveUntil(
+          context,
+          PageTransition(
+              duration: Duration(milliseconds: 200),
+              curve: Curves.bounceInOut,
+              type: PageTransitionType.rightToLeft,
+              child: HomePage()),
+              (route) => false);
+
+      showToast('Account Created');
 
       return true;
     } catch (e) {
@@ -186,12 +164,12 @@ class GoogleSignInProvider extends ChangeNotifier {
             duration: Duration(milliseconds: 200),
             curve: Curves.bounceInOut,
             type: PageTransitionType.rightToLeft,
-            child: OnBoard()),
-        (route) => false);
+            child: Onboardew()),
+            (route) => false);
   }
 }
 
-void userprofile(String name, var mobilenumber, var email) async {
+void userprofile({String? name, var mobilenumber, var email}) async {
   await FirebaseFirestore.instance
       .collection("Users")
       .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -205,8 +183,7 @@ void userprofile(String name, var mobilenumber, var email) async {
     "id": _auth.currentUser!.uid,
     "password": "is it needed",
     "role": "student",
-    "couponCodeDetails": {},
-    "payInPartsDetails": {},
-    'mentors': 'Rahul Mishra'
+    "couponCodeDetails" : {},
+    "payInPartsDetails":{},
   });
 }

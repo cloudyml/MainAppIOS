@@ -18,6 +18,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:page_transition/page_transition.dart';
 
 class HomePage extends StatefulWidget {
@@ -31,7 +32,8 @@ class _HomePageState extends State<HomePage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   int? _selectedIndex = 0;
   bool openPaymentHistory = false;
-  List<Widget> screens = [Home(), Store(), VideoScreenOffline(), GroupsList()];
+  Map<String,dynamic>? userdetails={};
+  List<Widget> screens = [Home(), StoreScreen(), VideoScreenOffline(), GroupsList()];
   List<String> titles = [
     'Home',
     'Store',
@@ -45,8 +47,22 @@ class _HomePageState extends State<HomePage> {
     print('UID--${FirebaseAuth.instance.currentUser!.uid}');
   }
 
+  void getuserdetails () async{
+    await FirebaseFirestore.instance.collection('Users')
+        .doc(FirebaseAuth.instance.currentUser!.uid).get().
+    then((value){
+
+      print(value.data());
+      setState(() {
+        userdetails=value.data();
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
@@ -78,512 +94,163 @@ class _HomePageState extends State<HomePage> {
           return screens[_selectedIndex!];
         }
       }),
-      drawer: Drawer(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                  height: MediaQuery.of(context).size.height * 0.3,
-                  decoration: BoxDecoration(gradient: gradient),
-                  child: StreamBuilder<QuerySnapshot>(
-                    stream: FirebaseFirestore.instance
-                        .collection("Users")
-                        .snapshots(),
-                    builder: (BuildContext context,
-                        AsyncSnapshot<QuerySnapshot> snapshot) {
-                      if (!snapshot.hasData) return const SizedBox.shrink();
-                      return ListView.builder(
-                        itemCount: snapshot.data!.docs.length,
-                        itemBuilder: (BuildContext context, index) {
-                          DocumentSnapshot document =
-                              snapshot.data!.docs[index];
-                          Map<String, dynamic> map = snapshot.data!.docs[index]
-                              .data() as Map<String, dynamic>;
-                          if (map["id"].toString() ==
-                              FirebaseAuth.instance.currentUser!.uid) {
-                            return Padding(
-                              padding: const EdgeInsets.all(28.0),
-                              child: Container(
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    CircleAvatar(
-                                      radius: 40,
-                                      backgroundImage:
-                                          AssetImage('assets/avatar.jpg'),
+      drawer:Drawer(
+        child: ListView(
+          padding: EdgeInsets.only(top: 0),
+          children: [
+            Container(
+                height: height * 0.27,
+                //decoration: BoxDecoration(gradient: gradient),
+                color: HexColor('7B62DF'),
+                child: StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection("Users")
+                      .snapshots(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if (!snapshot.hasData) return const SizedBox.shrink();
+                    return ListView.builder(
+                      itemCount: snapshot.data!.docs.length,
+                      itemBuilder: (BuildContext context, index) {
+                        DocumentSnapshot document = snapshot.data!.docs[index];
+                        Map<String, dynamic> map = snapshot.data!.docs[index]
+                            .data() as Map<String, dynamic>;
+                        if (map["id"].toString() ==
+                            FirebaseAuth.instance.currentUser!.uid) {
+                          return Padding(
+                            padding:  EdgeInsets.all(width*0.05),
+                            child: Container(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  CircleAvatar(
+                                    radius: width*0.089,
+                                    backgroundImage: AssetImage('assets/user.jpg'),
+                                  ),
+                                  SizedBox(
+                                    height: height*0.01,
+                                  ),
+                                  map['name'] != null
+                                      ? Text(map['name'], style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: width*0.049
+                                  ),
+                                  )
+                                      : Text(map['mobilenumber'], style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: width*0.049
+                                  ),
+                                  ),
+                                  SizedBox(
+                                    height: height*0.007,
+                                  ),
+                                  map['email'] != null
+                                      ? Text(
+                                    map['email'],
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: width*0.038
                                     ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                    map['name'] != null
-                                        ? Text(
-                                            map['name'],
-                                            style: TextStyle(
-                                                fontFamily: 'SemiBold',
-                                                color: Colors.black,
-                                                fontSize: 15),
-                                          )
-                                        : Container(),
-                                    // map['mobilenumber'] != null
-                                    //     ? Text(
-                                    //         '+91 ${map['mobilenumber']}',
-                                    //         style: TextStyle(
-                                    //             fontFamily: 'SemiBold',
-                                    //             color:
-                                    //                 Colors.black.withOpacity(0.8),
-                                    //             fontSize: 15),
-                                    //       )
-                                    //     : Container(),
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                    map['email'] != null
-                                        ? Text(
-                                            map['email'],
-                                            style: TextStyle(
-                                                fontFamily: 'SemiBold',
-                                                color: Colors.black,
-                                                fontSize: 15),
-                                          )
-                                        : Container(),
-                                  ],
-                                ),
+                                  )
+                                      : Container(),
+                                ],
                               ),
-                            );
-                          } else {
-                            return Container();
-                          }
-                        },
-                      );
-                    },
-                  )),
-              SizedBox(
-                height: 20,
-              ),
-              Container(
-                height: 50,
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 18,
-                    ),
-                    Icon(
-                      Icons.payment_rounded,
-                      color: Colors.black,
-                    ),
-                    SizedBox(
-                      width: 6,
-                    ),
-                    // Text(
-                    //   'Payments',
-                    //   style: TextStyle(
-                    //       fontFamily: 'Medium',
-                    //       fontSize: 18,
-                    //       color: Colors.black),
-                    // ),
-                    OutlinedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const PaymentHistory()),
+                            ),
                           );
-
-                          // print(openPaymentHistory);
-                          // setState(() {
-                          //   openPaymentHistory = true;
-                          //   PaymentHistory();
-                          // });
-                        },
-                        child: Text(
-                          'Payments History',
-                          style: TextStyle(
-                              fontFamily: 'Medium',
-                              fontSize: 18,
-                              color: Colors.black),
-                        ))
-                  ],
-                ),
-              ),
-
-              SizedBox(
-                height: 20,
-              ),
-              Divider(
-                thickness: 1,
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Container(
-                height: 50,
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 18,
-                    ),
-                    Icon(
-                      Icons.share,
-                      color: Colors.black,
-                    ),
-                    SizedBox(
-                      width: 6,
-                    ),
-                    // Text(
-                    //   'Share',
-                    //   style: TextStyle(
-                    //       fontFamily: 'Medium',
-                    //       fontSize: 18,
-                    //       color: Colors.black),
-                    // ),
-                    OutlinedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => HomeScreen(),
-                          ),
-                        );
+                        } else {
+                          return Container();
+                        }
                       },
-                      child: Text(
-                        'My Courses',
-                        style: TextStyle(
-                            fontFamily: 'Medium',
-                            fontSize: 18,
-                            color: Colors.black),
-                      ),
-                    )
-                  ],
+                    );
+                  },
+                )),
+            InkWell(
+              child: ListTile(
+                title: Text('Home'),
+                leading: Icon(
+                  Icons.home,
+                  color: HexColor('6153D3'),
                 ),
               ),
+              onTap: () {
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>HomePage()));
+              },
+            ),
+            InkWell(
+              child: ListTile(
+                title: Text('My Account'),
+                leading: Icon(
+                  Icons.person,
+                  color: HexColor('6153D3'),
+                ),
+              ),
+            ),
+            InkWell(
+              child: ListTile(
+                title: Text('My Courses'),
+                leading: Icon(
+                  Icons.book,
+                  color: HexColor('6153D3'),
+                ),
+              ),
+              onTap: () async{
+                Navigator.push(context, MaterialPageRoute(builder: (context)=> HomeScreen()));
+              },
+            ),
+            InkWell(
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context)=> PaymentHistory()));
+              },
+              child: ListTile(
+                title: Text('Payment History'),
+                leading: Icon(
+                  Icons.payment_rounded,
+                  color:HexColor('6153D3'),
+                ),
+              ),
+            ),
+            Divider(thickness: 2,),
+            InkWell(
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context)=> PrivacyPolicy()));
+              },
+              child: ListTile(
+                title: Text('Privacy policy'),
+                leading: Icon(
+                  Icons.privacy_tip,
+                  color: HexColor('6153D3'),
+                ),
+              ),
+            ),
+            InkWell(
+              child: ListTile(
+                title: Text('About Us'),
+                leading: Icon(
+                  Icons.info,
+                  color: HexColor('6153D3'),
+                ),
+              ),
+              onTap: () async{
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>AboutUs()));
+              },
+            ),
+            InkWell(
+              child: ListTile(
+                title: Text('LogOut'),
+                leading: Icon(
+                  Icons.logout,
+                  color: HexColor('6153D3'),
+                ),
+              ),
+              onTap: () {
+                logOut(context);
+              },
+            ),
 
-              SizedBox(
-                height: 20,
-              ),
-              Divider(
-                thickness: 1,
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              /*Container(
-                height: 50,
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 18,
-                    ),
-                    Icon(
-                      Icons.settings,
-                      color: Colors.black,
-                    ),
-                    SizedBox(
-                      width: 6,
-                    ),
-                    Text(
-                      'Settings',
-                      style: TextStyle(
-                          fontFamily: 'Medium',
-                          fontSize: 18,
-                          color: Colors.black),
-                    )
-                  ],
-                ),
-              ),*/
-              Container(
-                height: 50,
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 18,
-                    ),
-                    Icon(
-                      Icons.privacy_tip_outlined,
-                      color: Colors.black,
-                    ),
-                    SizedBox(
-                      width: 6,
-                    ),
-                    // Text(
-                    //   'Privacy Policy',
-                    //   style: TextStyle(
-                    //       fontFamily: 'Medium',
-                    //       fontSize: 18,
-                    //       color: Colors.black),
-                    // ),
-                    OutlinedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const PrivacyPolicy()),
-                          );
-                        },
-                        child: Text(
-                          'Privacy Policy',
-                          style: TextStyle(
-                              fontFamily: 'Medium',
-                              fontSize: 18,
-                              color: Colors.black),
-                        ))
-                  ],
-                ),
-              ),
-
-              // SizedBox(
-              //   height: 20,
-              // ),
-              // Divider(
-              //   thickness: 1,
-              // ),
-              // SizedBox(
-              //   height: 20,
-              // ),
-              // Container(
-              //   height: 50,
-              //   child: Row(
-              //     children: [
-              //       SizedBox(
-              //         width: 18,
-              //       ),
-              //       Icon(
-              //         Icons.edit,
-              //         color: Colors.black,
-              //       ),
-              //       SizedBox(
-              //         width: 6,
-              //       ),
-              //       // Text(
-              //       //   'Share',
-              //       //   style: TextStyle(
-              //       //       fontFamily: 'Medium',
-              //       //       fontSize: 18,
-              //       //       color: Colors.black),
-              //       // ),
-              //       OutlinedButton(
-              //           onPressed: () {},
-              //           child: Text(
-              //             'Edit Profile',
-              //             style: TextStyle(
-              //                 fontFamily: 'Medium',
-              //                 fontSize: 18,
-              //                 color: Colors.black),
-              //           ))
-              //     ],
-              //   ),
-              // ),
-
-              SizedBox(
-                height: 20,
-              ),
-              Divider(
-                thickness: 1,
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Container(
-                height: 50,
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 18,
-                    ),
-                    Icon(
-                      Icons.info,
-                      color: Colors.black,
-                    ),
-                    SizedBox(
-                      width: 6,
-                    ),
-                    // Text(
-                    //   'Share',
-                    //   style: TextStyle(
-                    //       fontFamily: 'Medium',
-                    //       fontSize: 18,
-                    //       color: Colors.black),
-                    // ),
-                    OutlinedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => AboutUs()),
-                          );
-                        },
-                        child: Text(
-                          'About Us',
-                          style: TextStyle(
-                              fontFamily: 'Medium',
-                              fontSize: 18,
-                              color: Colors.black),
-                        ))
-                  ],
-                ),
-              ),
-
-              const SizedBox(
-                height: 150,
-              ),
-              Divider(
-                thickness: 1,
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Container(
-                height: 50,
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 18,
-                    ),
-                    Icon(
-                      Icons.logout_outlined,
-                      color: Colors.black,
-                    ),
-                    SizedBox(
-                      width: 6,
-                    ),
-                    // Text(
-                    //   'Share',
-                    //   style: TextStyle(
-                    //       fontFamily: 'Medium',
-                    //       fontSize: 18,
-                    //       color: Colors.black),
-                    // ),
-                    OutlinedButton(
-                        onPressed: () {
-                          logOut(context);
-                        },
-                        child: Text(
-                          'Logout',
-                          style: TextStyle(
-                              fontFamily: 'Medium',
-                              fontSize: 18,
-                              color: Colors.black),
-                        ))
-                  ],
-                ),
-              ),
-              // Container(
-              //   alignment: Alignment.center,
-              //   height: 50,
-              //   width: 120,
-              //   decoration: BoxDecoration(
-              //       color: Colors.black.withOpacity(0.05),
-              //       borderRadius: BorderRadius.circular(40)),
-              //   child: InkWell(
-              //     onTap: () {
-              //       logOut(context);
-              //     },
-              //     child: Row(
-              //       mainAxisAlignment: MainAxisAlignment.center,
-              //       //crossAxisAlignment: CrossAxisAlignment.center,
-              //       children: [
-              //         SizedBox(width: 18),
-              //         Icon(Icons.logout_outlined,
-              //             color: Colors.black, size: 20),
-              //         SizedBox(
-              //           width: 6,
-              //         ),
-              //         Text(
-              //           'Logout',
-              //           style: TextStyle(
-              //               fontFamily: 'Medium',
-              //               fontSize: 14,
-              //               color: Colors.black),
-              //         )
-              //       ],
-              //     ),
-              //   ),
-              // ),
-              // Expanded(
-              //   child: Column(
-              //     crossAxisAlignment: CrossAxisAlignment.start,
-              //     children: [
-              //       SizedBox(
-              //         height: 50,
-              //       ),
-              //       Padding(
-              //         padding: const EdgeInsets.only(left: 18.0),
-              //         child: Container(
-              //           height: 50,
-              //           width: 120,
-              //           decoration: BoxDecoration(
-              //               color: Colors.black.withOpacity(0.05),
-              //               borderRadius: BorderRadius.circular(40)),
-              //           child: InkWell(
-              //             onTap: () {
-              //               logOut(context);
-              //             },
-              //             child: Row(
-              //               mainAxisAlignment: MainAxisAlignment.center,
-              //               children: [
-              //                 Icon(Icons.logout_outlined,
-              //                     color: Colors.black, size: 20),
-              //                 SizedBox(
-              //                   width: 6,
-              //                 ),
-              //                 Text(
-              //                   'Logout',
-              //                   style: TextStyle(
-              //                       fontFamily: 'Medium',
-              //                       fontSize: 14,
-              //                       color: Colors.black),
-              //                 )
-              //               ],
-              //             ),
-              //           ),
-              //         ),
-              //       ),
-              //       SizedBox(
-              //         height: 20,
-              //       ),
-              //       Padding(
-              //         padding: const EdgeInsets.only(left: 18.0),
-              //         child: Container(
-              //             child: Row(
-              //           children: [
-              //             Container(
-              //                 height: 30,
-              //                 child: Image.asset(
-              //                   'assets/Linkedin.png',
-              //                   fit: BoxFit.contain,
-              //                 )),
-              //             SizedBox(
-              //               width: 12,
-              //             ),
-              //             Container(
-              //                 height: 34,
-              //                 child: Image.asset(
-              //                   'assets/Instagram.jpg',
-              //                   fit: BoxFit.contain,
-              //                 )),
-              //             Container(
-              //                 height: 34,
-              //                 child: Image.asset(
-              //                   'assets/Telegram.png',
-              //                   fit: BoxFit.contain,
-              //                 ))
-              //           ],
-              //         )),
-              //       ),
-              //       SizedBox(
-              //         height: 40,
-              //       ),
-              //     ],
-              //   ),
-              // )
-            ],
-          ),
+          ],
         ),
       ),
       bottomNavigationBar: SizedBox(
@@ -651,3 +318,47 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
+
+
+// StreamBuilder<QuerySnapshot>(
+// stream: FirebaseFirestore.instance
+//     .collection("Users")
+// .snapshots(),
+// builder: (BuildContext context,AsyncSnapshot<QuerySnapshot> snapshot) {
+// if (!snapshot.hasData) return const SizedBox.shrink();
+// return ListView.builder(
+// itemCount: snapshot.data!.docs.length,
+// itemBuilder: (BuildContext context, index) {
+// DocumentSnapshot document =
+// snapshot.data!.docs[index];
+// Map<String, dynamic> map = snapshot.data!.docs[0]
+//     .data() as Map<String, dynamic>;
+// if (map["id"].toString() ==
+// FirebaseAuth.instance.currentUser!.uid) {
+// print('Printing map ${map}');
+// return UserAccountsDrawerHeader(
+// // accountEmail: userdetails!=null?Text(userdetails!['email']):Text(''),
+// // accountName: userdetails!=null?Text(userdetails!['name']):Text(''),
+// accountEmail: map['email'] != null ? Text(map['email']) : Text(' '),
+// accountName: map['name'] != null ? Text(map['name']) : Text(' '),
+// currentAccountPicture: GestureDetector(
+// // onTap: (){
+// //   Navigator.push(context, MaterialPageRoute(builder: (context)=>AccountInfo()));
+// // },
+// child: CircleAvatar(
+// backgroundColor: Colors.transparent,
+// backgroundImage: NetworkImage(
+// 'https://stratosphere.co.in/img/user.jpg'),
+// ),
+// ),
+// decoration: BoxDecoration(
+// color: HexColor('7B62DF'),
+// ),
+// );
+// } else {
+// return Container();
+// }
+// }
+// );
+// },
+// ),
