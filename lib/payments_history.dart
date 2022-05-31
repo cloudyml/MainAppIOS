@@ -5,6 +5,7 @@ import 'package:cloudyml_app2/catalogue_screen.dart';
 import 'package:cloudyml_app2/combo/combo_store.dart';
 import 'package:cloudyml_app2/globals.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -215,7 +216,7 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                 color: Color(0xFF14F5A4),
                 borderRadius: BorderRadius.circular(100),
               ),
-              child: Container(),
+              child:Icon(Icons.check,color: Colors.white,)
             ),
           ),
           Positioned(
@@ -246,7 +247,7 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                 borderRadius: BorderRadius.all(
                     Radius.elliptical(32.99998092651367, 32.99998092651367)),
               ),
-              child: Container(),
+              child:Icon(CupertinoIcons.exclamationmark ,color: Colors.white,)
             ),
           ),
           courses.length > 0
@@ -549,7 +550,7 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                                           BorderRadius.circular(
                                                               100),
                                                     ),
-                                                    child: Container(),
+                                                    child: Icon(CupertinoIcons.exclamationmark ,color: Colors.white,)
                                                   )
                                                 : Container(
                                                     width: 37 *
@@ -565,7 +566,7 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                                               32.99998092651367,
                                                               32.99998092651367)),
                                                     ),
-                                                    child: Container(),
+                                                    child: Icon(Icons.check,color: Colors.white,)
                                                   ),
                                           ],
                                         ),

@@ -968,8 +968,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
 
                                   //confirmEmailLoading = true;
                                 });
-                                userprofile(
-                                    username.text, mobile.text, email.text);
+                                // userprofile(
+                                //     username.text, mobile.text, email.text);
 
                                 Navigator.push(
                                     context,
