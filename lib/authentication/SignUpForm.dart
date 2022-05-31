@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cloudyml_app2/authentication/firebase_auth.dart';
@@ -26,7 +27,8 @@ class _SignUpformState extends State<SignUpform> {
   bool isVerified = false;
   Timer? timer;
   final _signupkey = GlobalKey<FormState>();
- // FirebaseAuth _auth = FirebaseAuth.instance;
+
+  // FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   void dispose() {
@@ -47,7 +49,8 @@ class _SignUpformState extends State<SignUpform> {
       //   isVerifyy = true;
       // });
       // print('Is verify ${isVerifyy}');
-      userprofile(name:username.text,mobilenumber: mobile.text, email:email.text);
+      userprofile(
+          name: username.text, mobilenumber: mobile.text, email: email.text);
       AwesomeDialog(
         context: context,
         animType: AnimType.LEFTSLIDE,
@@ -76,7 +79,7 @@ class _SignUpformState extends State<SignUpform> {
               type: PageTransitionType.rightToLeft,
               child: HomePage()),
           (route) => false);
-    }else{
+    } else {
       // setState(() {
       //   _auth.currentUser=null;
       // });
@@ -94,14 +97,19 @@ class _SignUpformState extends State<SignUpform> {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
+    var verticalScale = height / mockUpHeight;
+    var horizontalScale = width / mockUpWidth;
     return Form(
       key: _signupkey,
       child: Container(
-        margin: EdgeInsets.all(16.0),
+        margin: EdgeInsets.all(min(horizontalScale, verticalScale) * 24),
         decoration: BoxDecoration(
-            color: Colors.white, borderRadius: BorderRadius.circular(16.0)),
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(
+                min(horizontalScale, verticalScale) * 25)),
         child: ListView(
-          padding: EdgeInsets.all(16.0),
+          padding: EdgeInsets.fromLTRB(horizontalScale * 25, verticalScale * 36,
+              horizontalScale * 24, verticalScale * 36),
           shrinkWrap: true,
           children: [
             TextFormField(
@@ -111,11 +119,11 @@ class _SignUpformState extends State<SignUpform> {
                   hintText: 'Enter Your Name',
                   labelText: 'Name',
                   floatingLabelStyle: TextStyle(
-                      fontSize: width * 0.049,
+                      fontSize: 18,
                       fontWeight: FontWeight.w500,
                       color: HexColor('7B62DF')),
                   labelStyle: TextStyle(
-                    fontSize: width * 0.049,
+                    fontSize: 18,
                   ),
                   focusedBorder: OutlineInputBorder(
                       borderSide:
@@ -138,7 +146,7 @@ class _SignUpformState extends State<SignUpform> {
               },
             ),
             SizedBox(
-              height: height * 0.017,
+              height: verticalScale * 12,
             ),
             TextFormField(
               controller: email,
@@ -146,11 +154,11 @@ class _SignUpformState extends State<SignUpform> {
                   hintText: 'Enter Your Email',
                   labelText: 'Email',
                   floatingLabelStyle: TextStyle(
-                      fontSize: width * 0.049,
+                      fontSize: 18,
                       fontWeight: FontWeight.w500,
                       color: HexColor('7B62DF')),
                   labelStyle: TextStyle(
-                    fontSize: width * 0.049,
+                    fontSize: 18,
                   ),
                   focusedBorder: OutlineInputBorder(
                       borderSide:
@@ -176,7 +184,7 @@ class _SignUpformState extends State<SignUpform> {
               },
             ),
             SizedBox(
-              height: height * 0.017,
+              height: verticalScale * 12,
             ),
             TextFormField(
               controller: pass,
@@ -184,10 +192,10 @@ class _SignUpformState extends State<SignUpform> {
                   hintText: 'Set Password',
                   labelText: 'Password',
                   floatingLabelStyle: TextStyle(
-                      fontSize: width * 0.049,
+                      fontSize: 18,
                       fontWeight: FontWeight.w500,
                       color: HexColor('7B62DF')),
-                  labelStyle: TextStyle(fontSize: width * 0.049),
+                  labelStyle: TextStyle(fontSize: 18),
                   focusedBorder: OutlineInputBorder(
                       borderSide:
                           BorderSide(color: HexColor('7B62DF'), width: 2)),
@@ -215,7 +223,7 @@ class _SignUpformState extends State<SignUpform> {
               },
             ),
             SizedBox(
-              height: height * 0.017,
+              height: verticalScale * 12,
             ),
             TextFormField(
               controller: mobile,
@@ -223,11 +231,11 @@ class _SignUpformState extends State<SignUpform> {
                   hintText: 'Enter Your Number',
                   labelText: 'Phone Number',
                   floatingLabelStyle: TextStyle(
-                      fontSize: width * 0.049,
+                      fontSize: 18,
                       fontWeight: FontWeight.w500,
                       color: HexColor('7B62DF')),
                   labelStyle: TextStyle(
-                    fontSize: width * 0.049,
+                    fontSize: 18,
                   ),
                   focusedBorder: OutlineInputBorder(
                       borderSide:
@@ -255,7 +263,7 @@ class _SignUpformState extends State<SignUpform> {
               },
             ),
             SizedBox(
-              height: height * 0.0086,
+              height: verticalScale * 10,
             ),
             Center(
               child: (_isLoading)
@@ -263,9 +271,10 @@ class _SignUpformState extends State<SignUpform> {
                   : ElevatedButton(
                       child: Text(
                         'SignUp',
+                        textScaleFactor: min(horizontalScale, verticalScale),
                         style: TextStyle(
                             color: Colors.white,
-                            fontSize: width * 0.049,
+                            fontSize: 22,
                             fontWeight: FontWeight.w600),
                       ),
                       style:
@@ -301,9 +310,12 @@ class _SignUpformState extends State<SignUpform> {
                                                   width: width * 0.5),
                                               Text(
                                                 'Verify Your Email',
+                                                textScaleFactor: min(
+                                                    horizontalScale,
+                                                    verticalScale),
                                                 style: TextStyle(
                                                     color: Colors.red,
-                                                    fontSize: width * 0.06,
+                                                    fontSize: 22,
                                                     fontWeight:
                                                         FontWeight.bold),
                                               ),
@@ -328,7 +340,7 @@ class _SignUpformState extends State<SignUpform> {
                                               textAlign: TextAlign.center,
                                             ),
                                             SizedBox(
-                                              height: height * 0.017,
+                                              height: verticalScale * 10,
                                             ),
                                             Text(
                                               'Didn\'t get the email?',
@@ -365,9 +377,11 @@ class _SignUpformState extends State<SignUpform> {
                                         title: Center(
                                           child: Text(
                                             'Account Creation Failed!',
+                                            textScaleFactor: min(
+                                                horizontalScale, verticalScale),
                                             style: TextStyle(
                                                 color: Colors.red,
-                                                fontSize: width * 0.049,
+                                                fontSize: 22,
                                                 fontWeight: FontWeight.bold),
                                           ),
                                         ),

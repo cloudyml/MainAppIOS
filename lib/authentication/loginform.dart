@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloudyml_app2/authentication/firebase_auth.dart';
 import 'package:cloudyml_app2/globals.dart';
 import 'package:cloudyml_app2/home.dart';
@@ -29,14 +31,16 @@ class _LoginFormState extends State<LoginForm> {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
+    var verticalScale = height / mockUpHeight;
+    var horizontalScale = width / mockUpWidth;
     return Form(
       key: _loginkey,
       child: Container(
-        margin: EdgeInsets.all(16.0),
+        margin: EdgeInsets.all( min(horizontalScale, verticalScale)*24),
         decoration: BoxDecoration(
-            color: Colors.white, borderRadius: BorderRadius.circular(16.0)),
+            color: Colors.white, borderRadius: BorderRadius.circular( min(horizontalScale, verticalScale)*25)),
         child: ListView(
-          padding: EdgeInsets.all(16.0),
+          padding: EdgeInsets.fromLTRB(horizontalScale*25,  verticalScale*36, horizontalScale*24, verticalScale*36),
           shrinkWrap: true,
           children: [
             TextFormField(
@@ -45,11 +49,11 @@ class _LoginFormState extends State<LoginForm> {
                   hintText: 'Enter Your Email',
                   labelText: 'Email',
                   floatingLabelStyle: TextStyle(
-                      fontSize: width * 0.049,
+                      fontSize: 18,
                       fontWeight: FontWeight.w500,
                       color: HexColor('7B62DF')),
                   labelStyle: TextStyle(
-                    fontSize: width * 0.049,
+                    fontSize: 18,
                   ),
                   border: OutlineInputBorder(),
                   focusedBorder: OutlineInputBorder(
@@ -76,7 +80,7 @@ class _LoginFormState extends State<LoginForm> {
               },
             ),
             SizedBox(
-              height: height * 0.017,
+              height: verticalScale*16,
             ),
             TextFormField(
               controller: pass,
@@ -84,10 +88,10 @@ class _LoginFormState extends State<LoginForm> {
                   hintText: 'Enter Password',
                   labelText: 'Password',
                   floatingLabelStyle: TextStyle(
-                      fontSize: width * 0.049,
+                      fontSize: 18,
                       fontWeight: FontWeight.w500,
                       color: HexColor('7B62DF')),
-                  labelStyle: TextStyle(fontSize: width * 0.049),
+                  labelStyle: TextStyle(fontSize: 18),
                   border: OutlineInputBorder(),
                   focusedBorder: OutlineInputBorder(
                       borderSide:
@@ -116,16 +120,17 @@ class _LoginFormState extends State<LoginForm> {
               },
             ),
             SizedBox(
-              height: height * 0.017,
+              height: verticalScale*9,
             ),
             Text(
               'Forgot Password?',
+              textScaleFactor: min(horizontalScale, verticalScale),
               textAlign: TextAlign.end,
               style:
-                  TextStyle(color: HexColor('0047FF'), fontSize: width * 0.039),
+                  TextStyle(color: HexColor('0047FF'), fontSize: 16),
             ),
             SizedBox(
-              height: height * 0.017,
+              height: verticalScale*12,
             ),
             Center(
               child: (_isLoading)
@@ -133,9 +138,10 @@ class _LoginFormState extends State<LoginForm> {
                   : ElevatedButton(
                       child: Text(
                         'Login',
+                        textScaleFactor: min(horizontalScale, verticalScale),
                         style: TextStyle(
                             color: Colors.white,
-                            fontSize: width * 0.049,
+                            fontSize: 22,
                             fontWeight: FontWeight.w600),
                       ),
                       style: ElevatedButton.styleFrom(
@@ -173,14 +179,18 @@ class _LoginFormState extends State<LoginForm> {
                                           title: Center(
                                             child: Text(
                                               'Error',
+                                              textScaleFactor: min(horizontalScale, verticalScale),
                                               style: TextStyle(
                                                   color: Colors.red,
-                                                  fontSize: width * 0.058,
+                                                  fontSize: 24,
                                                   fontWeight: FontWeight.bold),
                                             ),
                                           ),
                                           content: Text(
-                                              '       There is no user record \n corresponding to the identifier.'),
+                                              '       There is no user record \n corresponding to the identifier.',
+                                            textScaleFactor: min(horizontalScale, verticalScale),
+                                            style: TextStyle(fontSize: 16),
+                                          ),
                                           actions: [
                                             TextButton(
                                                 child: Text('Retry'),

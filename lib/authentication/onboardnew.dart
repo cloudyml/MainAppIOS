@@ -1,8 +1,11 @@
+import 'dart:math';
+
 import 'package:cloudyml_app2/authentication/SignUpForm.dart';
 import 'package:cloudyml_app2/authentication/firebase_auth.dart';
 import 'package:cloudyml_app2/authentication/loginform.dart';
 import 'package:cloudyml_app2/authentication/onboardbg.dart';
 import 'package:cloudyml_app2/authentication/phoneauthnew.dart';
+import 'package:cloudyml_app2/globals.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -25,6 +28,8 @@ class _OnboardewState extends State<Onboardew> {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
+    var verticalScale = height / mockUpHeight;
+    var horizontalScale = width / mockUpWidth;
     print(height);
     print(width);
     return Scaffold(
@@ -38,21 +43,23 @@ class _OnboardewState extends State<Onboardew> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 SizedBox(
-                  height: height * 0.1,
+                  height: verticalScale * 76,
                 ),
                 Center(
                     child: Image.asset(
                   'assets/logo.png',
-                  height: height * 0.085,
+                  height: verticalScale * 80,
+                  width: horizontalScale * 238,
                 )),
                 SizedBox(
-                  height: height * 0.07,
+                  height: verticalScale * 50,
                 ),
                 RichText(
                     textAlign: TextAlign.center,
+                    textScaleFactor: min(horizontalScale, verticalScale),
                     text: TextSpan(
                         style: TextStyle(
-                          fontSize: width * 0.064,
+                          fontSize: 25,
                         ),
                         children: [
                           TextSpan(text: "Learn "),
@@ -69,11 +76,10 @@ class _OnboardewState extends State<Onboardew> {
                               style: TextStyle(fontWeight: FontWeight.bold)),
                         ])),
                 SizedBox(
-                  height: height * 0.05,
+                  height: verticalScale * 47.44,
                 ),
                 Container(
-                  //height: 20,
-                  width: width * 0.8,
+                  width: horizontalScale * 322,
                   decoration: BoxDecoration(
                       boxShadow: [
                         // color: Colors.white, //background color of box
@@ -87,11 +93,15 @@ class _OnboardewState extends State<Onboardew> {
                         )
                       ],
                       color: Colors.white,
-                      borderRadius:
-                          BorderRadius.all(Radius.circular(width * 0.074))),
+                      borderRadius: BorderRadius.all(Radius.circular(
+                        min(horizontalScale, verticalScale) * 25,
+                      ))),
                   child: Padding(
-                    padding: EdgeInsets.fromLTRB(width * 0.045, height * 0.035,
-                        width * 0.045, height * 0.035),
+                    padding: EdgeInsets.fromLTRB(
+                        horizontalScale * 24.76,
+                        verticalScale * 35.56,
+                        horizontalScale * 24.24,
+                        verticalScale * 35.56),
                     child: Column(
                       children: [
                         InkWell(
@@ -102,28 +112,28 @@ class _OnboardewState extends State<Onboardew> {
                             });
                           },
                           child: Container(
-                            height: height * 0.0588,
-                            width: width,
+                            height: 45 * verticalScale,
+                            width: 273 * horizontalScale,
                             decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.circular(width * 0.03),
+                                borderRadius: BorderRadius.circular(
+                                    min(horizontalScale, verticalScale) * 8),
                                 border: Border.all(
                                     color: HexColor('7B62DF'), width: 2)),
                             child: Center(
-                              child: FittedBox(
-                                child: Text(
-                                  'Continue with Email',
-                                  style: TextStyle(
-                                      fontFamily: 'SemiBold',
-                                      color: Colors.black,
-                                      fontSize: width * 0.047),
-                                ),
+                              child: Text(
+                                'Continue with Email',
+                                textScaleFactor:
+                                    min(horizontalScale, verticalScale),
+                                style: TextStyle(
+                                    fontFamily: 'SemiBold',
+                                    color: Colors.black,
+                                    fontSize: 20),
                               ),
                             ),
                           ),
                         ),
                         SizedBox(
-                          height: height * 0.018,
+                          height: verticalScale * 21,
                         ),
                         InkWell(
                           onTap: () {
@@ -132,63 +142,58 @@ class _OnboardewState extends State<Onboardew> {
                             });
                           },
                           child: Container(
-                            height: height * 0.0588,
-                            width: width,
+                            height: 45 * verticalScale,
+                            width: 273 * horizontalScale,
                             decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.circular(width * 0.03),
+                                borderRadius: BorderRadius.circular(
+                                    min(horizontalScale, verticalScale) * 8),
                                 border: Border.all(
                                     color: HexColor('7B62DF'), width: 2)),
                             child: Center(
-                              child: FittedBox(
-                                child: Text(
-                                  'Continue with Phone',
-                                  style: TextStyle(
-                                      fontFamily: 'SemiBold',
-                                      color: Colors.black,
-                                      fontSize: width * 0.047),
-                                ),
+                              child: Text(
+                                'Continue with Phone',
+                                textScaleFactor:
+                                    min(horizontalScale, verticalScale),
+                                style: TextStyle(
+                                    fontFamily: 'SemiBold',
+                                    color: Colors.black,
+                                    fontSize: 20),
                               ),
                             ),
                           ),
                         ),
                         SizedBox(
-                          height: height * 0.016,
+                          height: verticalScale * 21,
                         ),
                         Row(
                           children: [
-                            SizedBox(
-                              width: width * 0.03,
-                            ),
                             Expanded(
                                 child: Divider(
                               color: Colors.black,
                               thickness: 2,
                             )),
                             SizedBox(
-                              width: width * 0.03,
+                              width: horizontalScale * 15,
                             ),
                             Text(
                               'OR',
+                              textScaleFactor:
+                                  min(horizontalScale, verticalScale),
                               style: TextStyle(
-                                  fontSize: width * 0.05,
-                                  fontWeight: FontWeight.w600),
+                                  fontSize: 18, fontWeight: FontWeight.w600),
                             ),
                             SizedBox(
-                              width: width * 0.03,
+                              width: horizontalScale * 15,
                             ),
                             Expanded(
                                 child: Divider(
                               color: Colors.black,
                               thickness: 2,
                             )),
-                            SizedBox(
-                              width: width * 0.03,
-                            ),
                           ],
                         ),
                         SizedBox(
-                          height: height * 0.016,
+                          height: verticalScale * 21,
                         ),
                         InkWell(
                           onTap: () {
@@ -209,11 +214,12 @@ class _OnboardewState extends State<Onboardew> {
                             }
                           },
                           child: Container(
-                            height: height * 0.0588,
-                            width: width,
+                            height: horizontalScale * 45,
+                            width: verticalScale * 273,
                             decoration: BoxDecoration(
                               color: Colors.white,
-                              borderRadius: BorderRadius.circular(width * 0.03),
+                              borderRadius: BorderRadius.circular(
+                                  min(horizontalScale, verticalScale) * 8),
                               boxShadow: [
                                 // color: Colors.white, //background color of box
                                 BoxShadow(
@@ -234,23 +240,25 @@ class _OnboardewState extends State<Onboardew> {
                                     )
                                   : Row(
                                       mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                          MainAxisAlignment.spaceEvenly,
                                       children: [
                                         SvgPicture.asset(
                                           'assets/google.svg',
-                                          height: height * 0.025,
+                                          height: min(horizontalScale,
+                                                  verticalScale) *
+                                              26,
+                                          width: min(horizontalScale,
+                                                  verticalScale) *
+                                              26,
                                         ),
-                                        SizedBox(
-                                          width: width * 0.03,
-                                        ),
-                                        FittedBox(
-                                          child: Text(
-                                            'Continue with Google',
-                                            style: TextStyle(
-                                                fontFamily: 'SemiBold',
-                                                color: Colors.black,
-                                                fontSize: width * 0.047),
-                                          ),
+                                        Text(
+                                          'Continue with Google',
+                                          textScaleFactor: min(
+                                              horizontalScale, verticalScale),
+                                          style: TextStyle(
+                                              fontFamily: 'SemiBold',
+                                              color: Colors.black,
+                                              fontSize: 18),
                                         ),
                                       ],
                                     ),
@@ -258,11 +266,12 @@ class _OnboardewState extends State<Onboardew> {
                           ),
                         ),
                         SizedBox(
-                          height: height * 0.030,
+                          height: verticalScale * 44,
                         ),
                         Text(
                           'Don’t have an account?',
-                          style: TextStyle(fontSize: width * 0.047),
+                          textScaleFactor: min(horizontalScale, verticalScale),
+                          style: TextStyle(fontSize: 20),
                         ),
                         InkWell(
                           onTap: () {
@@ -271,16 +280,15 @@ class _OnboardewState extends State<Onboardew> {
                               _formIndex = 2;
                             });
                           },
-                          child: Container(
-                            height: height * 0.047,
-                            child: Center(
-                              child: Text(
-                                'Sign Up with Email',
-                                style: TextStyle(
-                                    fontFamily: 'SemiBold',
-                                    color: HexColor('0047FF'),
-                                    fontSize: width * 0.047),
-                              ),
+                          child: Center(
+                            child: Text(
+                              'Sign Up with Email',
+                              textScaleFactor:
+                                  min(horizontalScale, verticalScale),
+                              style: TextStyle(
+                                  fontFamily: 'SemiBold',
+                                  color: HexColor('0047FF'),
+                                  fontSize: 20),
                             ),
                           ),
                         )
@@ -289,15 +297,16 @@ class _OnboardewState extends State<Onboardew> {
                   ),
                 ),
                 SizedBox(
-                  height: height * 0.0705,
+                  height: verticalScale * 73.56,
                 ),
                 InkWell(
                   onTap: () {},
                   child: Text(
                     'Need Help?',
+                    textScaleFactor: min(horizontalScale, verticalScale),
                     style: TextStyle(
                         fontFamily: 'Regular',
-                        fontSize: width * 0.045,
+                        fontSize: 18,
                         color: HexColor('9C9C9C')),
                   ),
                 ),
@@ -332,13 +341,15 @@ class _OnboardewState extends State<Onboardew> {
                                       ),
                                       child: Text(
                                         'Login',
+                                        textScaleFactor:
+                                            min(horizontalScale, verticalScale),
                                         style: TextStyle(
                                           color: HexColor('6153D3'),
-                                          fontSize: width * 0.049,
+                                          fontSize: 18,
                                         ),
                                       )),
                                   SizedBox(
-                                    width: width * 0.024,
+                                    width: horizontalScale * 17,
                                   ),
                                   IconButton(
                                       color: Colors.white,
@@ -379,12 +390,14 @@ class _OnboardewState extends State<Onboardew> {
                                                 width * 0.06)),
                                       ),
                                       child: Text('SignUp',
+                                          textScaleFactor: min(
+                                              horizontalScale, verticalScale),
                                           style: TextStyle(
                                             color: HexColor('6153D3'),
-                                            fontSize: width * 0.049,
+                                            fontSize: 18,
                                           ))),
                                   SizedBox(
-                                    width: width * 0.024,
+                                    width: horizontalScale * 17,
                                   ),
                                   IconButton(
                                       color: Colors.white,
@@ -429,12 +442,14 @@ class _OnboardewState extends State<Onboardew> {
                                             width * 0.06)),
                                   ),
                                   child: Text('OTP Verification',
+                                      textScaleFactor:
+                                          min(horizontalScale, verticalScale),
                                       style: TextStyle(
                                         color: HexColor('6153D3'),
-                                        fontSize: width * 0.049,
+                                        fontSize: 18,
                                       ))),
                               SizedBox(
-                                width: width * 0.017,
+                                width: horizontalScale * 17,
                               ),
                               IconButton(
                                   color: Colors.white,

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cloudyml_app2/authentication/firebase_auth.dart';
 import 'package:cloudyml_app2/globals.dart';
@@ -29,29 +31,34 @@ class _PhoneAuthenticationState extends State<PhoneAuthentication> {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
+    var verticalScale = height / mockUpHeight;
+    var horizontalScale = width / mockUpWidth;
     return Container(
-      margin: EdgeInsets.all(16.0),
+      margin: EdgeInsets.all(min(horizontalScale, verticalScale) * 24),
       decoration: BoxDecoration(
-          color: Colors.white, borderRadius: BorderRadius.circular(16.0)),
+          color: Colors.white,
+          borderRadius:
+              BorderRadius.circular(min(horizontalScale, verticalScale) * 25)),
       child: ListView(
-        padding: EdgeInsets.all(16.0),
+        padding: EdgeInsets.fromLTRB(horizontalScale * 25, verticalScale * 23,
+            horizontalScale * 24, verticalScale * 33),
         shrinkWrap: true,
         children: [
           Center(
               child: Text(
             "Enter Phone Number",
-            style:
-                TextStyle(fontWeight: FontWeight.bold, fontSize: width * 0.055),
+            textScaleFactor: min(horizontalScale, verticalScale),
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
           )),
           SizedBox(
-            height: height * 0.03,
+            height: verticalScale * 16,
           ),
           Form(
             key: _phonekey,
             child: Row(
               children: [
                 Container(
-                  width: width * 0.17,
+                  width: horizontalScale * 64,
                   child: TextFormField(
                     initialValue: countryCode,
                     onChanged: (v) {
@@ -65,11 +72,11 @@ class _PhoneAuthenticationState extends State<PhoneAuthentication> {
                         hintText: 'Code',
                         labelText: 'Code',
                         floatingLabelStyle: TextStyle(
-                            fontSize: width * 0.049,
+                            fontSize: 18,
                             fontWeight: FontWeight.w500,
                             color: HexColor('7B62DF')),
                         labelStyle: TextStyle(
-                          fontSize: width * 0.049,
+                          fontSize: 18,
                         ),
                         focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(
@@ -88,7 +95,7 @@ class _PhoneAuthenticationState extends State<PhoneAuthentication> {
                   ),
                 ),
                 SizedBox(
-                  width: width * 0.07,
+                  width: horizontalScale * 20,
                 ),
                 Flexible(
                   child: TextFormField(
@@ -98,11 +105,11 @@ class _PhoneAuthenticationState extends State<PhoneAuthentication> {
                         labelText: 'Phone Number',
                         counterText: '',
                         floatingLabelStyle: TextStyle(
-                            fontSize: width * 0.049,
+                            fontSize: 18,
                             fontWeight: FontWeight.w500,
                             color: HexColor('7B62DF')),
                         labelStyle: TextStyle(
-                          fontSize: width * 0.049,
+                          fontSize:18,
                         ),
                         focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(
@@ -135,7 +142,7 @@ class _PhoneAuthenticationState extends State<PhoneAuthentication> {
             ),
           ),
           SizedBox(
-            height: height * 0.032,
+            height: verticalScale * 18,
           ),
           Center(
             child: (_isloading)
@@ -147,15 +154,17 @@ class _PhoneAuthenticationState extends State<PhoneAuthentication> {
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
                           'Send OTP',
+                          textScaleFactor: min(horizontalScale, verticalScale),
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
-                              fontSize: width * 0.054),
+                              fontSize: 20),
                         ),
                       ),
                       decoration: BoxDecoration(
                         color: HexColor('6153D3'),
-                        borderRadius: BorderRadius.circular(width * 0.015),
+                        borderRadius: BorderRadius.circular(
+                            min(horizontalScale, verticalScale) * 8),
                         boxShadow: [
                           BoxShadow(
                             color: HexColor('6153D3'),
@@ -177,9 +186,7 @@ class _PhoneAuthenticationState extends State<PhoneAuthentication> {
                         await auth.verifyPhoneNumber(
                           phoneNumber: '$countryCode ${mobile.text}',
                           verificationCompleted:
-                              (PhoneAuthCredential credential) async {
-
-                              },
+                              (PhoneAuthCredential credential) async {},
                           codeAutoRetrievalTimeout: (String verificationId) {},
                           codeSent: (String verificationId,
                               int? forceResendingToken) {
@@ -202,9 +209,11 @@ class _PhoneAuthenticationState extends State<PhoneAuthentication> {
                                               width: width * 0.5),
                                           Text(
                                             'OTP Sent Successfully',
+                                            textScaleFactor: min(
+                                                horizontalScale, verticalScale),
                                             style: TextStyle(
                                                 color: Colors.green,
-                                                fontSize: width * 0.058,
+                                                fontSize: 22,
                                                 fontWeight: FontWeight.bold),
                                           ),
                                         ],
@@ -228,7 +237,7 @@ class _PhoneAuthenticationState extends State<PhoneAuthentication> {
                                           textAlign: TextAlign.center,
                                         ),
                                         SizedBox(
-                                          height: height * 0.017,
+                                          height: verticalScale * 10,
                                         ),
                                         InkWell(
                                           onTap: () {
@@ -237,14 +246,20 @@ class _PhoneAuthenticationState extends State<PhoneAuthentication> {
                                           child: Container(
                                             //height: 20,
                                             child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(10.0),
+                                              padding: EdgeInsets.all(
+                                                min(horizontalScale,
+                                                        verticalScale) *
+                                                    10,
+                                              ),
                                               child: Text(
                                                 'OK',
+                                                textScaleFactor: min(
+                                                    horizontalScale,
+                                                    verticalScale),
                                                 style: TextStyle(
                                                     fontWeight: FontWeight.bold,
                                                     color: Colors.white,
-                                                    fontSize: width * 0.049),
+                                                    fontSize: 20),
                                               ),
                                             ),
                                             decoration: BoxDecoration(
@@ -266,6 +281,9 @@ class _PhoneAuthenticationState extends State<PhoneAuthentication> {
                             });
                             showToast(
                                 'Error Verifying\nPlease check your Mobile Number and try again');
+                            setState(() {
+                              _isloading = false;
+                            });
                           },
                         );
                       } else {}
@@ -273,22 +291,22 @@ class _PhoneAuthenticationState extends State<PhoneAuthentication> {
                   ),
           ),
           SizedBox(
-            height: height * 0.034,
+            height: verticalScale * 24,
           ),
           Divider(
             thickness: 2,
           ),
           SizedBox(
-            height: height * 0.034,
+            height: verticalScale * 24,
           ),
           Center(
               child: Text(
             "Enter OTP",
-            style:
-                TextStyle(fontWeight: FontWeight.bold, fontSize: width * 0.055),
+            textScaleFactor: min(horizontalScale, verticalScale),
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
           )),
           SizedBox(
-            height: height * 0.026,
+            height: verticalScale * 14,
           ),
           Form(
             key: _otpkey,
@@ -305,11 +323,11 @@ class _PhoneAuthenticationState extends State<PhoneAuthentication> {
                 floatingLabelAlignment: FloatingLabelAlignment.center,
                 counterText: '',
                 floatingLabelStyle: TextStyle(
-                    fontSize: width * 0.06,
+                    fontSize: 22,
                     fontWeight: FontWeight.w500,
                     color: HexColor('7B62DF')),
                 labelStyle: TextStyle(
-                  fontSize: width * 0.049,
+                  fontSize:18,
                 ),
                 focusedBorder: OutlineInputBorder(
                     borderSide:
@@ -335,7 +353,7 @@ class _PhoneAuthenticationState extends State<PhoneAuthentication> {
             ),
           ),
           SizedBox(
-            height: height * 0.032,
+            height: verticalScale * 22,
           ),
           Center(
             child: (_verifyloading)
@@ -344,18 +362,22 @@ class _PhoneAuthenticationState extends State<PhoneAuthentication> {
                     child: Container(
                       //height: 20,
                       child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: EdgeInsets.all(
+                          min(horizontalScale, verticalScale) * 8,
+                        ),
                         child: Text(
                           'Verify',
+                          textScaleFactor: min(horizontalScale, verticalScale),
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
-                              fontSize: width * 0.054),
+                              fontSize: 20),
                         ),
                       ),
                       decoration: BoxDecoration(
                         color: HexColor('6153D3'),
-                        borderRadius: BorderRadius.circular(5),
+                        borderRadius: BorderRadius.circular(
+                            min(horizontalScale, verticalScale) * 5),
                         boxShadow: [
                           BoxShadow(
                             color: HexColor('6153D3'),
@@ -403,7 +425,10 @@ class _PhoneAuthenticationState extends State<PhoneAuthentication> {
 
                           var user = result.user;
                           if (user != null) {
-                            userprofile(name: null,mobilenumber: mobile.text,email: null);
+                            userprofile(
+                                name: null,
+                                mobilenumber: mobile.text,
+                                email: null);
                             await Future.delayed(Duration(seconds: 4));
                             Navigator.pushAndRemoveUntil(
                                 context,
@@ -412,7 +437,7 @@ class _PhoneAuthenticationState extends State<PhoneAuthentication> {
                                     curve: Curves.bounceInOut,
                                     type: PageTransitionType.rightToLeft,
                                     child: HomePage()),
-                                    (route) => false);
+                                (route) => false);
                           } else {
                             setState(() {
                               _verifyloading = false;
@@ -425,6 +450,9 @@ class _PhoneAuthenticationState extends State<PhoneAuthentication> {
                             _verifyloading = false;
                           });
                           showToast(e.toString());
+                          setState(() {
+                            _verifyloading = false;
+                          });
                         }
                       } else {}
                     },
