@@ -91,7 +91,7 @@ class _CouseState extends State<Couse> {
                           padding: const EdgeInsets.all(18.0),
                           child: InkWell(
                             onTap: () {
-                              print('working'); 
+                              print('working');
                               if (map['firstType'] == 'video') {
                                 Navigator.push(
                                   context,
@@ -107,17 +107,17 @@ class _CouseState extends State<Couse> {
                                   ),
                                 );
                               } else if (map['firstType'] == 'assignment') {
-                                // Navigator.push(
-                                //   context,
-                                //   PageTransition(
-                                //       duration: Duration(milliseconds: 400),
-                                //       curve: Curves.bounceInOut,
-                                //       type: PageTransitionType.rightToLeft,
-                                //       child: AssignmentScreen(
-                                //         isdemo: false,
-                                //         sr: 1,
-                                //       )),
-                                // );
+                                Navigator.push(
+                                  context,
+                                  PageTransition(
+                                      duration: Duration(milliseconds: 400),
+                                      curve: Curves.bounceInOut,
+                                      type: PageTransitionType.rightToLeft,
+                                      child: AssignmentScreen(
+                                        isdemo: false,
+                                        sr: 1,
+                                      )),
+                                );
                               } else {
                                 Navigator.push(
                                   context,

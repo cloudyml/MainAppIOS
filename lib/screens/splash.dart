@@ -17,10 +17,11 @@ class splash extends StatefulWidget {
 
 class _splashState extends State<splash> {
   void pushToHome() {
-    Navigator.pushAndRemoveUntil<void>(
+    Navigator.pushReplacement<void, void>(
       context,
-      MaterialPageRoute<void>(builder: (BuildContext context) =>  Authenticate()),
-      ModalRoute.withName('/'),
+      MaterialPageRoute<void>(
+        builder: (BuildContext context) => Authenticate(),
+      ),
     );
     print('pushedtohome');
   }
@@ -37,10 +38,10 @@ class _splashState extends State<splash> {
                 begin: Alignment.bottomLeft,
                 end: Alignment.topRight,
                 colors: [
-                  Color.fromARGB(255, 158, 2, 148),
-                  Color.fromARGB(255, 5, 2, 180),
-                  // Color.fromARGB(255, 3, 193, 218)
-                ])),
+              Color.fromARGB(255, 158, 2, 148),
+              Color.fromARGB(255, 5, 2, 180),
+              // Color.fromARGB(255, 3, 193, 218)
+            ])),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -48,8 +49,8 @@ class _splashState extends State<splash> {
             DropShadowImage(
               image: Image.asset(
                 'assets/DP_png.png',
-                width: width*.45,
-                height: height*.2,
+                width: width * .45,
+                height: height * .2,
               ),
               offset: const Offset(3, 8),
               scale: .9,
@@ -112,7 +113,8 @@ class _splashState extends State<splash> {
                   animatedTexts: [
                     TyperAnimatedText('#LearnByDoing',
                         textAlign: TextAlign.center,
-                        speed: Duration(milliseconds: 200),curve: Curves.bounceInOut),
+                        speed: Duration(milliseconds: 200),
+                        curve: Curves.bounceInOut),
                   ],
                   totalRepeatCount: 1,
                   isRepeatingAnimation: true,

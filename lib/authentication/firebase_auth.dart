@@ -18,6 +18,7 @@ final GoogleSignIn googleSignIn = GoogleSignIn();
 String? gname;
 String? gemail;
 String? gimageUrl;
+
 // bool emailsigned=false;
 // bool isVerifyy=false;
 // ValueNotifier<bool> emailsigned=ValueNotifier(false);
@@ -33,7 +34,7 @@ class Authenticate extends StatelessWidget {
       //     return Onboardew();
       //   }
       // }else{
-        return HomePage();
+      return HomePage();
       //}
     } else {
       return Onboardew();
@@ -47,7 +48,7 @@ Future<User?> createAccount(
 
   try {
     User? user = (await _auth.createUserWithEmailAndPassword(
-        email: email, password: password))
+            email: email, password: password))
         .user;
     if (user != null) {
       print("Account Created Successful");
@@ -67,7 +68,7 @@ Future<User?> logIn(String email, String password) async {
 
   try {
     User? user = (await _auth.signInWithEmailAndPassword(
-        email: email, password: password))
+            email: email, password: password))
         .user;
 
     if (user != null) {
@@ -89,7 +90,7 @@ Future logOut(BuildContext context) async {
   try {
     try {
       final provider =
-      Provider.of<GoogleSignInProvider>(context, listen: false);
+          Provider.of<GoogleSignInProvider>(context, listen: false);
       provider.googlelogout(context);
     } catch (e) {
       await _auth.signOut().then((value) {
@@ -114,7 +115,6 @@ class GoogleSignInProvider extends ChangeNotifier {
   Future googleLogin(context) async {
     try {
       final googleUser = await googleSignIn.signIn();
-      showToast('Please wait while we are fetching info...');
       if (googleUser == null) return;
       _user = googleUser;
       print('user...');
@@ -130,7 +130,23 @@ class GoogleSignInProvider extends ChangeNotifier {
       print(googleAuth.accessToken);
       print("Printed");
       await FirebaseAuth.instance.signInWithCredential(credential);
-      userprofile(name:_user?.displayName,email: _user?.email);
+      showToast('Please wait while we are fetching info...');
+      DocumentSnapshot userDocs = await FirebaseFirestore.instance
+          .collection('Users')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .get();
+      if (userDocs.data() == null) {
+        // Navigator.pushAndRemoveUntil(
+        //     context,
+        //     PageTransition(
+        //         duration: Duration(milliseconds: 200),
+        //         curve: Curves.bounceInOut,
+        //         type: PageTransitionType.rightToLeft,
+        //         child: DetailsScreen()),
+        //     (route) => false);
+        userprofile(name: _user?.displayName, email: _user?.email);
+        showToast('Account Created');
+      }
       Navigator.pushAndRemoveUntil(
           context,
           PageTransition(
@@ -138,9 +154,9 @@ class GoogleSignInProvider extends ChangeNotifier {
               curve: Curves.bounceInOut,
               type: PageTransitionType.rightToLeft,
               child: HomePage()),
-              (route) => false);
+          (route) => false);
 
-      showToast('Account Created');
+      // showToast('Account Created');
 
       return true;
     } catch (e) {
@@ -165,7 +181,7 @@ class GoogleSignInProvider extends ChangeNotifier {
             curve: Curves.bounceInOut,
             type: PageTransitionType.rightToLeft,
             child: Onboardew()),
-            (route) => false);
+        (route) => false);
   }
 }
 
@@ -183,7 +199,7 @@ void userprofile({String? name, var mobilenumber, var email}) async {
     "id": _auth.currentUser!.uid,
     "password": "is it needed",
     "role": "student",
-    "couponCodeDetails" : {},
-    "payInPartsDetails":{},
+    "couponCodeDetails": {},
+    "payInPartsDetails": {},
   });
 }

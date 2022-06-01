@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloudyml_app2/authentication/firebase_auth.dart';
 import 'package:cloudyml_app2/globals.dart';
 import 'package:cloudyml_app2/home.dart';
@@ -109,7 +110,7 @@ class _PhoneAuthenticationState extends State<PhoneAuthentication> {
                             fontWeight: FontWeight.w500,
                             color: HexColor('7B62DF')),
                         labelStyle: TextStyle(
-                          fontSize:18,
+                          fontSize: 18,
                         ),
                         focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(
@@ -327,7 +328,7 @@ class _PhoneAuthenticationState extends State<PhoneAuthentication> {
                     fontWeight: FontWeight.w500,
                     color: HexColor('7B62DF')),
                 labelStyle: TextStyle(
-                  fontSize:18,
+                  fontSize: 18,
                 ),
                 focusedBorder: OutlineInputBorder(
                     borderSide:
@@ -425,10 +426,18 @@ class _PhoneAuthenticationState extends State<PhoneAuthentication> {
 
                           var user = result.user;
                           if (user != null) {
-                            userprofile(
-                                name: null,
-                                mobilenumber: mobile.text,
-                                email: null);
+                            DocumentSnapshot userDocs = await FirebaseFirestore
+                                .instance
+                                .collection('Users')
+                                .doc(FirebaseAuth.instance.currentUser!.uid)
+                                .get();
+                            if (userDocs.data() == null) {
+                              userprofile(
+                                  name: null,
+                                  mobilenumber: mobile.text,
+                                  email: null);
+                              showToast('Account Created');
+                            }
                             await Future.delayed(Duration(seconds: 4));
                             Navigator.pushAndRemoveUntil(
                                 context,

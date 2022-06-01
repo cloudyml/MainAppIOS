@@ -35,6 +35,7 @@ class _VideoScreenState extends State<VideoScreen> {
   ChewieController? _chewieController;
   // bool? loading = false;
   bool? downloading = false;
+  bool downloaded = false;
   Map<String, dynamic>? data;
   String? videoUrl;
   // ValueNotifier<bool>? loading = ValueNotifier(true);
@@ -45,6 +46,7 @@ class _VideoScreenState extends State<VideoScreen> {
   String? assignVideoUrl;
   bool _disposed = false;
   bool _isPlaying = false;
+  bool _isBuffering = false;
   Duration? _duration;
   Duration? _position;
   bool switchTOAssignment = false;
@@ -52,6 +54,8 @@ class _VideoScreenState extends State<VideoScreen> {
 
   var _delayToInvokeonControlUpdate = 0;
   var _progress = 0.0;
+
+  String? progressString = '';
 
   void getData() async {
     var dt = await FirebaseFirestore.instance
@@ -65,6 +69,7 @@ class _VideoScreenState extends State<VideoScreen> {
         .then((value) {
       setState(() {
         data = value.docs[0].data();
+        print(data);
         topicId = value.docs[0].id;
         videoUrl = value.docs[0].data()['url'];
         serialNo = widget.sr;
@@ -136,11 +141,11 @@ class _VideoScreenState extends State<VideoScreen> {
       left: 0,
       right: 0,
       child: Padding(
-        padding: const EdgeInsets.only(left: 40, right: 85),
+        padding: const EdgeInsets.only(left: 50, right: 95),
         child: SliderTheme(
           data: SliderTheme.of(context).copyWith(
             activeTrackColor: Color(0xFFC0AAF5),
-            inactiveTrackColor: Color(0xFFDDD2FB),
+            inactiveTrackColor: Color.fromARGB(135, 221, 210, 251),
             trackShape: RoundedRectSliderTrackShape(),
             trackHeight: 3,
             thumbShape: RoundSliderThumbShape(
@@ -215,6 +220,10 @@ class _VideoScreenState extends State<VideoScreen> {
     setState(() {
       _position = position;
     });
+    final buffering = controller.value.isBuffering;
+    setState(() {
+      _isBuffering = buffering;
+    });
     final playing = controller.value.isPlaying;
     if (playing) {
       if (_disposed) return;
@@ -255,90 +264,67 @@ class _VideoScreenState extends State<VideoScreen> {
     }
   }
 
-  // void getPermission() async {
-  //   var status = await Permission.storage.status;
-  //   if (!status.isGranted) {
-  //     await Permission.storage.request();
-  //   }
-  // }
+  void getPermission() async {
+    var status = await Permission.storage.status;
+    if (!status.isGranted) {
+      await Permission.storage.request();
+    }
+  }
 
-  // Future download(Dio dio, String url, String savePath, String fileName) async {
-  //   getPermission();
-  //   var directory = await getApplicationDocumentsDirectory();
-  //   try {
-  //     setState(() {
-  //       downloading = true;
-  //     });
-  //     Response response = await dio.get(
-  //       url,
-  //       onReceiveProgress: (rec, total) {
-  //         print("Rec: $rec, Total:$total");
-  //         print("path: ${directory.path}/${fileName}.mp4");
-  //         setState(() {
-  //           progressString = ((rec / total) * 100).toStringAsFixed(0) + "%";
-  //         });
-  //       },
-  //       options: Options(
-  //           responseType: ResponseType.bytes,
-  //           followRedirects: false,
-  //           validateStatus: (status) {
-  //             return status! < 500;
-  //           }),
-  //     );
-  //     print(response.headers);
-  //     File file = File(savePath);
-  //     var raf = file.openSync(mode: FileMode.write);
-  //     print('savepath--$savePath');
+  Future download({
+    Dio? dio,
+    String? url,
+    String? savePath,
+    String? fileName,
+    String? courseName,
+    String? topicName,
+  }) async {
+    getPermission();
+    var directory = await getApplicationDocumentsDirectory();
+    try {
+      setState(() {
+        downloading = true;
+      });
+      Response response = await dio!.get(
+        url!,
+        onReceiveProgress: (rec, total) {
+          print("Rec: $rec, Total:$total");
+          print("path: ${directory.path}/${fileName}.mp4");
+          setState(() {
+            progressString = ((rec / total) * 100).toStringAsFixed(0);
+          });
+        },
+        options: Options(
+          responseType: ResponseType.bytes,
+          followRedirects: false,
+          validateStatus: (status) {
+            return status! < 500;
+          },
+        ),
+      );
+      print(response.headers);
+      File file = File(savePath!);
+      var raf = file.openSync(mode: FileMode.write);
+      print('savepath--$savePath');
 
-  //     raf.writeFromSync(response.data);
-  //     await raf.close();
-  //     DatabaseHelper _dbhelper = DatabaseHelper();
-  //     OfflineModel video = OfflineModel(
-  //         topic: data!['name'],
-  //         module: 'Module 1',
-  //         course: 'Python for beginners',
-  //         path: '${directory.path}/${fileName.replaceAll(' ', '')}.mp4');
-  //     _dbhelper.insertTask(video);
+      raf.writeFromSync(response.data);
+      await raf.close();
+      DatabaseHelper _dbhelper = DatabaseHelper();
+      OfflineModel video = OfflineModel(
+          topic: topicName,
+          // module: 'Module 1',
+          // course: courseName,
+          path: '${directory.path}/${fileName!.replaceAll(' ', '')}.mp4');
+      _dbhelper.insertTask(video);
 
-  //     setState(() {
-  //       downloading = false;
-  //     });
-  //   } catch (e) {
-  //     print('e::$e');
-  //   }
-  // }
-
-  // Widget playView(BuildContext context) {
-  //   final _videoController = _globalVideoController;
-  //   if (_videoController != null && _videoController.value.isInitialized) {
-  //     return Container(
-  //       child: AspectRatio(
-  //         aspectRatio: _videoController.value.aspectRatio,
-  //         child: VideoPlayer(_videoController),
-  //       ),
-  //     );
-  //   } else {
-  //     return Container();
-  //   }
-  // }
-
-  // fetchVideoDetails(String url) {
-  //   final _videoController = VideoPlayerController.network(url);
-  //   _globalVideoController = _videoController;
-  //   setState(() {});
-  //   _videoController
-  //     ..initialize().then((_) {
-  //       _videoController.play();
-  //       setState(() {});
-  //     });
-  // }
-  // // void initializeVideoController(String url) {
-  // //   setState(() {
-  // //     _videoController = VideoPlayerController.network(url);
-  // //     _video = _videoController!.initialize();
-  // //   });
-  // //   _videoController!.dispose();
-  // // }
+      setState(() {
+        downloading = false;
+        downloaded = true;
+      });
+    } catch (e) {
+      print('e::$e');
+    }
+  }
 
   @override
   void dispose() {
@@ -394,20 +380,40 @@ class _VideoScreenState extends State<VideoScreen> {
                                           child: VideoPlayer(_videoController!),
                                         ),
                                       ),
+                                      _isBuffering
+                                          ? Stack(
+                                              children: [
+                                                Center(
+                                                  child: Container(
+                                                    color: Color.fromARGB(
+                                                        102, 0, 0, 0),
+                                                  ),
+                                                ),
+                                                Center(
+                                                  child: Container(
+                                                    width: 60,
+                                                    height: 60,
+                                                    child:
+                                                        CircularProgressIndicator(
+                                                      color: Color.fromARGB(
+                                                          114, 255, 255, 255),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            )
+                                          : Container(),
                                       enablePauseScreen
                                           ? Stack(
                                               children: [
                                                 Center(
-                                                  child: AspectRatio(
-                                                    aspectRatio: 16 / 9,
-                                                    child: Container(
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                              .size
-                                                              .width,
-                                                      color: Color.fromARGB(
-                                                          102, 0, 0, 0),
-                                                    ),
+                                                  child: Container(
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                            .size
+                                                            .width,
+                                                    color: Color.fromARGB(
+                                                        102, 0, 0, 0),
                                                   ),
                                                 ),
                                                 Positioned(
@@ -458,6 +464,51 @@ class _VideoScreenState extends State<VideoScreen> {
                                                 progressIndicator(),
                                                 fullScreenIcon(
                                                     isPortrait: isPortrait),
+                                                Positioned(
+                                                  top: 15,
+                                                  left: 40,
+                                                  child: Text(
+                                                    data!['name'],
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 15,
+                                                    ),
+                                                  ),
+                                                ),
+                                                Positioned(
+                                                  top: 10,
+                                                  right: 10,
+                                                  child: InkWell(
+                                                    onTap: () async {
+                                                      var directory =
+                                                          await getApplicationDocumentsDirectory();
+                                                      download(
+                                                        dio: Dio(),
+                                                        fileName: data!['name'],
+                                                        url: data!['url'],
+                                                        savePath:
+                                                            "${directory.path}/${data!['name'].replaceAll(' ', '')}.mp4",
+                                                        topicName:
+                                                            data!['name'],
+                                                      );
+                                                      print(directory.path);
+                                                    },
+                                                    child: downloading!
+                                                        ? Icon(
+                                                            Icons
+                                                                .downloading_outlined,
+                                                            color: Colors.white,
+                                                          )
+                                                        : Icon(
+                                                            !downloaded
+                                                                ? Icons
+                                                                    .download_for_offline
+                                                                : Icons
+                                                                    .download_done_rounded,
+                                                            color: Colors.white,
+                                                          ),
+                                                  ),
+                                                ),
                                               ],
                                             )
                                           : Container(),
@@ -659,6 +710,11 @@ class _VideoScreenState extends State<VideoScreen> {
                                                           map['solution'];
                                                     });
                                                   }
+                                                  setState(() {
+                                                    data = map;
+                                                    downloading = false;
+                                                    downloaded = false;
+                                                  });
                                                 },
                                                 child: Container(
                                                   decoration: BoxDecoration(
@@ -685,28 +741,32 @@ class _VideoScreenState extends State<VideoScreen> {
                                                           SizedBox(
                                                             width: 30,
                                                           ),
-                                                          Container(
-                                                            child: Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .all(8.0),
-                                                              child: index < 9
-                                                                  ? Text(
-                                                                      '  ${index + 1}',
-                                                                      style:
-                                                                          TextStyle(
-                                                                        fontSize:
-                                                                            18,
+                                                          Expanded(
+                                                            // flex: 1,
+                                                            child: Container(
+                                                              child: Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .all(
+                                                                        8.0),
+                                                                child: index < 9
+                                                                    ? Text(
+                                                                        '  ${index + 1}',
+                                                                        style:
+                                                                            TextStyle(
+                                                                          // fontSize:
+                                                                          //     18,
+                                                                        ),
+                                                                      )
+                                                                    : Text(
+                                                                        '${index + 1}',
+                                                                        style:
+                                                                            TextStyle(
+                                                                          // fontSize:
+                                                                          //     17,
+                                                                        ),
                                                                       ),
-                                                                    )
-                                                                  : Text(
-                                                                      '${index + 1}',
-                                                                      style:
-                                                                          TextStyle(
-                                                                        fontSize:
-                                                                            17,
-                                                                      ),
-                                                                    ),
+                                                              ),
                                                             ),
                                                           ),
                                                           SizedBox(
@@ -719,19 +779,70 @@ class _VideoScreenState extends State<VideoScreen> {
                                                           SizedBox(
                                                             width: 10,
                                                           ),
-                                                          AutoSizeText(
-                                                            map['name'],
-                                                            style: TextStyle(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
-                                                              fontSize: 16,
-                                                              fontFamily:
-                                                                  "Medium",
+                                                          Expanded(
+                                                            flex: 7,
+                                                            child: AutoSizeText(
+                                                              map['name'],
+                                                              style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                // fontSize: 16,
+                                                                fontFamily:
+                                                                    "Medium",
+                                                              ),
+                                                              stepGranularity: 1,
+                                                              maxFontSize: 14,
+                                                              maxLines: 2,
                                                             ),
-                                                            maxFontSize: 14,
-                                                            maxLines: 2,
                                                           ),
+                                                          // Expanded(
+                                                          //   flex: 1,
+                                                          //   child: InkWell(
+                                                          //     onTap: () async {
+                                                          //       var directory =
+                                                          //           await getApplicationDocumentsDirectory();
+                                                          //       download(
+                                                          //         dio: Dio(),
+                                                          //         fileName: map[
+                                                          //             'name'],
+                                                          //         url: map[
+                                                          //             'url'],
+                                                          //         savePath:
+                                                          //             "${directory.path}/${data!['name'].replaceAll(' ', '')}.mp4",
+                                                          //         topicName: map[
+                                                          //             'name'],
+                                                          //       );
+                                                          //       print(directory
+                                                          //           .path);
+                                                          //     },
+                                                          //     child: downloading!
+                                                          //         ? data!['name'] == map['name']
+                                                          //             ? Icon(
+                                                          //                 Icons
+                                                          //                     .downloading_sharp,
+                                                          //                 color:
+                                                          //                     Color(0xFFC0AAF5),
+                                                          //               )
+                                                          //             : Icon(
+                                                          //                 Icons
+                                                          //                     .download_for_offline,
+                                                          //               )
+                                                          //         : !downloaded
+                                                          //             ? Icon(
+                                                          //                 Icons
+                                                          //                     .download_for_offline,
+                                                          //               )
+                                                          //             : data!['name'] == map['name']
+                                                          //                 ? Icon(
+                                                          //                     Icons.download_done_sharp,
+                                                          //                     color: Color(0xFF7860DC),
+                                                          //                   )
+                                                          //                 : Icon(
+                                                          //                     Icons.download_for_offline,
+                                                          //                   ),
+                                                          //   ),
+                                                          // )
                                                         ],
                                                       ),
                                                       SizedBox(
@@ -754,14 +865,14 @@ class _VideoScreenState extends State<VideoScreen> {
                             : AssignmentScreen(
                                 isdemo: false,
                                 sr: serialNo,
-                                playSolVideo: () {
-                                  setState(() {
-                                    showAssignment = false;
-                                    showAssignSol = false;
-                                    // switchTOAssignment = false;
-                                  });
-                                  intializeVidController(assignVideoUrl!);
-                                },
+                                // playSolVideo: () {
+                                //   setState(() {
+                                //     showAssignment = false;
+                                //     showAssignSol = false;
+                                //     // switchTOAssignment = false;
+                                //   });
+                                //   intializeVidController(assignVideoUrl!);
+                                // },
                               ),
                       )
                     : Container(),

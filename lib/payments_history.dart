@@ -82,22 +82,8 @@ class _PaymentHistoryState extends State<PaymentHistory> {
             ),
           ),
           Positioned(
-            top: 58 * verticalScale,
-            left: 50 * horizontalScale,
-            child: InkWell(
-              onTap: () {
-                Navigator.of(context).pop();
-              },
-              child: Icon(
-                Icons.arrow_back_outlined,
-                size: 40,
-                color: Colors.white,
-              ),
-            ),
-          ),
-          Positioned(
             top: 115 * verticalScale,
-            left: 57 * horizontalScale,
+            left: 63 * horizontalScale,
             child: Text(
               'Payment History',
               textAlign: TextAlign.center,
@@ -210,14 +196,16 @@ class _PaymentHistoryState extends State<PaymentHistory> {
             top: 232.00001525878906 * verticalScale,
             left: 133.00001525878906 * horizontalScale,
             child: Container(
-              width: 37 * min(horizontalScale, verticalScale),
-              height: 37 * min(horizontalScale, verticalScale),
-              decoration: BoxDecoration(
-                color: Color(0xFF14F5A4),
-                borderRadius: BorderRadius.circular(100),
-              ),
-              child:Icon(Icons.check,color: Colors.white,)
-            ),
+                width: 37 * min(horizontalScale, verticalScale),
+                height: 37 * min(horizontalScale, verticalScale),
+                decoration: BoxDecoration(
+                  color: Color(0xFF14F5A4),
+                  borderRadius: BorderRadius.circular(100),
+                ),
+                child: Icon(
+                  Icons.check,
+                  color: Colors.white,
+                )),
           ),
           Positioned(
             top: 270.0000305175781 * verticalScale,
@@ -240,15 +228,17 @@ class _PaymentHistoryState extends State<PaymentHistory> {
             top: 232.00001525878906 * verticalScale,
             right: 133.00001525878906 * horizontalScale,
             child: Container(
-              width: 37 * min(horizontalScale, verticalScale),
-              height: 37 * min(horizontalScale, verticalScale),
-              decoration: BoxDecoration(
-                color: Color.fromRGBO(241, 54, 88, 1),
-                borderRadius: BorderRadius.all(
-                    Radius.elliptical(32.99998092651367, 32.99998092651367)),
-              ),
-              child:Icon(CupertinoIcons.exclamationmark ,color: Colors.white,)
-            ),
+                width: 37 * min(horizontalScale, verticalScale),
+                height: 37 * min(horizontalScale, verticalScale),
+                decoration: BoxDecoration(
+                  color: Color.fromRGBO(241, 54, 88, 1),
+                  borderRadius: BorderRadius.all(
+                      Radius.elliptical(32.99998092651367, 32.99998092651367)),
+                ),
+                child: Icon(
+                  CupertinoIcons.exclamationmark,
+                  color: Colors.white,
+                )),
           ),
           courses.length > 0
               ? Positioned(
@@ -530,8 +520,7 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                                   min(horizontalScale,
                                                       verticalScale),
                                             ),
-                                            userMap['payInPartsDetails']
-                                                            [map['id']] !=
+                                            userMap['payInPartsDetails'][map['id']] !=
                                                         null &&
                                                     !userMap['payInPartsDetails']
                                                             [map['id']]
@@ -550,8 +539,11 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                                           BorderRadius.circular(
                                                               100),
                                                     ),
-                                                    child: Icon(CupertinoIcons.exclamationmark ,color: Colors.white,)
-                                                  )
+                                                    child: Icon(
+                                                      CupertinoIcons
+                                                          .exclamationmark,
+                                                      color: Colors.white,
+                                                    ))
                                                 : Container(
                                                     width: 37 *
                                                         min(horizontalScale,
@@ -566,8 +558,10 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                                               32.99998092651367,
                                                               32.99998092651367)),
                                                     ),
-                                                    child: Icon(Icons.check,color: Colors.white,)
-                                                  ),
+                                                    child: Icon(
+                                                      Icons.check,
+                                                      color: Colors.white,
+                                                    )),
                                           ],
                                         ),
                                       ],
@@ -656,12 +650,12 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                 horizontal:
                                     MediaQuery.of(context).size.width * 0.09),
                             child: ClipRRect(
-                              borderRadius: BorderRadius.circular(25),
+                              borderRadius: BorderRadius.circular(10),
                               child: Container(
                                 // height: MediaQuery.of(context).size.height * 0.16,
                                 width: MediaQuery.of(context).size.width,
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(25),
+                                  borderRadius: BorderRadius.circular(10),
                                   color: Color(0xFFE9E1FC),
                                 ),
                                 child: Row(
@@ -670,10 +664,10 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                     Expanded(
                                       flex: 1,
                                       child: Container(
-                                        height: 100 * horizontalScale,
-                                        width:
-                                            MediaQuery.of(context).size.height *
-                                                0.13,
+                                        height: 100 *
+                                            min(horizontalScale, verticalScale),
+                                        width: 100 *
+                                            min(horizontalScale, verticalScale),
                                         decoration: BoxDecoration(
                                           image: DecorationImage(
                                               image: NetworkImage(
@@ -825,8 +819,8 @@ class _PaymentHistoryState extends State<PaymentHistory> {
             ),
           ),
           Positioned(
-            top: 58 * verticalScale,
-            left: 50 * horizontalScale,
+            top: 110 * verticalScale,
+            left: 25 * horizontalScale,
             child: InkWell(
               onTap: () {
                 Navigator.of(context).pop();

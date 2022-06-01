@@ -169,7 +169,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         Positioned(
-          top: 142 * verticalScale,
+          top: 102 * verticalScale,
           left: 102 * horizontalScale,
           child: Text(
             'My Courses',
@@ -631,12 +631,12 @@ class _HomeScreenState extends State<HomeScreen> {
                               horizontal:
                                   MediaQuery.of(context).size.width * 0.09),
                           child: ClipRRect(
-                            borderRadius: BorderRadius.circular(25),
+                            borderRadius: BorderRadius.circular(10),
                             child: Container(
                               // height: MediaQuery.of(context).size.height * 0.16,
                               width: MediaQuery.of(context).size.width,
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(25),
+                                borderRadius: BorderRadius.circular(10),
                                 color: Color(0xFFE9E1FC),
                                 // boxShadow: [
                                 //   BoxShadow(
@@ -654,12 +654,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Expanded(
                                     flex: 1,
                                     child: Container(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.10,
-                                      width:
-                                          MediaQuery.of(context).size.height *
-                                              0.13,
+                                      height: 100 *
+                                          min(horizontalScale, verticalScale),
+                                      width: 100 *
+                                          min(horizontalScale, verticalScale),
                                       child: Image.network(
                                         map['image_url'].toString(),
                                         fit: BoxFit.cover,
@@ -801,17 +799,15 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         Positioned(
-          top: 94 * verticalScale,
-          left: 83 * horizontalScale,
+          top: 100 * verticalScale,
+          left: 63 * horizontalScale,
           child: InkWell(
             onTap: () {
               Navigator.of(context).pop();
             },
-            child: Icon(
-              Icons.arrow_back_sharp,
-              color: Colors.white,
-              size: 30,
-            ),
+            child: Icon(Icons.arrow_back_sharp,
+                color: Colors.white,
+                size: 40 * min(horizontalScale, verticalScale)),
           ),
         ),
       ],
