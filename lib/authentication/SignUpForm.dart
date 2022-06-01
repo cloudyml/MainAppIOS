@@ -119,11 +119,11 @@ class _SignUpformState extends State<SignUpform> {
                   hintText: 'Enter Your Name',
                   labelText: 'Name',
                   floatingLabelStyle: TextStyle(
-                      fontSize: 18,
+                      fontSize: 18*min(horizontalScale, verticalScale),
                       fontWeight: FontWeight.w500,
                       color: HexColor('7B62DF')),
                   labelStyle: TextStyle(
-                    fontSize: 18,
+                    fontSize: 18*min(horizontalScale, verticalScale),
                   ),
                   focusedBorder: OutlineInputBorder(
                       borderSide:
@@ -154,11 +154,11 @@ class _SignUpformState extends State<SignUpform> {
                   hintText: 'Enter Your Email',
                   labelText: 'Email',
                   floatingLabelStyle: TextStyle(
-                      fontSize: 18,
+                      fontSize: 18*min(horizontalScale, verticalScale),
                       fontWeight: FontWeight.w500,
                       color: HexColor('7B62DF')),
                   labelStyle: TextStyle(
-                    fontSize: 18,
+                    fontSize: 18*min(horizontalScale, verticalScale),
                   ),
                   focusedBorder: OutlineInputBorder(
                       borderSide:
@@ -192,7 +192,7 @@ class _SignUpformState extends State<SignUpform> {
                   hintText: 'Set Password',
                   labelText: 'Password',
                   floatingLabelStyle: TextStyle(
-                      fontSize: 18,
+                      fontSize: 18*min(horizontalScale, verticalScale),
                       fontWeight: FontWeight.w500,
                       color: HexColor('7B62DF')),
                   labelStyle: TextStyle(fontSize: 18),
@@ -231,11 +231,11 @@ class _SignUpformState extends State<SignUpform> {
                   hintText: 'Enter Your Number',
                   labelText: 'Phone Number',
                   floatingLabelStyle: TextStyle(
-                      fontSize: 18,
+                      fontSize: 18*min(horizontalScale, verticalScale),
                       fontWeight: FontWeight.w500,
                       color: HexColor('7B62DF')),
                   labelStyle: TextStyle(
-                    fontSize: 18,
+                    fontSize: 18*min(horizontalScale, verticalScale),
                   ),
                   focusedBorder: OutlineInputBorder(
                       borderSide:

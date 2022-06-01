@@ -17,12 +17,15 @@ class splash extends StatefulWidget {
 
 class _splashState extends State<splash> {
   void pushToHome() {
-    Navigator.pushReplacement<void, void>(
-      context,
-      MaterialPageRoute<void>(
-        builder: (BuildContext context) => Authenticate(),
-      ),
-    );
+    Navigator.pushAndRemoveUntil(
+        context,
+        PageTransition(
+          duration: Duration(milliseconds: 200),
+          curve: Curves.bounceInOut,
+          type: PageTransitionType.rightToLeft,
+          child: Authenticate(),
+        ),
+        (route) => false);
     print('pushedtohome');
   }
 
