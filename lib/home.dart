@@ -65,28 +65,28 @@ class _HomePageState extends State<HomePage> {
     double width = MediaQuery.of(context).size.width;
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(
-        leading: InkWell(
-          onTap: () {
-            _scaffoldKey.currentState!.openDrawer();
-          },
-          child: Icon(
-            Icons.menu,
-            color: Colors.black,
-          ),
-        ),
-        elevation: 0,
-        backgroundColor: Colors.white,
-        title: openPaymentHistory
-            ? Text(
-                'Payment History',
-                style: TextStyle(fontFamily: 'SemiBold', color: Colors.black),
-              )
-            : Text(
-                titles[_selectedIndex!],
-                style: TextStyle(fontFamily: 'SemiBold', color: Colors.black),
-              ),
-      ),
+      // appBar: AppBar(
+      //   leading: InkWell(
+      //     onTap: () {
+      //       _scaffoldKey.currentState!.openDrawer();
+      //     },
+      //     child: Icon(
+      //       Icons.menu,
+      //       color: Colors.black,
+      //     ),
+      //   ),
+      //   elevation: 0,
+      //   backgroundColor: Colors.white,
+      //   title: openPaymentHistory
+      //       ? Text(
+      //           'Payment History',
+      //           style: TextStyle(fontFamily: 'SemiBold', color: Colors.black),
+      //         )
+      //       : Text(
+      //           titles[_selectedIndex!],
+      //           style: TextStyle(fontFamily: 'SemiBold', color: Colors.black),
+      //         ),
+      // ),
       body: PageView.builder(itemBuilder: (ctx, index) {
         if (openPaymentHistory) {
           return PaymentHistory();
