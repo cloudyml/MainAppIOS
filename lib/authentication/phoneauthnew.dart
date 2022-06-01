@@ -72,11 +72,11 @@ class _PhoneAuthenticationState extends State<PhoneAuthentication> {
                         hintText: 'Code',
                         labelText: 'Code',
                         floatingLabelStyle: TextStyle(
-                            fontSize: 18,
+                            fontSize: 18*min(horizontalScale, verticalScale),
                             fontWeight: FontWeight.w500,
                             color: HexColor('7B62DF')),
                         labelStyle: TextStyle(
-                          fontSize: 18,
+                          fontSize: 18*min(horizontalScale, verticalScale),
                         ),
                         focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(
@@ -105,11 +105,11 @@ class _PhoneAuthenticationState extends State<PhoneAuthentication> {
                         labelText: 'Phone Number',
                         counterText: '',
                         floatingLabelStyle: TextStyle(
-                            fontSize: 18,
+                            fontSize: 18*min(horizontalScale, verticalScale),
                             fontWeight: FontWeight.w500,
                             color: HexColor('7B62DF')),
                         labelStyle: TextStyle(
-                          fontSize:18,
+                          fontSize:18*min(horizontalScale, verticalScale),
                         ),
                         focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(
@@ -323,11 +323,11 @@ class _PhoneAuthenticationState extends State<PhoneAuthentication> {
                 floatingLabelAlignment: FloatingLabelAlignment.center,
                 counterText: '',
                 floatingLabelStyle: TextStyle(
-                    fontSize: 22,
+                    fontSize: 22*min(horizontalScale, verticalScale),
                     fontWeight: FontWeight.w500,
                     color: HexColor('7B62DF')),
                 labelStyle: TextStyle(
-                  fontSize:18,
+                  fontSize:18*min(horizontalScale, verticalScale),
                 ),
                 focusedBorder: OutlineInputBorder(
                     borderSide:

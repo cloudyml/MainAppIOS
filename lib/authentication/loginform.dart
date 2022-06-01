@@ -49,11 +49,11 @@ class _LoginFormState extends State<LoginForm> {
                   hintText: 'Enter Your Email',
                   labelText: 'Email',
                   floatingLabelStyle: TextStyle(
-                      fontSize: 18,
+                      fontSize: 18*min(horizontalScale, verticalScale),
                       fontWeight: FontWeight.w500,
                       color: HexColor('7B62DF')),
                   labelStyle: TextStyle(
-                    fontSize: 18,
+                    fontSize: 18*min(horizontalScale, verticalScale),
                   ),
                   border: OutlineInputBorder(),
                   focusedBorder: OutlineInputBorder(
@@ -88,10 +88,10 @@ class _LoginFormState extends State<LoginForm> {
                   hintText: 'Enter Password',
                   labelText: 'Password',
                   floatingLabelStyle: TextStyle(
-                      fontSize: 18,
+                      fontSize: 18*min(horizontalScale, verticalScale),
                       fontWeight: FontWeight.w500,
                       color: HexColor('7B62DF')),
-                  labelStyle: TextStyle(fontSize: 18),
+                  labelStyle: TextStyle(fontSize: 18*min(horizontalScale, verticalScale)),
                   border: OutlineInputBorder(),
                   focusedBorder: OutlineInputBorder(
                       borderSide:

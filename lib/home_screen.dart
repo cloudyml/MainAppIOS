@@ -585,216 +585,229 @@ class _HomeScreenState extends State<HomeScreen> {
             builder:
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (!snapshot.hasData) return const SizedBox.shrink();
-              return Container(
-                width: screenWidth,
-                height: screenHeight * 0.4,
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  scrollDirection: Axis.vertical,
-                  itemCount: snapshot.data!.docs.length,
-                  itemBuilder: (BuildContext context, index) {
-                    DocumentSnapshot document = snapshot.data!.docs[index];
-                    Map<String, dynamic> map = snapshot.data!.docs[index].data()
-                        as Map<String, dynamic>;
-                    if (map["name"].toString() == "null") {
-                      return Container();
-                    }
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 18.0),
-                      child: InkWell(
-                        onTap: () {
-                          setState(() {
-                            courseId = document.id;
-                          });
+              return Padding(
+                padding:  EdgeInsets.only(top: 8.0*verticalScale),
+                child: Container(
+                  width: screenWidth,
+                  height: screenHeight * 0.4,
+                  child: MediaQuery.removePadding(
+                    context: context,
+                    removeTop: true,
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.vertical,
+                      itemCount: snapshot.data!.docs.length,
+                      itemBuilder: (BuildContext context, index) {
+                        DocumentSnapshot document = snapshot.data!.docs[index];
+                        Map<String, dynamic> map = snapshot.data!.docs[index].data()
+                            as Map<String, dynamic>;
+                        if (map["name"].toString() == "null") {
+                          return Container();
+                        }
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 18.0),
+                          child: InkWell(
+                            onTap: () {
+                              setState(() {
+                                courseId = document.id;
+                              });
 
-                          print(courseId);
-                          if (map['combo']) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ComboStore(
-                                  courses: map['courses'],
-                                ),
-                              ),
-                            );
-                          } else {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const CatelogueScreen(),
-                              ),
-                            );
-                          }
-                        },
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal:
-                                  MediaQuery.of(context).size.width * 0.09),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(25),
-                            child: Container(
-                              // height: MediaQuery.of(context).size.height * 0.16,
-                              width: MediaQuery.of(context).size.width,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(25),
-                                color: Color(0xFFE9E1FC),
-                                // boxShadow: [
-                                //   BoxShadow(
-                                //       color: Color.fromRGBO(
-                                //           29, 28, 30, 0.30000001192092896),
-                                //       offset: Offset(2, 2),
-                                //       // spreadRadius: 5,
-                                //       blurStyle: BlurStyle.outer,
-                                //       blurRadius: 35)
-                                // ],
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Expanded(
-                                    flex: 1,
-                                    child: Container(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.10,
-                                      width:
-                                          MediaQuery.of(context).size.height *
-                                              0.13,
-                                      child: Image.network(
-                                        map['image_url'].toString(),
-                                        fit: BoxFit.cover,
+                              print(courseId);
+                              if (map['combo']) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ComboStore(
+                                      courses: map['courses'],
+                                    ),
+                                  ),
+                                );
+                              } else {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const CatelogueScreen(),
+                                  ),
+                                );
+                              }
+                            },
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal:
+                                      MediaQuery.of(context).size.width * 0.09),
+                              child: ClipRRect(
+                                //borderRadius: BorderRadius.circular(25),
+                                child: Container(
+                                  // height: MediaQuery.of(context).size.height * 0.16,
+                                  width: MediaQuery.of(context).size.width,
+                                  decoration: BoxDecoration(
+                                    //borderRadius: BorderRadius.circular(10),
+                                    color: Color(0xFFE9E1FC),
+                                    // boxShadow: [
+                                    //   BoxShadow(
+                                    //       color: Color.fromRGBO(
+                                    //           29, 28, 30, 0.30000001192092896),
+                                    //       offset: Offset(2, 2),
+                                    //       // spreadRadius: 5,
+                                    //       blurStyle: BlurStyle.outer,
+                                    //       blurRadius: 35)
+                                    // ],
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                        flex: 1,
+                                        child: Container(
+                                          height:
+                                              MediaQuery.of(context).size.height *
+                                                  0.10,
+                                          width:
+                                              MediaQuery.of(context).size.height *
+                                                  0.13,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: ClipRRect(
+                                              borderRadius: BorderRadius.circular(10),
+                                              child: Image.network(
+                                                map['image_url'].toString(),
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 15,
-                                  ),
-                                  Expanded(
-                                    flex: 2,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                        map['combo'] == true
-                                            ? Container(
-                                                decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            30),
-                                                    gradient: gradient),
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(4.0),
-                                                  child: Text(
-                                                    'COMBO',
-                                                    textScaleFactor: min(
-                                                        horizontalScale,
-                                                        verticalScale),
-                                                    style: TextStyle(
-                                                        fontFamily: 'SemiBold',
-                                                        fontSize: 8,
-                                                        color: Colors.black),
+                                      SizedBox(
+                                        width: 15,
+                                      ),
+                                      Expanded(
+                                        flex: 2,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            map['combo'] == true
+                                                ? Container(
+                                                    decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                                30),
+                                                        gradient: gradient),
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(4.0),
+                                                      child: Text(
+                                                        'COMBO',
+                                                        textScaleFactor: min(
+                                                            horizontalScale,
+                                                            verticalScale),
+                                                        style: TextStyle(
+                                                            fontFamily: 'SemiBold',
+                                                            fontSize: 8,
+                                                            color: Colors.black),
+                                                      ),
+                                                    ),
+                                                  )
+                                                : Container(),
+                                            Container(
+                                              // width: MediaQuery.of(context)
+                                              //         .size
+                                              //         .width *
+                                              //     0.45,
+                                              child: Text(
+                                                map["name"],
+                                                textScaleFactor: min(
+                                                    horizontalScale, verticalScale),
+                                                style: const TextStyle(
+                                                    fontFamily: 'Bold',
+                                                    fontSize: 17,
+                                                    fontWeight: FontWeight.w500),
+                                                // maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 5,
+                                            ),
+                                            Container(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.45,
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Container(
+                                                    child: Text(
+                                                      map["language"],
+                                                      textScaleFactor: min(
+                                                          horizontalScale,
+                                                          verticalScale),
+                                                      style: TextStyle(
+                                                          fontFamily: 'Medium',
+                                                          color: Colors.black
+                                                              .withOpacity(0.4),
+                                                          fontSize: 10,
+                                                          fontWeight:
+                                                              FontWeight.w500),
+                                                    ),
                                                   ),
-                                                ),
-                                              )
-                                            : Container(),
-                                        Container(
-                                          // width: MediaQuery.of(context)
-                                          //         .size
-                                          //         .width *
-                                          //     0.45,
-                                          child: Text(
-                                            map["name"],
-                                            textScaleFactor: min(
-                                                horizontalScale, verticalScale),
-                                            style: const TextStyle(
-                                                fontFamily: 'Bold',
-                                                fontSize: 17,
-                                                fontWeight: FontWeight.w500),
-                                            // maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: 5,
-                                        ),
-                                        Container(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.45,
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Container(
-                                                child: Text(
-                                                  map["language"],
-                                                  textScaleFactor: min(
-                                                      horizontalScale,
-                                                      verticalScale),
-                                                  style: TextStyle(
-                                                      fontFamily: 'Medium',
-                                                      color: Colors.black
-                                                          .withOpacity(0.4),
-                                                      fontSize: 10,
-                                                      fontWeight:
-                                                          FontWeight.w500),
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                width: 6,
-                                              ),
-                                              Container(
-                                                child: Center(
-                                                  child: Text(
-                                                    '${map['videosCount']} videos',
-                                                    textScaleFactor: min(
-                                                        horizontalScale,
-                                                        verticalScale),
-                                                    style: TextStyle(
-                                                        fontFamily: 'Medium',
-                                                        color: Colors.black
-                                                            .withOpacity(0.7),
-                                                        fontSize: 10),
+                                                  SizedBox(
+                                                    width: 6,
                                                   ),
-                                                ),
+                                                  Container(
+                                                    child: Center(
+                                                      child: Text(
+                                                        '${map['videosCount']} videos',
+                                                        textScaleFactor: min(
+                                                            horizontalScale,
+                                                            verticalScale),
+                                                        style: TextStyle(
+                                                            fontFamily: 'Medium',
+                                                            color: Colors.black
+                                                                .withOpacity(0.7),
+                                                            fontSize: 10),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 80,
+                                                  ),
+                                                ],
                                               ),
-                                              SizedBox(
-                                                width: 80,
-                                              ),
-                                            ],
-                                          ),
+                                            ),
+                                            SizedBox(
+                                              height: 5,
+                                            ),
+                                            Text(
+                                              map['Course Price'],
+                                              textScaleFactor: min(
+                                                  horizontalScale, verticalScale),
+                                              style: TextStyle(
+                                                  fontFamily: 'Bold',
+                                                  color: Color(0xFF6E5BD9),
+                                                  fontSize: 17),
+                                            ),
+                                            // SizedBox(
+                                            //   width: 40,
+                                            // ),
+                                          ],
                                         ),
-                                        SizedBox(
-                                          height: 5,
-                                        ),
-                                        Text(
-                                          map['Course Price'],
-                                          textScaleFactor: min(
-                                              horizontalScale, verticalScale),
-                                          style: TextStyle(
-                                              fontFamily: 'Bold',
-                                              color: Color(0xFF6E5BD9),
-                                              fontSize: 17),
-                                        ),
-                                        // SizedBox(
-                                        //   width: 40,
-                                        // ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
-                                ],
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ),
-                    );
-                  },
+                        );
+                      },
+                    ),
+                  ),
                 ),
               );
             },
