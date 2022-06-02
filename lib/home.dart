@@ -1,25 +1,22 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloudyml_app2/aboutus.dart';
 import 'package:cloudyml_app2/authentication/firebase_auth.dart';
-import 'package:cloudyml_app2/newhome.dart';
+
 import 'package:cloudyml_app2/payments_history.dart';
-import 'package:cloudyml_app2/globals.dart';
+
 import 'package:cloudyml_app2/home_screen.dart';
 import 'package:cloudyml_app2/homepage.dart';
 import 'package:cloudyml_app2/offline/offline_videos.dart';
-import 'package:cloudyml_app2/module/video_screen.dart';
-import 'package:cloudyml_app2/catalogue_screen.dart';
 
 import 'package:cloudyml_app2/privacy_policy.dart';
 
 import 'package:cloudyml_app2/screens/groups_list.dart';
 import 'package:cloudyml_app2/store.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+
 import 'package:hexcolor/hexcolor.dart';
-import 'package:page_transition/page_transition.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -32,8 +29,13 @@ class _HomePageState extends State<HomePage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   int? _selectedIndex = 0;
   bool openPaymentHistory = false;
-  Map<String,dynamic>? userdetails={};
-  List<Widget> screens = [Home(), StoreScreen(), VideoScreenOffline(), GroupsList()];
+  Map<String, dynamic>? userdetails = {};
+  List<Widget> screens = [
+    Home(),
+    StoreScreen(),
+    VideoScreenOffline(),
+    GroupsList()
+  ];
   List<String> titles = [
     'Home',
     'Store',
@@ -47,14 +49,15 @@ class _HomePageState extends State<HomePage> {
     print('UID--${FirebaseAuth.instance.currentUser!.uid}');
   }
 
-  void getuserdetails () async{
-    await FirebaseFirestore.instance.collection('Users')
-        .doc(FirebaseAuth.instance.currentUser!.uid).get().
-    then((value){
-
+  void getuserdetails() async {
+    await FirebaseFirestore.instance
+        .collection('Users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get()
+        .then((value) {
       print(value.data());
       setState(() {
-        userdetails=value.data();
+        userdetails = value.data();
       });
     });
   }
@@ -94,7 +97,7 @@ class _HomePageState extends State<HomePage> {
           return screens[_selectedIndex!];
         }
       }),
-      drawer:Drawer(
+      drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.only(top: 0),
           children: [
@@ -118,43 +121,45 @@ class _HomePageState extends State<HomePage> {
                         if (map["id"].toString() ==
                             FirebaseAuth.instance.currentUser!.uid) {
                           return Padding(
-                            padding:  EdgeInsets.all(width*0.05),
+                            padding: EdgeInsets.all(width * 0.05),
                             child: Container(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   CircleAvatar(
-                                    radius: width*0.089,
-                                    backgroundImage: AssetImage('assets/user.jpg'),
+                                    radius: width * 0.089,
+                                    backgroundImage:
+                                        AssetImage('assets/user.jpg'),
                                   ),
                                   SizedBox(
-                                    height: height*0.01,
+                                    height: height * 0.01,
                                   ),
                                   map['name'] != null
-                                      ? Text(map['name'], style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: width*0.049
-                                  ),
-                                  )
-                                      : Text(map['mobilenumber'], style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: width*0.049
-                                  ),
-                                  ),
+                                      ? Text(
+                                          map['name'],
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: width * 0.049),
+                                        )
+                                      : Text(
+                                          map['mobilenumber'],
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: width * 0.049),
+                                        ),
                                   SizedBox(
-                                    height: height*0.007,
+                                    height: height * 0.007,
                                   ),
                                   map['email'] != null
                                       ? Text(
-                                    map['email'],
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: width*0.038
-                                    ),
-                                  )
+                                          map['email'],
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: width * 0.038),
+                                        )
                                       : Container(),
                                 ],
                               ),
@@ -176,7 +181,8 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               onTap: () {
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>HomePage()));
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => HomePage()));
               },
             ),
             // InkWell(
@@ -196,26 +202,31 @@ class _HomePageState extends State<HomePage> {
                   color: HexColor('6153D3'),
                 ),
               ),
-              onTap: () async{
-                Navigator.push(context, MaterialPageRoute(builder: (context)=> HomeScreen()));
+              onTap: () async {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => HomeScreen()));
               },
             ),
             InkWell(
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context)=> PaymentHistory()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => PaymentHistory()));
               },
               child: ListTile(
                 title: Text('Payment History'),
                 leading: Icon(
                   Icons.payment_rounded,
-                  color:HexColor('6153D3'),
+                  color: HexColor('6153D3'),
                 ),
               ),
             ),
-            Divider(thickness: 2,),
+            Divider(
+              thickness: 2,
+            ),
             InkWell(
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context)=> PrivacyPolicy()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => PrivacyPolicy()));
               },
               child: ListTile(
                 title: Text('Privacy policy'),
@@ -233,8 +244,9 @@ class _HomePageState extends State<HomePage> {
                   color: HexColor('6153D3'),
                 ),
               ),
-              onTap: () async{
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>AboutUs()));
+              onTap: () async {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => AboutUs()));
               },
             ),
             InkWell(
@@ -249,7 +261,6 @@ class _HomePageState extends State<HomePage> {
                 logOut(context);
               },
             ),
-
           ],
         ),
       ),

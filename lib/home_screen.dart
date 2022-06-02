@@ -7,6 +7,7 @@ import 'package:cloudyml_app2/course.dart';
 import 'package:cloudyml_app2/globals.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:page_transition/page_transition.dart';
 
 import 'catalogue_screen.dart';
@@ -185,263 +186,142 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: 1),
           ),
         ),
-        Positioned(
-          // top: 227 * verticalScale,
-          // left: 20,
-          child: StreamBuilder<QuerySnapshot>(
-            stream:
-                FirebaseFirestore.instance.collection('courses').snapshots(),
-            builder:
-                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-              if (!snapshot.hasData) return const SizedBox.shrink();
-              return Container(
-                width: screenWidth,
-                height: screenHeight,
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  itemCount: snapshot.data!.docs.length,
-                  itemBuilder: (BuildContext context, index) {
-                    DocumentSnapshot document = snapshot.data!.docs[index];
-                    Map<String, dynamic> map = snapshot.data!.docs[index].data()
-                        as Map<String, dynamic>;
-                    // setState(() {
-                    //   id= map['id'];
-                    // });
-                    if (map["name"].toString() == "null") {
-                      return Container();
-                    }
-                    if (courses.contains(map['id'])) {
-                      return InkWell(
-                        onTap: () {
-                          // if()
-                          if (navigateToCatalogueScreen(map['id']) &&
-                              !(userMap['payInPartsDetails'][map['id']]
-                                  ['outStandingAmtPaid'])) {
-                            if (!map['combo']) {
-                              Navigator.push(
-                                context,
-                                PageTransition(
-                                    duration: Duration(milliseconds: 100),
-                                    curve: Curves.bounceInOut,
-                                    type: PageTransitionType.rightToLeft,
-                                    child: CatelogueScreen()),
-                              );
-                            } else {
-                              Navigator.push(
-                                context,
-                                PageTransition(
-                                  duration: Duration(milliseconds: 100),
-                                  curve: Curves.bounceInOut,
-                                  type: PageTransitionType.rightToLeft,
-                                  child: ComboStore(
-                                    courses: map['courses'],
-                                  ),
-                                ),
-                              );
+        courses.length > 0
+            ? Positioned(
+                top: 0 * verticalScale,
+                left: 0 * horizontalScale,
+                child: StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('courses')
+                        .snapshots(),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<QuerySnapshot> snapshot) {
+                      if (!snapshot.hasData) return const SizedBox.shrink();
+                      return Container(
+                        width: screenWidth,
+                        height: screenHeight,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          // shrinkWrap: true,
+                          itemCount: snapshot.data!.docs.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            DocumentSnapshot document =
+                                snapshot.data!.docs[index];
+                            Map<String, dynamic> map =
+                                snapshot.data!.docs[index].data()
+                                    as Map<String, dynamic>;
+                            if (map["name"].toString() == "null") {
+                              return Container();
                             }
-                          } else {
-                            if (!map['combo']) {
-                              Navigator.push(
-                                context,
-                                PageTransition(
-                                    duration: Duration(milliseconds: 400),
-                                    curve: Curves.bounceInOut,
-                                    type: PageTransitionType.rightToLeft,
-                                    child: Couse()),
-                              );
-                            } else {
-                              ComboCourse.comboId.value = map['id'];
-                              Navigator.push(
-                                context,
-                                PageTransition(
-                                  duration: Duration(milliseconds: 400),
-                                  curve: Curves.bounceInOut,
-                                  type: PageTransitionType.rightToLeft,
-                                  child: ComboCourse(
-                                    courses: map['courses'],
-                                  ),
-                                ),
-                              );
-                            }
-                          }
-                          setState(() {
-                            courseId = snapshot.data!.docs[index].id;
-                          });
-                        },
-                        child: Stack(
-                          children: <Widget>[
-                            Row(
-                              children: [
-                                SizedBox(
-                                  width: 20 * horizontalScale,
-                                ),
-                                Column(
-                                  children: [
-                                    SizedBox(
-                                      height: 227 * verticalScale,
-                                    ),
-                                    Positioned(
-                                      child: Container(
-                                        height: 109 * verticalScale,
-                                        width: 187 * horizontalScale,
-                                        decoration: BoxDecoration(
-                                          boxShadow: [
-                                            BoxShadow(
-                                                color: Color.fromRGBO(29, 28,
-                                                    30, 0.30000001192092896),
-                                                offset: Offset(2, 2),
-                                                // spreadRadius: 5,
-                                                blurStyle: BlurStyle.outer,
-                                                blurRadius: 15)
-                                          ],
-                                        ),
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(25),
-                                            topRight: Radius.circular(25),
-                                          ),
-                                          child: Image.network(
-                                            map['image_url'].toString(),
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
+                            if (courses.contains(map['id'])) {
+                              return Stack(
+                                children: [
+                                  Column(
+                                    children: [
+                                      SizedBox(
+                                        height: 230 * verticalScale,
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                SizedBox(
-                                  width: 20 * horizontalScale,
-                                ),
-                                Column(
-                                  children: [
-                                    SizedBox(
-                                      height: 336 * verticalScale,
-                                    ),
-                                    Stack(
-                                      children: [
-                                        Container(
-                                          height: 109 * verticalScale,
-                                          width: 187 * horizontalScale,
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.only(
-                                              bottomLeft: Radius.circular(25),
-                                              bottomRight: Radius.circular(25),
-                                            ),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                  color: Color.fromRGBO(29, 28,
-                                                      30, 0.30000001192092896),
-                                                  offset: Offset(2, 2),
-                                                  blurStyle: BlurStyle.outer,
-                                                  blurRadius: 15)
-                                            ],
+                                      Row(
+                                        children: [
+                                          SizedBox(
+                                            width: 20,
                                           ),
-                                        ),
-                                        Column(
-                                          children: [
-                                            SizedBox(
-                                              height: 5 * verticalScale,
+                                          Container(
+                                            width: 176.99998474121094 *
+                                                horizontalScale,
+                                            height: 91.99999237060547 *
+                                                verticalScale,
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.only(
+                                                topLeft: Radius.circular(25),
+                                                topRight: Radius.circular(25),
+                                                bottomLeft: Radius.circular(0),
+                                                bottomRight: Radius.circular(0),
+                                              ),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                    color: Color.fromRGBO(
+                                                        29,
+                                                        28,
+                                                        31,
+                                                        0.30000001192092896),
+                                                    offset: Offset(2, 2),
+                                                    blurRadius: 47)
+                                              ],
+                                              image: DecorationImage(
+                                                  image: NetworkImage(
+                                                    map['image_url'].toString(),
+                                                  ),
+                                                  fit: BoxFit.fitWidth),
                                             ),
-                                            Row(
-                                              children: [
-                                                SizedBox(
-                                                  width: 10 * horizontalScale,
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          SizedBox(
+                                            width: 20,
+                                          ),
+                                          Stack(
+                                            children: [
+                                              Container(
+                                                width: 177 * horizontalScale,
+                                                height: 200 * verticalScale / 2,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.only(
+                                                    // topLeft: Radius.circular(25),
+                                                    // topRight: Radius.circular(25),
+                                                    bottomLeft:
+                                                        Radius.circular(25),
+                                                    bottomRight:
+                                                        Radius.circular(25),
+                                                  ),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                        color: Color.fromRGBO(
+                                                            29,
+                                                            28,
+                                                            31,
+                                                            0.30000001192092896),
+                                                        offset: Offset(2, 2),
+                                                        blurRadius: 47)
+                                                  ],
+                                                  color: Color.fromRGBO(
+                                                      255, 255, 255, 1),
                                                 ),
-                                                Container(
-                                                  width: 180 * horizontalScale,
-                                                  // height: 30* verticalScale,
+                                              ),
+                                              Positioned(
+                                                top: 5 * verticalScale,
+                                                left: 10 * horizontalScale,
+                                                right: 10 * horizontalScale,
+                                                child: Container(
                                                   child: Text(
-                                                    map["name"],
-                                                    textScaleFactor: min(
+                                                    map['name'],
+                                                    textScaleFactor:
                                                         horizontalScale,
-                                                        verticalScale),
-                                                    style: const TextStyle(
-                                                        fontFamily: 'Bold',
+                                                    style: TextStyle(
+                                                        color: Color.fromRGBO(
+                                                            0, 0, 0, 1),
+                                                        fontFamily: 'Poppins',
                                                         fontSize: 15,
+                                                        letterSpacing:
+                                                            0 /*percentages not used in flutter. defaulting to zero*/,
                                                         fontWeight:
-                                                            FontWeight.w500),
+                                                            FontWeight.w500,
+                                                        height: 1),
                                                     // overflow: TextOverflow.ellipsis,
                                                   ),
                                                 ),
-                                                SizedBox(
-                                                  width: 0,
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                        map['combo']
-                                            ? Row(
-                                                children: [
-                                                  SizedBox(
-                                                    width: 15 * horizontalScale,
-                                                  ),
-                                                  Column(
-                                                    children: [
-                                                      SizedBox(
-                                                        height:
-                                                            90 * verticalScale,
-                                                      ),
-                                                      Container(
-                                                        width: 60 *
-                                                            horizontalScale,
-                                                        height:
-                                                            40 * verticalScale,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(10),
-                                                          color:
-                                                              Color(0xFF7860DC),
-                                                        ),
-                                                        child: Center(
-                                                          child: Text(
-                                                            'COMBO',
-                                                            textScaleFactor: min(
-                                                                horizontalScale,
-                                                                verticalScale),
-                                                            style:
-                                                                const TextStyle(
-                                                              fontFamily:
-                                                                  'Bold',
-                                                              fontSize: 13,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
-                                                              color:
-                                                                  Colors.white,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              )
-                                            : Positioned(
-                                                child: Container(),
                                               ),
-                                        map['combo'] &&
-                                                statusOfPayInParts(map['id'])
-                                            ? Row(
-                                                children: [
-                                                  SizedBox(
-                                                    width: 10 * horizontalScale,
-                                                  ),
-                                                  Column(
-                                                    children: [
-                                                      SizedBox(
-                                                        height:
-                                                            55 * verticalScale,
-                                                      ),
-                                                      Container(
+                                              map['combo'] &&
+                                                      statusOfPayInParts(
+                                                          map['id'])
+                                                  ? Positioned(
+                                                      top: 35 * verticalScale,
+                                                      left:
+                                                          10 * horizontalScale,
+                                                      child: Container(
                                                         child:
                                                             !navigateToCatalogueScreen(
                                                                     map['id'])
@@ -535,31 +415,457 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                     ),
                                                                   ),
                                                       ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              )
-                                            : Positioned(
-                                                child: Container(),
-                                              ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
+                                                    )
+                                                  : Container(),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  Column(
+                                    children: [
+                                      SizedBox(
+                                        height: 395 * verticalScale,
+                                      ),
+                                      map['combo']
+                                          ? Row(
+                                              children: [
+                                                SizedBox(
+                                                  width: 30 * horizontalScale,
+                                                ),
+                                                Stack(
+                                                  children: [
+                                                    Positioned(
+                                                      // top: 70 * verticalScale,
+                                                      // left: 10 * horizontalScale,
+                                                      child: Container(
+                                                        width: 60 *
+                                                            horizontalScale,
+                                                        height:
+                                                            40 * verticalScale,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(10),
+                                                          color:
+                                                              Color(0xFF7860DC),
+                                                        ),
+                                                        child: Center(
+                                                          child: Text(
+                                                            'COMBO',
+                                                            textScaleFactor: min(
+                                                                horizontalScale,
+                                                                verticalScale),
+                                                            style:
+                                                                const TextStyle(
+                                                              fontFamily:
+                                                                  'Bold',
+                                                              fontSize: 13,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                              color:
+                                                                  Colors.white,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                              ],
+                                            )
+                                          : Container(),
+                                    ],
+                                  ),
+                                ],
+                              );
+                            } else {
+                              return Container();
+                            }
+                          },
                         ),
                       );
-                    } else {
-                      return Container();
-                    }
-                  },
-                ),
-              );
-            },
-          ),
-        ),
+                    }),
+              )
+            : Container(),
+        // Positioned(
+        //   // top: 227 * verticalScale,
+        //   // left: 20,
+        //   child: StreamBuilder<QuerySnapshot>(
+        //     stream:
+        //         FirebaseFirestore.instance.collection('courses').snapshots(),
+        //     builder:
+        //         (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        //       if (!snapshot.hasData) return const SizedBox.shrink();
+        //       return Container(
+        //         width: screenWidth,
+        //         height: screenHeight,
+        //         child: ListView.builder(
+        //           shrinkWrap: true,
+        //           scrollDirection: Axis.horizontal,
+        //           itemCount: snapshot.data!.docs.length,
+        //           itemBuilder: (BuildContext context, index) {
+        //             DocumentSnapshot document = snapshot.data!.docs[index];
+        //             Map<String, dynamic> map = snapshot.data!.docs[index].data()
+        //                 as Map<String, dynamic>;
+        //             // setState(() {
+        //             //   id= map['id'];
+        //             // });
+        //             if (map["name"].toString() == "null") {
+        //               return Container();
+        //             }
+        //             if (courses.contains(map['id'])) {
+        //               return InkWell(
+        //                 onTap: () {
+        //                   // if()
+        //                   if (navigateToCatalogueScreen(map['id']) &&
+        //                       !(userMap['payInPartsDetails'][map['id']]
+        //                           ['outStandingAmtPaid'])) {
+        //                     if (!map['combo']) {
+        //                       Navigator.push(
+        //                         context,
+        //                         PageTransition(
+        //                             duration: Duration(milliseconds: 100),
+        //                             curve: Curves.bounceInOut,
+        //                             type: PageTransitionType.rightToLeft,
+        //                             child: CatelogueScreen()),
+        //                       );
+        //                     } else {
+        //                       Navigator.push(
+        //                         context,
+        //                         PageTransition(
+        //                           duration: Duration(milliseconds: 100),
+        //                           curve: Curves.bounceInOut,
+        //                           type: PageTransitionType.rightToLeft,
+        //                           child: ComboStore(
+        //                             courses: map['courses'],
+        //                           ),
+        //                         ),
+        //                       );
+        //                     }
+        //                   } else {
+        //                     if (!map['combo']) {
+        //                       Navigator.push(
+        //                         context,
+        //                         PageTransition(
+        //                             duration: Duration(milliseconds: 400),
+        //                             curve: Curves.bounceInOut,
+        //                             type: PageTransitionType.rightToLeft,
+        //                             child: Couse()),
+        //                       );
+        //                     } else {
+        //                       ComboCourse.comboId.value = map['id'];
+        //                       Navigator.push(
+        //                         context,
+        //                         PageTransition(
+        //                           duration: Duration(milliseconds: 400),
+        //                           curve: Curves.bounceInOut,
+        //                           type: PageTransitionType.rightToLeft,
+        //                           child: ComboCourse(
+        //                             courses: map['courses'],
+        //                           ),
+        //                         ),
+        //                       );
+        //                     }
+        //                   }
+        //                   setState(() {
+        //                     courseId = snapshot.data!.docs[index].id;
+        //                   });
+        //                 },
+        //                 child: Stack(
+        //                   children: <Widget>[
+        //                     Row(
+        //                       children: [
+        //                         SizedBox(
+        //                           width: 20 * horizontalScale,
+        //                         ),
+        //                         Column(
+        //                           children: [
+        //                             SizedBox(
+        //                               height: 227 * verticalScale,
+        //                             ),
+        //                             Positioned(
+        //                               child: Container(
+        //                                 height: 109 * verticalScale,
+        //                                 width: 187 * horizontalScale,
+        //                                 decoration: BoxDecoration(
+        //                                   boxShadow: [
+        //                                     BoxShadow(
+        //                                         color: Color.fromRGBO(29, 28,
+        //                                             30, 0.30000001192092896),
+        //                                         offset: Offset(2, 2),
+        //                                         // spreadRadius: 5,
+        //                                         blurStyle: BlurStyle.outer,
+        //                                         blurRadius: 15)
+        //                                   ],
+        //                                 ),
+        //                                 child: ClipRRect(
+        //                                   borderRadius: BorderRadius.only(
+        //                                     topLeft: Radius.circular(25),
+        //                                     topRight: Radius.circular(25),
+        //                                   ),
+        //                                   child: Image.network(
+        //                                     map['image_url'].toString(),
+        //                                     fit: BoxFit.cover,
+        //                                   ),
+        //                                 ),
+        //                               ),
+        //                             ),
+        //                           ],
+        //                         ),
+        //                       ],
+        //                     ),
+        //                     Row(
+        //                       children: [
+        //                         SizedBox(
+        //                           width: 20 * horizontalScale,
+        //                         ),
+        //                         Column(
+        //                           children: [
+        //                             SizedBox(
+        //                               height: 336 * verticalScale,
+        //                             ),
+        //                             Stack(
+        //                               children: [
+        //                                 Container(
+        //                                   height: 109 * verticalScale,
+        //                                   width: 187 * horizontalScale,
+        //                                   decoration: BoxDecoration(
+        //                                     color: Colors.white,
+        //                                     borderRadius: BorderRadius.only(
+        //                                       bottomLeft: Radius.circular(25),
+        //                                       bottomRight: Radius.circular(25),
+        //                                     ),
+        //                                     boxShadow: [
+        //                                       BoxShadow(
+        //                                           color: Color.fromRGBO(29, 28,
+        //                                               30, 0.30000001192092896),
+        //                                           offset: Offset(2, 2),
+        //                                           blurStyle: BlurStyle.outer,
+        //                                           blurRadius: 15)
+        //                                     ],
+        //                                   ),
+        //                                 ),
+        //                                 Column(
+        //                                   children: [
+        //                                     SizedBox(
+        //                                       height: 5 * verticalScale,
+        //                                     ),
+        //                                     Row(
+        //                                       children: [
+        //                                         SizedBox(
+        //                                           width: 10 * horizontalScale,
+        //                                         ),
+        //                                         Container(
+        //                                           width: 180 * horizontalScale,
+        //                                           // height: 30* verticalScale,
+        //                                           child: Text(
+        //                                             map["name"],
+        //                                             textScaleFactor: min(
+        //                                                 horizontalScale,
+        //                                                 verticalScale),
+        //                                             style: const TextStyle(
+        //                                                 fontFamily: 'Bold',
+        //                                                 fontSize: 15,
+        //                                                 fontWeight:
+        //                                                     FontWeight.w500),
+        //                                             // overflow: TextOverflow.ellipsis,
+        //                                           ),
+        //                                         ),
+        //                                         SizedBox(
+        //                                           width: 0,
+        //                                         ),
+        //                                       ],
+        //                                     ),
+        //                                   ],
+        //                                 ),
+        //                                 map['combo']
+        //                                     ? Row(
+        //                                         children: [
+        //                                           SizedBox(
+        //                                             width: 15 * horizontalScale,
+        //                                           ),
+        //                                           Column(
+        //                                             children: [
+        //                                               SizedBox(
+        //                                                 height:
+        //                                                     90 * verticalScale,
+        //                                               ),
+        //                                               Container(
+        //                                                 width: 60 *
+        //                                                     horizontalScale,
+        //                                                 height:
+        //                                                     40 * verticalScale,
+        //                                                 decoration:
+        //                                                     BoxDecoration(
+        //                                                   borderRadius:
+        //                                                       BorderRadius
+        //                                                           .circular(10),
+        //                                                   color:
+        //                                                       Color(0xFF7860DC),
+        //                                                 ),
+        //                                                 child: Center(
+        //                                                   child: Text(
+        //                                                     'COMBO',
+        //                                                     textScaleFactor: min(
+        //                                                         horizontalScale,
+        //                                                         verticalScale),
+        //                                                     style:
+        //                                                         const TextStyle(
+        //                                                       fontFamily:
+        //                                                           'Bold',
+        //                                                       fontSize: 13,
+        //                                                       fontWeight:
+        //                                                           FontWeight
+        //                                                               .w500,
+        //                                                       color:
+        //                                                           Colors.white,
+        //                                                     ),
+        //                                                   ),
+        //                                                 ),
+        //                                               ),
+        //                                             ],
+        //                                           ),
+        //                                         ],
+        //                                       )
+        //                                     : Positioned(
+        //                                         child: Container(),
+        //                                       ),
+        //                                 map['combo'] &&
+        //                                         statusOfPayInParts(map['id'])
+        //                                     ? Row(
+        //                                         children: [
+        //                                           SizedBox(
+        //                                             width: 10 * horizontalScale,
+        //                                           ),
+        //                                           Column(
+        //                                             children: [
+        //                                               SizedBox(
+        //                                                 height:
+        //                                                     55 * verticalScale,
+        //                                               ),
+        //                                               Container(
+        //                                                 child:
+        //                                                     !navigateToCatalogueScreen(
+        //                                                             map['id'])
+        //                                                         ? Container(
+        //                                                             height: MediaQuery.of(context)
+        //                                                                     .size
+        //                                                                     .width *
+        //                                                                 0.08 *
+        //                                                                 verticalScale,
+        //                                                             decoration:
+        //                                                                 BoxDecoration(
+        //                                                               borderRadius:
+        //                                                                   BorderRadius.circular(
+        //                                                                       10),
+        //                                                               color: Color(
+        //                                                                   0xFFC0AAF5),
+        //                                                             ),
+        //                                                             child: Row(
+        //                                                               mainAxisAlignment:
+        //                                                                   MainAxisAlignment
+        //                                                                       .spaceEvenly,
+        //                                                               children: [
+        //                                                                 SizedBox(
+        //                                                                   width:
+        //                                                                       10,
+        //                                                                 ),
+        //                                                                 Text(
+        //                                                                   'Access ends in days : ',
+        //                                                                   textScaleFactor: min(
+        //                                                                       horizontalScale,
+        //                                                                       verticalScale),
+        //                                                                   style: TextStyle(
+        //                                                                       color: Colors.white,
+        //                                                                       fontSize: 13,
+        //                                                                       fontWeight: FontWeight.bold),
+        //                                                                 ),
+        //                                                                 Container(
+        //                                                                   decoration: BoxDecoration(
+        //                                                                       borderRadius: BorderRadius.circular(10),
+        //                                                                       color: Colors.grey.shade100),
+        //                                                                   width:
+        //                                                                       30 * min(horizontalScale, verticalScale),
+        //                                                                   height:
+        //                                                                       30 * min(horizontalScale, verticalScale),
+        //                                                                   // color:
+        //                                                                   //     Color(0xFFaefb2a),
+        //                                                                   child:
+        //                                                                       Center(
+        //                                                                     child:
+        //                                                                         Text(
+        //                                                                       '${(DateTime.parse(userMap['payInPartsDetails'][map['id']]['endDateOfLimitedAccess']).difference(DateTime.now()).inDays)}',
+        //                                                                       textScaleFactor: min(horizontalScale, verticalScale),
+        //                                                                       style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold
+        //                                                                           // fontSize: 16,
+        //                                                                           ),
+        //                                                                     ),
+        //                                                                   ),
+        //                                                                 ),
+        //                                                               ],
+        //                                                             ),
+        //                                                           )
+        //                                                         : Container(
+        //                                                             height: MediaQuery.of(context)
+        //                                                                     .size
+        //                                                                     .width *
+        //                                                                 0.08,
+        //                                                             decoration:
+        //                                                                 BoxDecoration(
+        //                                                               borderRadius:
+        //                                                                   BorderRadius.circular(
+        //                                                                       10),
+        //                                                               color: Color(
+        //                                                                   0xFFC0AAF5),
+        //                                                             ),
+        //                                                             child:
+        //                                                                 Center(
+        //                                                               child:
+        //                                                                   Text(
+        //                                                                 'Limited access expired !',
+        //                                                                 textScaleFactor: min(
+        //                                                                     horizontalScale,
+        //                                                                     verticalScale),
+        //                                                                 style:
+        //                                                                     TextStyle(
+        //                                                                   color:
+        //                                                                       Colors.deepOrange[600],
+        //                                                                   fontSize:
+        //                                                                       13,
+        //                                                                 ),
+        //                                                               ),
+        //                                                             ),
+        //                                                           ),
+        //                                               ),
+        //                                             ],
+        //                                           ),
+        //                                         ],
+        //                                       )
+        //                                     : Positioned(
+        //                                         child: Container(),
+        //                                       ),
+        //                               ],
+        //                             ),
+        //                           ],
+        //                         ),
+        //                       ],
+        //                     ),
+        //                   ],
+        //                 ),
+        //               );
+        //             } else {
+        //               return Container();
+        //             }
+        //           },
+        //         ),
+        //       );
+        //     },
+        //   ),
+        // ),
         Positioned(
           top: 498 * verticalScale,
           left: 36 * horizontalScale,
