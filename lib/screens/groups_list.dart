@@ -105,39 +105,93 @@ class _GroupsListState extends State<GroupsList> {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: AppBar(
-        title:
-            Text(userData!["role"] == "student" ? "Groups" : "Groups(Mentor)"),
-        actions: [],
-      ),
-      body: isLoading
-          ? Center(child: CircularProgressIndicator())
-          : groupsList == null || groupsList!.isEmpty
-              ? Center(
-                  child: Text("No Groups Found!"),
-                )
-              : ListView.builder(
-                  itemCount: groupsList!.length,
-                  itemBuilder: (context, index) {
-                    return InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          CupertinoPageRoute(
-                            builder: (_) => ChatScreen(
-                              groupData: groupsList![index],
-                              groupId: groupsList![index]["id"],
-                              userData: userData,
+      // appBar: AppBar(
+      //   title:
+      //       Text(userData!["role"] == "student" ? "Groups" : "Groups(Mentor)"),
+      //   actions: [],
+      // ),
+      body: Column(
+        children: [
+          Container(
+             decoration: BoxDecoration(
+                  color: Color(0xFF7860DC),
+                  // gradient: gradient
+                borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(0),
+                              topRight: Radius.circular(0),
+                              bottomLeft: Radius.circular(10),
+                              bottomRight: Radius.circular(10),
+                            ),
+                ),
+            // height: MediaQuery.of(context).size.height*.1 ,
+                  padding: const EdgeInsets.only(left: 0),
+                  child: Column(
+                    children: [
+                      SizedBox(height: MediaQuery.of(context).size.height*.08),
+                      Row(
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              Scaffold.of(context).openDrawer();
+                            },
+                            icon: Icon(
+                              Icons.menu,
+                              size: 40,
+                              color: Colors.white,
                             ),
                           ),
-                        );
-                      },
-                      child: GroupTile(
-                        groupData: groupsList![index],
-                        userData: userData,
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.1,
+                          ),
+                          Text(
+                            'Chat',
+                            style: TextStyle(
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                          )
+                        ],
                       ),
-                    );
-                  }),
+                      SizedBox(height: MediaQuery.of(context).size.height*.05),
+                    ],
+                  ),
+                ),
+          isLoading
+              ? Center(child: CircularProgressIndicator())
+              : groupsList == null || groupsList!.isEmpty
+                  ? Center(
+                      child: Text("No Groups Found!"),
+                    )
+                  : Expanded(
+                    child: MediaQuery.removePadding(
+                      context: context,
+                      removeTop: true,
+                      child: ListView.builder(
+                          itemCount: groupsList!.length,
+                          itemBuilder: (context, index) {
+                            return InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  CupertinoPageRoute(
+                                    builder: (_) => ChatScreen(
+                                      groupData: groupsList![index],
+                                      groupId: groupsList![index]["id"],
+                                      userData: userData,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: GroupTile(
+                                groupData: groupsList![index],
+                                userData: userData,
+                              ),
+                            );
+                          }),
+                    ),
+                  ),
+        ],
+      ),
     );
   }
 }

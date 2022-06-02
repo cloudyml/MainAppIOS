@@ -100,6 +100,7 @@ class _VideoScreenState extends State<VideoScreen> {
     final mins = convertToTwoDigits(timeRemained ~/ 60);
     final seconds = convertToTwoDigits(timeRemained % 60);
     timeRemaining = '$mins:$seconds';
+
     return Positioned(
       bottom: 33,
       // left: 0,
@@ -345,6 +346,10 @@ class _VideoScreenState extends State<VideoScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+    var verticalScale = screenHeight / mockUpHeight;
+    var horizontalScale = screenWidth / mockUpWidth;
     return Scaffold(
         body: SafeArea(
       child: Container(
@@ -741,32 +746,29 @@ class _VideoScreenState extends State<VideoScreen> {
                                                           SizedBox(
                                                             width: 30,
                                                           ),
-                                                          Expanded(
-                                                            // flex: 1,
-                                                            child: Container(
-                                                              child: Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .all(
-                                                                        8.0),
-                                                                child: index < 9
-                                                                    ? Text(
-                                                                        '  ${index + 1}',
-                                                                        style:
-                                                                            TextStyle(
-                                                                          // fontSize:
-                                                                          //     18,
-                                                                        ),
-                                                                      )
-                                                                    : Text(
-                                                                        '${index + 1}',
-                                                                        style:
-                                                                            TextStyle(
-                                                                          // fontSize:
-                                                                          //     17,
-                                                                        ),
+                                                          Container(
+                                                            child: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .all(
+                                                                      8.0),
+                                                              child: index < 9
+                                                                  ? Text(
+                                                                      '  ${index + 1}',
+                                                                      style:
+                                                                          TextStyle(
+                                                                        // fontSize:
+                                                                        //     18,
                                                                       ),
-                                                              ),
+                                                                    )
+                                                                  : Text(
+                                                                      '${index + 1}',
+                                                                      style:
+                                                                          TextStyle(
+                                                                        // fontSize:
+                                                                        //     17,
+                                                                      ),
+                                                                    ),
                                                             ),
                                                           ),
                                                           SizedBox(
@@ -780,19 +782,18 @@ class _VideoScreenState extends State<VideoScreen> {
                                                             width: 10,
                                                           ),
                                                           Expanded(
-                                                            flex: 7,
-                                                            child: AutoSizeText(
+                                                            child: Text(
                                                               map['name'],
+                                                              textScaleFactor: min(horizontalScale, verticalScale),
                                                               style: TextStyle(
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .w500,
-                                                                // fontSize: 16,
+                                                                fontSize: 17,
                                                                 fontFamily:
                                                                     "Medium",
                                                               ),
-                                                              stepGranularity: 1,
-                                                              maxFontSize: 14,
+                                                             
                                                               maxLines: 2,
                                                             ),
                                                           ),

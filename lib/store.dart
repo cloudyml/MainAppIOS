@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloudyml_app2/catalogue_screen.dart';
 import 'package:cloudyml_app2/combo/combo_store.dart';
+import 'package:cloudyml_app2/fun.dart';
 import 'package:cloudyml_app2/globals.dart';
+import 'package:cloudyml_app2/home.dart';
 import 'package:flutter/material.dart';
 
 class StoreScreen extends StatefulWidget {
@@ -9,12 +11,18 @@ class StoreScreen extends StatefulWidget {
 
   @override
   State<StoreScreen> createState() => _StoreScreenState();
+  
 }
 
 class _StoreScreenState extends State<StoreScreen> {
+
+    final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key:_scaffoldKey,
+      // drawer: dr(context),
       body: Container(
         color: Colors.deepPurple,
         child: Stack(
@@ -72,10 +80,15 @@ class _StoreScreenState extends State<StoreScreen> {
                     children: [
                       IconButton(
                         onPressed: () {
-                          Scaffold.of(context).openDrawer();
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>  HomePage()),
+                            );
+                          // Scaffold.of(context).openDrawer();
                         },
                         icon: Icon(
-                          Icons.menu,
+                          Icons.arrow_back,
                           size: 40,
                           color: Colors.white,
                         ),
@@ -212,7 +225,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                               MediaQuery.of(context)
                                                   .size
                                                   .height *
-                                                  .05,
+                                                  .06,
                                               child: Text(
                                                 map['name'],
                                                 style: TextStyle(
@@ -222,7 +235,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                                         context)
                                                         .size
                                                         .width *
-                                                        .043),
+                                                        .035),
                                               ),
                                             ),
                                             SizedBox(
@@ -230,7 +243,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                               MediaQuery.of(context)
                                                   .size
                                                   .height *
-                                                  .005,
+                                                  .004,
                                             ),
                                             Row(
                                               // mainAxisAlignment:
@@ -244,7 +257,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                                           context)
                                                           .size
                                                           .width *
-                                                          .035),
+                                                          .03),
                                                 ),
                                                 SizedBox(
                                                   width: MediaQuery.of(
@@ -260,7 +273,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                                           context)
                                                           .size
                                                           .width *
-                                                          .035),
+                                                          .03),
                                                 ),
                                                 SizedBox(
                                                   width: MediaQuery.of(
@@ -277,7 +290,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                                           context)
                                                           .size
                                                           .width *
-                                                          .04),
+                                                          .03),
                                                 ),
                                                 // const SizedBox(
                                                 //   height: 10,
@@ -349,7 +362,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                                         context)
                                                         .size
                                                         .width *
-                                                        .04,
+                                                        .03,
                                                     color: Colors.indigo,
                                                     fontWeight:
                                                     FontWeight.bold,

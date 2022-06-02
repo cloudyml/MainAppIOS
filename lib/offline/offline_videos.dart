@@ -1,10 +1,8 @@
 import 'dart:io';
 import 'dart:typed_data';
-
+import 'package:cloudyml_app2/globals.dart';
 import 'package:cloudyml_app2/offline/db.dart';
 import 'package:cloudyml_app2/models/offline_model.dart';
-import 'package:cloudyml_app2/module/assignment_screen.dart';
-import 'package:cloudyml_app2/module/quiz_screen.dart';
 import 'package:chewie/chewie.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
@@ -120,117 +118,173 @@ class _VideoScreenOfflineState extends State<VideoScreenOffline> {
       //   backgroundColor: Colors.white,
       //   elevation: 0,
       // ),
-      body: loading!
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
-          : videos.length == 0
-              ? Center(
-                  child: Text(
-                    'No downloaded videos',
-                    style: TextStyle(
-                        fontFamily: 'Medium',
-                        fontSize: 24,
-                        color: Colors.black.withOpacity(0.4)),
-                  ),
-                )
-              : Container(
-                  height: MediaQuery.of(context).size.height,
+      body: Column(
+        children: [
+          
+          Container(
+             decoration: BoxDecoration(
+                  color: Color(0xFF7860DC),
+                  // gradient: gradient
+                borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(0),
+                              topRight: Radius.circular(0),
+                              bottomLeft: Radius.circular(10),
+                              bottomRight: Radius.circular(10),
+                            ),
+                ),
+            // height: MediaQuery.of(context).size.height*.1 ,
+                  padding: const EdgeInsets.only(left: 0),
                   child: Column(
                     children: [
-                      showVideo
-                          ? Expanded(
-                              flex: 1,
-                              child: _chewieController != null
-                                  ? Chewie(controller: _chewieController!)
-                                  : Container(
-                                      color: Colors.black,
-                                      child: Center(
-                                        child: Text(
-                                          'Tap on downloaded Videos to play',
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                      ),
-                                    ),
-                            )
-                          : Container(),
-                      Expanded(
-                        flex: loading! ? 10 : 2,
-                        child: ListView.builder(
-                          itemCount: videos.length,
-                          itemBuilder: (ctx, index) {
-                            print('getting info--${videos[index].path}');
-                            return Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 18.0),
-                              child: InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    showVideo = true;
-                                  });
-                                  initializeVideoController(
-                                      videos[index].path!);
-                                },
-                                child: Column(
-                                  children: [
-                                    SizedBox(
-                                      height: 20,
-                                    ),
-                                    Row(
-                                      children: [
-                                        SizedBox(
-                                          width: 10,
-                                        ),
-                                        Expanded(
-                                          child: Container(
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: index < 9
-                                                  ? Text(
-                                                      '  ${index + 1}',
-                                                      style: TextStyle(
-                                                          // fontSize: 18,
-                                                          ),
-                                                    )
-                                                  : Text(
-                                                      '${index + 1}',
-                                                      style: TextStyle(
-                                                          // fontSize: 17,
-                                                          ),
-                                                    ),
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: 10,
-                                        ),
-                                        Expanded(
-                                          flex: 6,
-                                          child: Text(
-                                            videos[index].topic!,
-                                            style: TextStyle(
-                                                fontFamily: 'Bold',
-                                                // fontSize: 18,
-                                                color: Colors.black),
-                                          ),
-                                        ),
-                                        Icon(
-                                          Icons.download_done_sharp,
-                                          color: Color(0xFF7860DC),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        ),
+                      SizedBox(height: MediaQuery.of(context).size.height*.08),
+                      Row(
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              Scaffold.of(context).openDrawer();
+                            },
+                            icon: Icon(
+                              Icons.menu,
+                              size: 40,
+                              color: Colors.white,
+                            ),
+                          ),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.1,
+                          ),
+                          Text(
+                            'Offline-Videos',
+                            style: TextStyle(
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                          )
+                        ],
                       ),
+                      SizedBox(height: MediaQuery.of(context).size.height*.04),
                     ],
                   ),
                 ),
+                SizedBox(height: MediaQuery.of(context).size.height*.04),
+          loading!
+              ? Center(
+                  child: CircularProgressIndicator(),
+                )
+              : videos.length == 0
+                  ? Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 250, 0, 50),
+                    child: Center(
+                        child: Text(
+                          'No downloaded videos',
+                          style: TextStyle(
+                              fontFamily: 'Medium',
+                              fontSize: 20,
+                              color: Colors.black.withOpacity(0.4)),
+                        ),
+                      ),
+                  )
+                  : Expanded(
+                    flex:2,
+                    child: Container(
+                        height: MediaQuery.of(context).size.height,
+                        child: Column(
+                          children: [
+                            showVideo
+                                ? AspectRatio(
+                                  aspectRatio: 16/9,
+                                  child: _chewieController != null
+                                      ? Chewie(controller: _chewieController!)
+                                      : Container(
+                                          color: Colors.black,
+                                          child: Center(
+                                            child: Text(
+                                              'Tap on downloaded Videos to play',
+                                              style: TextStyle(color: Colors.white),
+                                            ),
+                                          ),
+                                        ),
+                                )
+                                : Container(),
+                            Expanded(
+                              flex: loading! ? 10 : 2,
+                              child: ListView.builder(
+                                itemCount: videos.length,
+                                itemBuilder: (ctx, index) {
+                                  print('getting info--${videos[index].path}');
+                                  return Padding(
+                                    padding:
+                                        const EdgeInsets.symmetric(horizontal: 18.0),
+                                    child: InkWell(
+                                      onTap: () {
+                                        setState(() {
+                                          showVideo = true;
+                                        });
+                                        initializeVideoController(
+                                            videos[index].path!);
+                                      },
+                                      child: Column(
+                                        children: [
+                                          SizedBox(
+                                            height: 20,
+                                          ),
+                                          Row(
+                                            children: [
+                                              SizedBox(
+                                                width: 10,
+                                              ),
+                                              Expanded(
+                                                child: Container(
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(8.0),
+                                                    child: index < 9
+                                                        ? Text(
+                                                            '  ${index + 1}',
+                                                            style: TextStyle(
+                                                                // fontSize: 18,
+                                                                ),
+                                                          )
+                                                        : Text(
+                                                            '${index + 1}',
+                                                            style: TextStyle(
+                                                                // fontSize: 17,
+                                                                ),
+                                                          ),
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 10,
+                                              ),
+                                              Expanded(
+                                                flex: 6,
+                                                child: Text(
+                                                  videos[index].topic!,
+                                                  style: TextStyle(
+                                                      fontFamily: 'Bold',
+                                                      // fontSize: 18,
+                                                      color: Colors.black),
+                                                ),
+                                              ),
+                                              Icon(
+                                                Icons.download_done_sharp,
+                                                color: Color(0xFF7860DC),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                  ),
+        ],
+      ),
     );
   }
 }

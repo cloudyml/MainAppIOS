@@ -231,11 +231,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           duration: Duration(milliseconds: 400),
                                           curve: Curves.bounceInOut,
                                           type: PageTransitionType.rightToLeft,
-                                          child: VideoScreen(
-                                            isdemo: false,
-                                            sr: 1,
-                                            courseName: map['name'],
-                                          ),
+                                          child: Couse(),
                                         ),
                                       );
                                     } else {
@@ -259,11 +255,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           duration: Duration(milliseconds: 400),
                                           curve: Curves.bounceInOut,
                                           type: PageTransitionType.rightToLeft,
-                                          child: VideoScreen(
-                                            isdemo: false,
-                                            sr: 1,
-                                            courseName: name,
-                                          ),
+                                          child: Couse(),
                                         ),
                                       );
                                     } else {

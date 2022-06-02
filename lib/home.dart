@@ -1,21 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloudyml_app2/aboutus.dart';
 import 'package:cloudyml_app2/authentication/firebase_auth.dart';
-
 import 'package:cloudyml_app2/payments_history.dart';
-
 import 'package:cloudyml_app2/home_screen.dart';
 import 'package:cloudyml_app2/homepage.dart';
 import 'package:cloudyml_app2/offline/offline_videos.dart';
-
 import 'package:cloudyml_app2/privacy_policy.dart';
-
 import 'package:cloudyml_app2/screens/groups_list.dart';
 import 'package:cloudyml_app2/store.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
 import 'package:flutter/material.dart';
-
 import 'package:hexcolor/hexcolor.dart';
 
 class HomePage extends StatefulWidget {
@@ -68,28 +62,28 @@ class _HomePageState extends State<HomePage> {
     double width = MediaQuery.of(context).size.width;
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(
-        leading: InkWell(
-          onTap: () {
-            _scaffoldKey.currentState!.openDrawer();
-          },
-          child: Icon(
-            Icons.menu,
-            color: Colors.black,
-          ),
-        ),
-        elevation: 0,
-        backgroundColor: Colors.white,
-        title: openPaymentHistory
-            ? Text(
-                'Payment History',
-                style: TextStyle(fontFamily: 'SemiBold', color: Colors.black),
-              )
-            : Text(
-                titles[_selectedIndex!],
-                style: TextStyle(fontFamily: 'SemiBold', color: Colors.black),
-              ),
-      ),
+      // appBar: AppBar(
+      //   leading: InkWell(
+      //     onTap: () {
+      //       _scaffoldKey.currentState!.openDrawer();
+      //     },
+      //     child: Icon(
+      //       Icons.menu,
+      //       color: Colors.black,
+      //     ),
+      //   ),
+      //   elevation: 0,
+      //   backgroundColor: Colors.white,
+      //   title: openPaymentHistory
+      //       ? Text(
+      //           'Payment History',
+      //           style: TextStyle(fontFamily: 'SemiBold', color: Colors.black),
+      //         )
+      //       : Text(
+      //           titles[_selectedIndex!],
+      //           style: TextStyle(fontFamily: 'SemiBold', color: Colors.black),
+      //         ),
+      // ),
       body: PageView.builder(itemBuilder: (ctx, index) {
         if (openPaymentHistory) {
           return PaymentHistory();
