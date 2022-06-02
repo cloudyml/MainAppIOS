@@ -214,273 +214,334 @@ class _HomeScreenState extends State<HomeScreen> {
                               return Container();
                             }
                             if (courses.contains(map['id'])) {
-                              return Stack(
-                                children: [
-                                  Column(
-                                    children: [
-                                      SizedBox(
-                                        height: 230 * verticalScale,
-                                      ),
-                                      Row(
-                                        children: [
-                                          SizedBox(
-                                            width: 20,
+                              return InkWell(
+                                onTap: (() {
+                                  if (navigateToCatalogueScreen(map['id']) &&
+                                      !(userMap['payInPartsDetails'][map['id']]
+                                          ['outStandingAmtPaid'])) {
+                                    if (!map['combo']) {
+                                      Navigator.push(
+                                        context,
+                                        PageTransition(
+                                            duration:
+                                                Duration(milliseconds: 100),
+                                            curve: Curves.bounceInOut,
+                                            type:
+                                                PageTransitionType.rightToLeft,
+                                            child: CatelogueScreen()),
+                                      );
+                                    } else {
+                                      Navigator.push(
+                                        context,
+                                        PageTransition(
+                                          duration: Duration(milliseconds: 100),
+                                          curve: Curves.bounceInOut,
+                                          type: PageTransitionType.rightToLeft,
+                                          child: ComboStore(
+                                            courses: map['courses'],
                                           ),
-                                          Container(
-                                            width: 176.99998474121094 *
-                                                horizontalScale,
-                                            height: 91.99999237060547 *
-                                                verticalScale,
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.only(
-                                                topLeft: Radius.circular(25),
-                                                topRight: Radius.circular(25),
-                                                bottomLeft: Radius.circular(0),
-                                                bottomRight: Radius.circular(0),
-                                              ),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                    color: Color.fromRGBO(
-                                                        29,
-                                                        28,
-                                                        31,
-                                                        0.30000001192092896),
-                                                    offset: Offset(2, 2),
-                                                    blurRadius: 47)
-                                              ],
-                                              image: DecorationImage(
-                                                  image: NetworkImage(
-                                                    map['image_url'].toString(),
-                                                  ),
-                                                  fit: BoxFit.fitWidth),
+                                        ),
+                                      );
+                                    }
+                                  } else {
+                                    if (!map['combo']) {
+                                      Navigator.push(
+                                        context,
+                                        PageTransition(
+                                            duration:
+                                                Duration(milliseconds: 400),
+                                            curve: Curves.bounceInOut,
+                                            type:
+                                                PageTransitionType.rightToLeft,
+                                            child: Couse()),
+                                      );
+                                    } else {
+                                      ComboCourse.comboId.value = map['id'];
+                                      Navigator.push(
+                                        context,
+                                        PageTransition(
+                                          duration: Duration(milliseconds: 400),
+                                          curve: Curves.bounceInOut,
+                                          type: PageTransitionType.rightToLeft,
+                                          child: ComboCourse(
+                                            courses: map['courses'],
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  }
+                                  setState(() {
+                                    courseId = snapshot.data!.docs[index].id;
+                                  });
+                                }),
+                                child: Stack(
+                                  children: [
+                                    Column(
+                                      children: [
+                                        SizedBox(
+                                          height: 230 * verticalScale,
+                                        ),
+                                        Row(
+                                          children: [
+                                            SizedBox(
+                                              width: 20,
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        children: [
-                                          SizedBox(
-                                            width: 20,
-                                          ),
-                                          Stack(
-                                            children: [
-                                              Container(
-                                                width: 177 * horizontalScale,
-                                                height: 200 * verticalScale / 2,
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.only(
-                                                    // topLeft: Radius.circular(25),
-                                                    // topRight: Radius.circular(25),
-                                                    bottomLeft:
-                                                        Radius.circular(25),
-                                                    bottomRight:
-                                                        Radius.circular(25),
-                                                  ),
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                        color: Color.fromRGBO(
-                                                            29,
-                                                            28,
-                                                            31,
-                                                            0.30000001192092896),
-                                                        offset: Offset(2, 2),
-                                                        blurRadius: 47)
-                                                  ],
-                                                  color: Color.fromRGBO(
-                                                      255, 255, 255, 1),
+                                            Container(
+                                              width: 176.99998474121094 *
+                                                  horizontalScale,
+                                              height: 91.99999237060547 *
+                                                  verticalScale,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.only(
+                                                  topLeft: Radius.circular(25),
+                                                  topRight: Radius.circular(25),
+                                                  bottomLeft:
+                                                      Radius.circular(0),
+                                                  bottomRight:
+                                                      Radius.circular(0),
                                                 ),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                      color: Color.fromRGBO(
+                                                          29,
+                                                          28,
+                                                          31,
+                                                          0.30000001192092896),
+                                                      offset: Offset(2, 2),
+                                                      blurRadius: 47)
+                                                ],
+                                                image: DecorationImage(
+                                                    image: NetworkImage(
+                                                      map['image_url']
+                                                          .toString(),
+                                                    ),
+                                                    fit: BoxFit.fitWidth),
                                               ),
-                                              Positioned(
-                                                top: 5 * verticalScale,
-                                                left: 10 * horizontalScale,
-                                                right: 10 * horizontalScale,
-                                                child: Container(
-                                                  child: Text(
-                                                    map['name'],
-                                                    textScaleFactor:
-                                                        horizontalScale,
-                                                    style: TextStyle(
-                                                        color: Color.fromRGBO(
-                                                            0, 0, 0, 1),
-                                                        fontFamily: 'Poppins',
-                                                        fontSize: 15,
-                                                        letterSpacing:
-                                                            0 /*percentages not used in flutter. defaulting to zero*/,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        height: 1),
-                                                    // overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ],
+                                        ),
+                                        Row(
+                                          children: [
+                                            SizedBox(
+                                              width: 20,
+                                            ),
+                                            Stack(
+                                              children: [
+                                                Container(
+                                                  width: 177 * horizontalScale,
+                                                  height:
+                                                      200 * verticalScale / 2,
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.only(
+                                                      // topLeft: Radius.circular(25),
+                                                      // topRight: Radius.circular(25),
+                                                      bottomLeft:
+                                                          Radius.circular(25),
+                                                      bottomRight:
+                                                          Radius.circular(25),
+                                                    ),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                          color: Color.fromRGBO(
+                                                              29,
+                                                              28,
+                                                              31,
+                                                              0.30000001192092896),
+                                                          offset: Offset(2, 2),
+                                                          blurRadius: 47)
+                                                    ],
+                                                    color: Color.fromRGBO(
+                                                        255, 255, 255, 1),
                                                   ),
                                                 ),
-                                              ),
-                                              map['combo'] &&
-                                                      statusOfPayInParts(
-                                                          map['id'])
-                                                  ? Positioned(
-                                                      top: 35 * verticalScale,
-                                                      left:
-                                                          10 * horizontalScale,
-                                                      child: Container(
-                                                        child:
-                                                            !navigateToCatalogueScreen(
-                                                                    map['id'])
-                                                                ? Container(
-                                                                    height: MediaQuery.of(context)
-                                                                            .size
-                                                                            .width *
-                                                                        0.08 *
-                                                                        verticalScale,
-                                                                    decoration:
-                                                                        BoxDecoration(
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              10),
-                                                                      color: Color(
-                                                                          0xFFC0AAF5),
-                                                                    ),
-                                                                    child: Row(
-                                                                      mainAxisAlignment:
-                                                                          MainAxisAlignment
-                                                                              .spaceEvenly,
-                                                                      children: [
-                                                                        SizedBox(
-                                                                          width:
-                                                                              10,
-                                                                        ),
-                                                                        Text(
-                                                                          'Access ends in days : ',
+                                                Positioned(
+                                                  top: 5 * verticalScale,
+                                                  left: 10 * horizontalScale,
+                                                  right: 10 * horizontalScale,
+                                                  child: Container(
+                                                    child: Text(
+                                                      map['name'],
+                                                      textScaleFactor:
+                                                          horizontalScale,
+                                                      style: TextStyle(
+                                                          color: Color.fromRGBO(
+                                                              0, 0, 0, 1),
+                                                          fontFamily: 'Poppins',
+                                                          fontSize: 15,
+                                                          letterSpacing:
+                                                              0 /*percentages not used in flutter. defaulting to zero*/,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          height: 1),
+                                                      // overflow: TextOverflow.ellipsis,
+                                                    ),
+                                                  ),
+                                                ),
+                                                map['combo'] &&
+                                                        statusOfPayInParts(
+                                                            map['id'])
+                                                    ? Positioned(
+                                                        top: 35 * verticalScale,
+                                                        left: 10 *
+                                                            horizontalScale,
+                                                        child: Container(
+                                                          child:
+                                                              !navigateToCatalogueScreen(
+                                                                      map['id'])
+                                                                  ? Container(
+                                                                      height: MediaQuery.of(context)
+                                                                              .size
+                                                                              .width *
+                                                                          0.08 *
+                                                                          verticalScale,
+                                                                      decoration:
+                                                                          BoxDecoration(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(10),
+                                                                        color: Color(
+                                                                            0xFFC0AAF5),
+                                                                      ),
+                                                                      child:
+                                                                          Row(
+                                                                        mainAxisAlignment:
+                                                                            MainAxisAlignment.spaceEvenly,
+                                                                        children: [
+                                                                          SizedBox(
+                                                                            width:
+                                                                                10,
+                                                                          ),
+                                                                          Text(
+                                                                            'Access ends in days : ',
+                                                                            textScaleFactor:
+                                                                                min(horizontalScale, verticalScale),
+                                                                            style: TextStyle(
+                                                                                color: Colors.white,
+                                                                                fontSize: 13,
+                                                                                fontWeight: FontWeight.bold),
+                                                                          ),
+                                                                          Container(
+                                                                            decoration:
+                                                                                BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.grey.shade100),
+                                                                            width:
+                                                                                30 * min(horizontalScale, verticalScale),
+                                                                            height:
+                                                                                30 * min(horizontalScale, verticalScale),
+                                                                            // color:
+                                                                            //     Color(0xFFaefb2a),
+                                                                            child:
+                                                                                Center(
+                                                                              child: Text(
+                                                                                '${(DateTime.parse(userMap['payInPartsDetails'][map['id']]['endDateOfLimitedAccess']).difference(DateTime.now()).inDays)}',
+                                                                                textScaleFactor: min(horizontalScale, verticalScale),
+                                                                                style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold
+                                                                                    // fontSize: 16,
+                                                                                    ),
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    )
+                                                                  : Container(
+                                                                      height: MediaQuery.of(context)
+                                                                              .size
+                                                                              .width *
+                                                                          0.08,
+                                                                      decoration:
+                                                                          BoxDecoration(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(10),
+                                                                        color: Color(
+                                                                            0xFFC0AAF5),
+                                                                      ),
+                                                                      child:
+                                                                          Center(
+                                                                        child:
+                                                                            Text(
+                                                                          'Limited access expired !',
                                                                           textScaleFactor: min(
                                                                               horizontalScale,
                                                                               verticalScale),
-                                                                          style: TextStyle(
-                                                                              color: Colors.white,
-                                                                              fontSize: 13,
-                                                                              fontWeight: FontWeight.bold),
-                                                                        ),
-                                                                        Container(
-                                                                          decoration: BoxDecoration(
-                                                                              borderRadius: BorderRadius.circular(10),
-                                                                              color: Colors.grey.shade100),
-                                                                          width:
-                                                                              30 * min(horizontalScale, verticalScale),
-                                                                          height:
-                                                                              30 * min(horizontalScale, verticalScale),
-                                                                          // color:
-                                                                          //     Color(0xFFaefb2a),
-                                                                          child:
-                                                                              Center(
-                                                                            child:
-                                                                                Text(
-                                                                              '${(DateTime.parse(userMap['payInPartsDetails'][map['id']]['endDateOfLimitedAccess']).difference(DateTime.now()).inDays)}',
-                                                                              textScaleFactor: min(horizontalScale, verticalScale),
-                                                                              style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold
-                                                                                  // fontSize: 16,
-                                                                                  ),
-                                                                            ),
+                                                                          style:
+                                                                              TextStyle(
+                                                                            color:
+                                                                                Colors.deepOrange[600],
+                                                                            fontSize:
+                                                                                13,
                                                                           ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  )
-                                                                : Container(
-                                                                    height: MediaQuery.of(context)
-                                                                            .size
-                                                                            .width *
-                                                                        0.08,
-                                                                    decoration:
-                                                                        BoxDecoration(
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              10),
-                                                                      color: Color(
-                                                                          0xFFC0AAF5),
-                                                                    ),
-                                                                    child:
-                                                                        Center(
-                                                                      child:
-                                                                          Text(
-                                                                        'Limited access expired !',
-                                                                        textScaleFactor: min(
-                                                                            horizontalScale,
-                                                                            verticalScale),
-                                                                        style:
-                                                                            TextStyle(
-                                                                          color:
-                                                                              Colors.deepOrange[600],
-                                                                          fontSize:
-                                                                              13,
                                                                         ),
                                                                       ),
                                                                     ),
-                                                                  ),
-                                                      ),
-                                                    )
-                                                  : Container(),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  Column(
-                                    children: [
-                                      SizedBox(
-                                        height: 395 * verticalScale,
-                                      ),
-                                      map['combo']
-                                          ? Row(
-                                              children: [
-                                                SizedBox(
-                                                  width: 30 * horizontalScale,
-                                                ),
-                                                Stack(
-                                                  children: [
-                                                    Positioned(
-                                                      // top: 70 * verticalScale,
-                                                      // left: 10 * horizontalScale,
-                                                      child: Container(
-                                                        width: 60 *
-                                                            horizontalScale,
-                                                        height:
-                                                            40 * verticalScale,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(10),
-                                                          color:
-                                                              Color(0xFF7860DC),
                                                         ),
-                                                        child: Center(
-                                                          child: Text(
-                                                            'COMBO',
-                                                            textScaleFactor: min(
-                                                                horizontalScale,
-                                                                verticalScale),
-                                                            style:
-                                                                const TextStyle(
-                                                              fontFamily:
-                                                                  'Bold',
-                                                              fontSize: 13,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
-                                                              color:
-                                                                  Colors.white,
+                                                      )
+                                                    : Container(),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    Column(
+                                      children: [
+                                        SizedBox(
+                                          height: 395 * verticalScale,
+                                        ),
+                                        map['combo']
+                                            ? Row(
+                                                children: [
+                                                  SizedBox(
+                                                    width: 30 * horizontalScale,
+                                                  ),
+                                                  Stack(
+                                                    children: [
+                                                      Positioned(
+                                                        // top: 70 * verticalScale,
+                                                        // left: 10 * horizontalScale,
+                                                        child: Container(
+                                                          width: 60 *
+                                                              horizontalScale,
+                                                          height: 40 *
+                                                              verticalScale,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10),
+                                                            color: Color(
+                                                                0xFF7860DC),
+                                                          ),
+                                                          child: Center(
+                                                            child: Text(
+                                                              'COMBO',
+                                                              textScaleFactor: min(
+                                                                  horizontalScale,
+                                                                  verticalScale),
+                                                              style:
+                                                                  const TextStyle(
+                                                                fontFamily:
+                                                                    'Bold',
+                                                                fontSize: 13,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                color: Colors
+                                                                    .white,
+                                                              ),
                                                             ),
                                                           ),
                                                         ),
-                                                      ),
-                                                    )
-                                                  ],
-                                                ),
-                                              ],
-                                            )
-                                          : Container(),
-                                    ],
-                                  ),
-                                ],
+                                                      )
+                                                    ],
+                                                  ),
+                                                ],
+                                              )
+                                            : Container(),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               );
                             } else {
                               return Container();
