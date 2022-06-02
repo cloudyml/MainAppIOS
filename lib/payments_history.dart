@@ -861,7 +861,7 @@ class _PaymentHistoryState extends State<PaymentHistory> {
               },
               child: Icon(
                 Icons.arrow_back_outlined,
-                size: 40,
+                size: 40* min(horizontalScale, verticalScale),
                 color: Colors.white,
               ),
             ),

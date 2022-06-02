@@ -117,13 +117,16 @@ class _SignUpformState extends State<SignUpform> {
               //inputFormatters: [FilteringTextInputFormatter(RegExp(r'[a-zA-Z]'), allow: true)],
               decoration: InputDecoration(
                   hintText: 'Enter Your Name',
+                  hintStyle: TextStyle(
+                    fontSize: 20 * min(horizontalScale, verticalScale),
+                  ),
                   labelText: 'Name',
                   floatingLabelStyle: TextStyle(
-                      fontSize: 18*min(horizontalScale, verticalScale),
+                      fontSize: 18 * min(horizontalScale, verticalScale),
                       fontWeight: FontWeight.w500,
                       color: HexColor('7B62DF')),
                   labelStyle: TextStyle(
-                    fontSize: 18*min(horizontalScale, verticalScale),
+                    fontSize: 18 * min(horizontalScale, verticalScale),
                   ),
                   focusedBorder: OutlineInputBorder(
                       borderSide:
@@ -152,13 +155,16 @@ class _SignUpformState extends State<SignUpform> {
               controller: email,
               decoration: InputDecoration(
                   hintText: 'Enter Your Email',
+                  hintStyle: TextStyle(
+                    fontSize: 20 * min(horizontalScale, verticalScale),
+                  ),
                   labelText: 'Email',
                   floatingLabelStyle: TextStyle(
-                      fontSize: 18*min(horizontalScale, verticalScale),
+                      fontSize: 18 * min(horizontalScale, verticalScale),
                       fontWeight: FontWeight.w500,
                       color: HexColor('7B62DF')),
                   labelStyle: TextStyle(
-                    fontSize: 18*min(horizontalScale, verticalScale),
+                    fontSize: 18 * min(horizontalScale, verticalScale),
                   ),
                   focusedBorder: OutlineInputBorder(
                       borderSide:
@@ -190,12 +196,17 @@ class _SignUpformState extends State<SignUpform> {
               controller: pass,
               decoration: InputDecoration(
                   hintText: 'Set Password',
+                  hintStyle: TextStyle(
+                    fontSize: 20 * min(horizontalScale, verticalScale),
+                  ),
+                  labelStyle: TextStyle(
+                    fontSize: 18 * min(horizontalScale, verticalScale),
+                  ),
                   labelText: 'Password',
                   floatingLabelStyle: TextStyle(
-                      fontSize: 18*min(horizontalScale, verticalScale),
+                      fontSize: 18 * min(horizontalScale, verticalScale),
                       fontWeight: FontWeight.w500,
                       color: HexColor('7B62DF')),
-                  labelStyle: TextStyle(fontSize: 18),
                   focusedBorder: OutlineInputBorder(
                       borderSide:
                           BorderSide(color: HexColor('7B62DF'), width: 2)),
@@ -229,13 +240,16 @@ class _SignUpformState extends State<SignUpform> {
               controller: mobile,
               decoration: InputDecoration(
                   hintText: 'Enter Your Number',
+                  hintStyle: TextStyle(
+                    fontSize: 20 * min(horizontalScale, verticalScale),
+                  ),
                   labelText: 'Phone Number',
                   floatingLabelStyle: TextStyle(
-                      fontSize: 18*min(horizontalScale, verticalScale),
+                      fontSize: 18 * min(horizontalScale, verticalScale),
                       fontWeight: FontWeight.w500,
                       color: HexColor('7B62DF')),
                   labelStyle: TextStyle(
-                    fontSize: 18*min(horizontalScale, verticalScale),
+                    fontSize: 18 * min(horizontalScale, verticalScale),
                   ),
                   focusedBorder: OutlineInputBorder(
                       borderSide:
