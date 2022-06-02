@@ -5,6 +5,7 @@ import 'package:cloudyml_app2/combo/combo_course.dart';
 import 'package:cloudyml_app2/combo/combo_store.dart';
 import 'package:cloudyml_app2/course.dart';
 import 'package:cloudyml_app2/globals.dart';
+import 'package:cloudyml_app2/module/video_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -44,18 +45,20 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  // void dbCheckerForDaysLeftForLimitedAccess() async {
-  //   DocumentSnapshot snapshot = await FirebaseFirestore.instance
-  //       .collection('Users')
-  //       .doc(FirebaseAuth.instance.currentUser!.uid)
-  //       .get();
-  //   Map map = snapshot.data() as Map<String, dynamic>;
-  //   Duration daysLeft =
-  //       (map['endDateOfLimitedAccess'].difference(DateTime.now()).inDays());
-  //   setState(() {
-  //     daysLeftOfLimitedAccess = daysLeft.toString();
-  //   });
-  // }
+  String? name = '';
+
+  void getCourseName() async {
+    await FirebaseFirestore.instance
+        .collection('courses')
+        .doc(courseId)
+        .get()
+        .then((value) {
+      setState(() {
+        name = value.data()!['name'];
+        print('ufbufb--$name');
+      });
+    });
+  }
 
   void dbCheckerForPayInParts() async {
     DocumentSnapshot userDocs = await FirebaseFirestore.instance
@@ -112,6 +115,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     fetchCourses();
     dbCheckerForPayInParts();
+    getCourseName();
     // dbCheckerForDaysLeftForLimitedAccess();
   }
 
@@ -216,6 +220,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             if (courses.contains(map['id'])) {
                               return InkWell(
                                 onTap: (() {
+                                  getCourseName();
                                   if (navigateToCatalogueScreen(map['id']) &&
                                       !(userMap['payInPartsDetails'][map['id']]
                                           ['outStandingAmtPaid'])) {
@@ -223,12 +228,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                       Navigator.push(
                                         context,
                                         PageTransition(
-                                            duration:
-                                                Duration(milliseconds: 100),
-                                            curve: Curves.bounceInOut,
-                                            type:
-                                                PageTransitionType.rightToLeft,
-                                            child: CatelogueScreen()),
+                                          duration: Duration(milliseconds: 400),
+                                          curve: Curves.bounceInOut,
+                                          type: PageTransitionType.rightToLeft,
+                                          child: VideoScreen(
+                                            isdemo: false,
+                                            sr: 1,
+                                            courseName: map['name'],
+                                          ),
+                                        ),
                                       );
                                     } else {
                                       Navigator.push(
@@ -248,12 +256,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                       Navigator.push(
                                         context,
                                         PageTransition(
-                                            duration:
-                                                Duration(milliseconds: 400),
-                                            curve: Curves.bounceInOut,
-                                            type:
-                                                PageTransitionType.rightToLeft,
-                                            child: Couse()),
+                                          duration: Duration(milliseconds: 400),
+                                          curve: Curves.bounceInOut,
+                                          type: PageTransitionType.rightToLeft,
+                                          child: VideoScreen(
+                                            isdemo: false,
+                                            sr: 1,
+                                            courseName: name,
+                                          ),
+                                        ),
                                       );
                                     } else {
                                       ComboCourse.comboId.value = map['id'];
