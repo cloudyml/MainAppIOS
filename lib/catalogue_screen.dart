@@ -10,6 +10,7 @@ import 'package:cloudyml_app2/home.dart';
 import 'package:cloudyml_app2/payment_portal.dart';
 import 'package:cloudyml_app2/payment_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:page_transition/page_transition.dart';
@@ -21,6 +22,7 @@ class CatelogueScreen extends StatefulWidget {
   static ValueNotifier<String> coursePrice = ValueNotifier('');
   static ValueNotifier<Map<String, dynamic>>? map = ValueNotifier({});
   static ValueNotifier<double> _currentPosition = ValueNotifier<double>(0.0);
+  static ValueNotifier<double> _closeBottomSheetAt = ValueNotifier<double>(0.0);
   @override
   State<CatelogueScreen> createState() => _CatelogueScreenState();
 }
@@ -32,10 +34,13 @@ class _CatelogueScreenState extends State<CatelogueScreen>
   var amountcontroller = TextEditingController();
   final TextEditingController couponCodeController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
-  GlobalKey positionKey = GlobalKey();
+  GlobalKey? _positionKey = GlobalKey();
+
+  // double closeBottomSheetAt = 0.0;
   // final scaffoldState = GlobalKey<ScaffoldState>();
-  ValueNotifier<bool> showBottomSheet = ValueNotifier(false);
-  VoidCallback? _showPersistentBottomSheetCallBack;
+  Map<String, dynamic> comboMap = {};
+
+  String coursePrice = "";
 
   String? id;
 
@@ -68,27 +73,33 @@ class _CatelogueScreenState extends State<CatelogueScreen>
   @override
   void initState() {
     super.initState();
+    getCourseName();
     _tabController = TabController(length: 2, vsync: this);
     _scrollController.addListener(_scrollListener);
   }
 
+  void getCourseName() async {
+    await FirebaseFirestore.instance
+        .collection('courses')
+        .doc(courseId)
+        .get()
+        .then((value) {
+      setState(() {
+        comboMap = value.data()!;
+        coursePrice = value.data()!['Course Price'];
+      });
+    });
+  }
+
   void _scrollListener() {
-    // RenderBox box = positionKey.currentContext!.findRenderObject() as RenderBox;
-    // Offset position = box.localToGlobal(Offset.zero); //this is global position
-    // double y = position.dy;
-    // print(y);
-    print(_scrollController.position.pixels);
-    // // print(k);
-    // if (_scrollController.position.pixels > 0.0 &&
-    //         _scrollController.position.pixels < 520
-    //     // _scrollController.position.pixels < y
-    //     ) {
-    //   showBottomSheet.value = true;
-    // } else {
-    //   showBottomSheet.value = false;
-    // }
+    RenderBox? box =
+        _positionKey!.currentContext?.findRenderObject() as RenderBox;
+    Offset position = box.localToGlobal(Offset.zero); //this is global position
+    double pixels = position.dy;
+    CatelogueScreen._closeBottomSheetAt.value = pixels;
     CatelogueScreen._currentPosition.value = _scrollController.position.pixels;
-    // _scrollController.removeListener(_scrollListener);
+    print(pixels);
+    print(_scrollController.position.pixels);
   }
 
   @override
@@ -126,7 +137,13 @@ class _CatelogueScreenState extends State<CatelogueScreen>
           ),
         ),
       ),
-      bottomSheet: PayNowBottomSheet(),
+      bottomSheet: PayNowBottomSheet(
+        currentPosition: CatelogueScreen._currentPosition,
+        coursePrice: coursePrice,
+        map: comboMap,
+        popBottomSheetAt: CatelogueScreen._closeBottomSheetAt,
+        // closeBottomSheetAt: closeBottomSheetAt(positionKey),
+      ),
       backgroundColor: Colors.white,
       body: Column(
         mainAxisSize: MainAxisSize.max,
@@ -160,484 +177,177 @@ class _CatelogueScreenState extends State<CatelogueScreen>
                           padding: const EdgeInsets.only(
                               top: 00.0, right: 18, left: 18, bottom: 10),
                           child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                SingleChildScrollView(
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        children: [
-                                          ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(28),
-                                            child: Container(
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.12,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SingleChildScrollView(
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(28),
+                                          child: Container(
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.12,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.12,
+                                            child: Image.network(
+                                              map['image_url'],
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 20,
+                                        ),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Container(
                                               width: MediaQuery.of(context)
                                                       .size
-                                                      .height *
-                                                  0.12,
-                                              child: Image.network(
-                                                map['image_url'],
-                                                fit: BoxFit.cover,
+                                                      .width *
+                                                  0.58,
+                                              child: Text(
+                                                map['name'],
+                                                style: TextStyle(
+                                                    fontFamily: 'Bold',
+                                                    color: Colors.black,
+                                                    fontSize: 24),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            Container(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.58,
+                                              child: Text(
+                                                map['description'],
+                                                style: TextStyle(
+                                                    fontFamily: 'Regular',
+                                                    color: Colors.black,
+                                                    fontSize: 14),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(
+                                height: 65,
+                              ),
+                              includes(context),
+                              Container(
+                                child: Curriculam(
+                                  map: map,
+                                ),
+                              ),
+                              Container(
+                                key: _positionKey,
+                              ),
+                              Ribbon(
+                                nearLength: 1,
+                                farLength: .5,
+                                title: ' ',
+                                titleStyle: TextStyle(
+                                    color: Colors.black,
+                                    // Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold),
+                                color: Color.fromARGB(255, 11, 139, 244),
+                                location: RibbonLocation.topStart,
+                                child: Container(
+                                  //  key:key,
+                                  // width: width * .9,
+                                  // height: height * .5,
+                                  color: Color.fromARGB(255, 24, 4, 104),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(40.0),
+                                    child: Column(
+                                      //  key:Gkey,
+                                      children: [
+                                        SizedBox(
+                                          height: height * .03,
+                                        ),
+                                        Text(
+                                          'Complete Course Fee',
+                                          style: TextStyle(
+                                              fontFamily: 'Bold',
+                                              fontSize: 21,
+                                              color: Colors.white),
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        Text(
+                                          '( Everything with Lifetime Access )',
+                                          style: TextStyle(
+                                              fontFamily: 'Bold',
+                                              fontSize: 11,
+                                              color: Colors.white),
+                                        ),
+                                        SizedBox(
+                                          height: 30,
+                                        ),
+                                        Text(
+                                          map["Course Price"],
+                                          style: TextStyle(
+                                              fontFamily: 'Medium',
+                                              fontSize: 30,
+                                              color: Colors.white),
+                                        ),
+                                        SizedBox(height: 35),
+                                        InkWell(
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      PaymentScreen(
+                                                          map: CatelogueScreen
+                                                              .map!.value)),
+                                            );
+                                          },
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(30),
+                                                color: Color.fromARGB(
+                                                    255, 119, 191, 249),
+                                                gradient: gradient),
+                                            height: height * .08,
+                                            width: width * .6,
+                                            child: Center(
+                                              child: Text(
+                                                'Buy Now',
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 20),
                                               ),
                                             ),
                                           ),
-                                          SizedBox(
-                                            width: 20,
-                                          ),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Container(
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.58,
-                                                child: Text(
-                                                  map['name'],
-                                                  style: TextStyle(
-                                                      fontFamily: 'Bold',
-                                                      color: Colors.black,
-                                                      fontSize: 24),
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                height: 10,
-                                              ),
-                                              Container(
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.58,
-                                                child: Text(
-                                                  map['description'],
-                                                  style: TextStyle(
-                                                      fontFamily: 'Regular',
-                                                      color: Colors.black,
-                                                      fontSize: 14),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 65,
-                                ),
-                                includes(),
-                                Container(
-                                  // key: positionKey,
-                                  child: Curriculam(
-                                    map: map,
-                                  ),
-                                ),
-                                Container(
-                                  key: positionKey,
-                                ),
-                                Ribbon(
-                                  nearLength: 1,
-                                  farLength: .5,
-                                  title: ' ',
-                                  titleStyle: TextStyle(
-                                      color: Colors.black,
-                                      // Colors.white,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold),
-                                  color: Color.fromARGB(255, 11, 139, 244),
-                                  location: RibbonLocation.topStart,
-                                  child: Container(
-                                    //  key:key,
-                                    // width: width * .9,
-                                    // height: height * .5,
-                                    color: Color.fromARGB(255, 24, 4, 104),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(40.0),
-                                      child: Column(
-                                        //  key:Gkey,
-                                        children: [
-                                          SizedBox(
-                                            height: height * .03,
-                                          ),
-                                          Text(
-                                            'Complete Course Fee',
-                                            style: TextStyle(
-                                                fontFamily: 'Bold',
-                                                fontSize: 21,
-                                                color: Colors.white),
-                                          ),
-                                          SizedBox(
-                                            height: 5,
-                                          ),
-                                          Text(
-                                            '( Everything with Lifetime Access )',
-                                            style: TextStyle(
-                                                fontFamily: 'Bold',
-                                                fontSize: 11,
-                                                color: Colors.white),
-                                          ),
-                                          SizedBox(
-                                            height: 30,
-                                          ),
-                                          Text(
-                                            map["Course Price"],
-                                            style: TextStyle(
-                                                fontFamily: 'Medium',
-                                                fontSize: 30,
-                                                color: Colors.white),
-                                          ),
-                                          SizedBox(height: 35),
-                                          InkWell(
-                                            onTap: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        PaymentScreen(
-                                                            map: CatelogueScreen
-                                                                .map!.value)),
-                                              );
-                                            },
-                                            child: Container(
-                                                decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(30),
-                                                    // boxShadow: [
-                                                    //   BoxShadow(
-                                                    //     color: Color.fromARGB(255, 176, 224, 250)
-                                                    //         .withOpacity(0.3),
-                                                    //     spreadRadius: 2,
-                                                    //     blurRadius: 3,
-                                                    //     offset: Offset(3,
-                                                    //         6), // changes position of shadow
-                                                    //   ),
-                                                    // ],
-                                                    color: Color.fromARGB(
-                                                        255, 119, 191, 249),
-                                                    gradient: gradient),
-                                                height: height * .08,
-                                                width: width * .6,
-                                                child: Center(
-                                                  child: Text(
-                                                    'Buy Now',
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize: 20),
-                                                  ),
-                                                )),
-                                          ),
-                                        ],
-                                      ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
-                                // Container(
-                                //   key: key,
-                                //   child: Text(
-                                //     "PRICE DETAILS",
-                                //     style: TextStyle(
-                                //       fontFamily: 'Bold',
-                                //       fontSize: 18,
-                                //     ),
-                                //   ),
-                                // ),
-                                // SizedBox(
-                                //   height: 25,
-                                // ),
-                                // Align(
-                                //   alignment: Alignment.topLeft,
-                                //   child: Text(
-                                //     'Coupon code',
-                                //     style: TextStyle(fontFamily: 'Medium'),
-                                //   ),
-                                // ),
-                                // TextField(
-                                //   enabled: NoCouponApplied ? true : false,
-                                //   controller: couponCodeController,
-                                //   style: TextStyle(
-                                //     fontSize: 16,
-                                //     letterSpacing: 1.2,
-                                //     fontFamily: 'Medium',
-                                //   ),
-                                //   decoration: InputDecoration(
-                                //     suffixIcon: TextButton(
-                                //       child: Text(
-                                //         'Apply',
-                                //         style: TextStyle(
-                                //           color: Color(0xFFaefb2a),
-                                //           fontFamily: 'Medium',
-                                //           fontSize: 18,
-                                //         ),
-                                //       ),
-                                //       onPressed: () {
-                                //         setState(() {
-                                //           NoCouponApplied =
-                                //               whetherCouponApplied(
-                                //             couponCodeText:
-                                //                 couponCodeController.text,
-                                //           );
-                                //           couponAppliedResponse =
-                                //               whenCouponApplied(
-                                //             couponCodeText:
-                                //                 couponCodeController.text,
-                                //           );
-                                //           finalamountToDisplay =
-                                //               amountToDisplayAfterCCA(
-                                //             amountPayable:
-                                //                 map['Amount Payable'],
-                                //             couponCodeText:
-                                //                 couponCodeController.text,
-                                //           );
-                                //           finalAmountToPay =
-                                //               amountToPayAfterCCA(
-                                //             couponCodeText:
-                                //                 couponCodeController.text,
-                                //             amountPayable:
-                                //                 map['Amount Payable'],
-                                //           );
-                                //           discountedPrice =
-                                //               discountAfterCCA(
-                                //                   couponCodeText:
-                                //                       couponCodeController
-                                //                           .text,
-                                //                   amountPayable: map[
-                                //                       'Amount Payable']);
-                                //         });
-                                //         print('Button working');
-                                //       },
-                                //     ),
-                                //     fillColor: Colors.grey.shade100,
-                                //     filled: true,
-                                //     suffixIconConstraints: BoxConstraints(
-                                //         maxHeight: 50, minWidth: 100),
-                                //     // contentPadding: EdgeInsets.symmetric(horizontal: 0.0,vertical: 0),
-                                //     enabledBorder: InputBorder.none,
-                                //     focusedBorder: InputBorder.none,
-                                //     disabledBorder: InputBorder.none,
-                                //   ),
-                                // ),
-                                // Align(
-                                //   alignment: Alignment.bottomLeft,
-                                //   child: Text(
-                                //     couponAppliedResponse,
-                                //     style: TextStyle(
-                                //       color: Colors.deepOrange,
-                                //     ),
-                                //   ),
-                                // ),
-                                // SizedBox(
-                                //   height: 15,
-                                // ),
-                                // Padding(
-                                //   padding: const EdgeInsets.only(
-                                //       top: 20.0, bottom: 10, right: 18),
-                                //   child: Row(
-                                //     mainAxisAlignment:
-                                //         MainAxisAlignment.spaceBetween,
-                                //     children: [
-                                //       Text(
-                                //         "Course Price",
-                                //         style: TextStyle(
-                                //           fontFamily: 'Medium',
-                                //           fontSize: 18,
-                                //         ),
-                                //       ),
-                                //       Text(
-                                //         map["Course Price"],
-                                //         style: TextStyle(
-                                //           fontFamily: 'Medium',
-                                //           fontSize: 15,
-                                //         ),
-                                //       ),
-                                //     ],
-                                //   ),
-                                // ),
-                                // Padding(
-                                //   padding: const EdgeInsets.only(
-                                //       top: 5.0, bottom: 10, right: 18),
-                                //   child: Row(
-                                //     mainAxisAlignment:
-                                //         MainAxisAlignment.spaceBetween,
-                                //     children: [
-                                //       Text(
-                                //         "Discount",
-                                //         style: TextStyle(
-                                //           fontFamily: 'Medium',
-                                //           fontSize: 18,
-                                //         ),
-                                //       ),
-                                //       Text(
-                                //         NoCouponApplied
-                                //             ? '₹${map["Discount"]} /-'
-                                //             : discountedPrice,
-                                //         style: TextStyle(
-                                //           fontFamily: 'Medium',
-                                //           fontSize: 15,
-                                //         ),
-                                //       ),
-                                //     ],
-                                //   ),
-                                // ),
-                                // Divider(
-                                //   height: 20,
-                                //   thickness: 1,
-                                //   indent: 0,
-                                //   endIndent: 0,
-                                //   color: Colors.black.withOpacity(0.5),
-                                // ),
-                                // Padding(
-                                //   padding: const EdgeInsets.only(
-                                //       top: 5.0, bottom: 10, right: 18),
-                                //   child: Row(
-                                //     mainAxisAlignment:
-                                //         MainAxisAlignment.spaceBetween,
-                                //     children: [
-                                //       const Text(
-                                //         "Amount Payable",
-                                //         style: TextStyle(
-                                //           fontFamily: 'Medium',
-                                //           fontSize: 15,
-                                //         ),
-                                //       ),
-                                //       Container(
-                                //         decoration: BoxDecoration(
-                                //             borderRadius:
-                                //                 BorderRadius.circular(30),
-                                //             color: Colors.grey.shade300),
-                                //         child: Center(
-                                //           child: Padding(
-                                //             padding:
-                                //                 const EdgeInsets.all(14.0),
-                                //             child: Text(
-                                //               NoCouponApplied
-                                //                   ? '₹${map["Amount Payable"]} /-'
-                                //                   : finalamountToDisplay,
-                                //               style: TextStyle(
-                                //                 fontFamily: 'Medium',
-                                //                 fontSize: 10,
-                                //               ),
-                                //             ),
-                                //           ),
-                                //         ),
-                                //       ),
-                                //     ],
-                                //   ),
-                                // ),
-                                // SizedBox(
-                                //   height: 60,
-                                // ),
-                                // // map['demo'] == true
-                                // //     ? InkWell(
-                                // //         onTap: () {
-                                // //           Navigator.push(
-                                // //             context,
-                                // //             PageTransition(
-                                // //                 duration: Duration(
-                                // //                     milliseconds: 400),
-                                // //                 curve: Curves.bounceInOut,
-                                // //                 type: PageTransitionType
-                                // //                     .rightToLeft,
-                                // //                 child: DemoCourse()),
-                                // //           );
-                                // //         },
-                                // //         child: Container(
-                                // //           //try demo button
-                                // //           height: height * .06,
-                                // //           width: width * .85,
-                                // //           color: Colors.transparent,
-                                // //           child: Container(
-                                // //               decoration: BoxDecoration(
-                                // //                   gradient: gradient,
-                                // //                   borderRadius:
-                                // //                       BorderRadius.all(
-                                // //                           Radius.circular(
-                                // //                               50.0))),
-                                // //               child: const Center(
-                                // //                 child: Text(
-                                // //                   "Try Demo",
-                                // //                   style: TextStyle(
-                                // //                       fontFamily: 'Bold',
-                                // //                       fontSize: 15,
-                                // //                       fontWeight:
-                                // //                           FontWeight.bold),
-                                // //                   textAlign:
-                                // //                       TextAlign.center,
-                                // //                 ),
-                                // //               )),
-                                // //         ),
-                                // //       )
-                                // //     : Container(),
-                                // SizedBox(
-                                //   height: 20,
-                                // ),
-                                // PaymentButton(
-                                //   amountString: (double.parse(
-                                //               NoCouponApplied
-                                //                   ? map['Amount_Payablepay']
-                                //                   : finalAmountToPay) *
-                                //           100)
-                                //       .toString(),
-                                //   buttonText:
-                                //       "Buy Now for ${map['Course Price']}",
-                                //   buttonTextForCode:
-                                //       "Buy Now for $finalamountToDisplay",
-                                //   changeState: () {
-                                //     setState(() {
-                                //       isPayButtonPressed =
-                                //           !isPayButtonPressed;
-                                //     });
-                                //   },
-                                //   courseDescription: map['description'],
-                                //   courseName: map['name'],
-                                //   isPayButtonPressed: isPayButtonPressed,
-                                //   NoCouponApplied: NoCouponApplied,
-                                //   // razorpay: _razorpay,
-                                //   scrollController: _scrollController,
-                                //   updateCourseIdToCouponDetails: () {
-                                //     void addCourseId() {
-                                //       setState(() {
-                                //         id = map['id'];
-                                //       });
-                                //     }
-
-                                //     addCourseId();
-                                //     print(NoCouponApplied);
-                                //   },
-                                //   // isPayInPartsPressed: isPayInPartsPressed,
-                                //   outStandingAmountString: (double.parse(
-                                //               NoCouponApplied
-                                //                   ? map['Amount_Payablepay']
-                                //                   : finalAmountToPay) -
-                                //           1000)
-                                //       .toStringAsFixed(2),
-                                //   courseId: map['id'],
-                                //   couponCodeText: couponCodeController.text,
-                                //   isItComboCourse: false,
-                                //   whichCouponCode: '',
-                                // ),
-                                // SizedBox(
-                                //   height: 20,
-                                // ),
-                                // Container(
-                                //   width: 200,
-                                //   child: Text(
-                                //     "* Amount payable is inclusive of taxes. TERMS & CONDITIONS APPLY",
-                                //     textAlign: TextAlign.center,
-                                //     style: TextStyle(
-                                //       fontFamily: 'Regular',
-                                //       fontSize: 12,
-                                //     ),
-                                //   ),
-                                // ),
-                              ]),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     );
@@ -655,90 +365,102 @@ class _CatelogueScreenState extends State<CatelogueScreen>
 }
 
 class PayNowBottomSheet extends StatelessWidget {
-  const PayNowBottomSheet({
+  ValueListenable<double> currentPosition;
+  ValueListenable<double> popBottomSheetAt;
+  String coursePrice;
+  Map<String, dynamic> map;
+  // double closeBottomSheetAt;
+
+  PayNowBottomSheet({
+    required this.currentPosition,
+    required this.coursePrice,
+    required this.map,
+    required this.popBottomSheetAt,
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedContainer(
-      duration: Duration(seconds: 1),
-      curve: Curves.easeIn,
-      child: BottomSheet(
-        builder: (BuildContext context) {
-          return ValueListenableBuilder(
-            valueListenable: CatelogueScreen._currentPosition,
-            builder: (BuildContext context, double value, Widget? child) {
-              if (value > 0.0 && value < 500.00) {
-                return Container(
-                  height: 80,
-                  width: MediaQuery.of(context).size.width,
-                  // duration: Duration(milliseconds: 1000),
-                  // curve: Curves.easeIn,
-                  child: Center(
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 40,
-                        ),
-                        Expanded(
-                          flex: 1,
-                          child: Text(
-                            CatelogueScreen.coursePrice.value,
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'Medium',
-                              color: Colors.black,
+    return BottomSheet(
+      builder: (BuildContext context) {
+        return ValueListenableBuilder(
+          valueListenable: currentPosition,
+          builder: (BuildContext context, double value, Widget? child) {
+            return ValueListenableBuilder(
+              valueListenable: popBottomSheetAt,
+              builder: (BuildContext context, double position, Widget? child) {
+                if (value > 0.0 && /*value < 500 && */ value <= position) {
+                  return Container(
+                    height: 80,
+                    width: MediaQuery.of(context).size.width,
+                    // duration: Duration(milliseconds: 1000),
+                    // curve: Curves.easeIn,
+                    child: Center(
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            width: 40,
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: Text(
+                              coursePrice,
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Medium',
+                                color: Colors.black,
+                              ),
                             ),
                           ),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => PaymentScreen(
-                                        map: CatelogueScreen.map!.value)),
-                              );
-                            },
-                            child: Container(
-                              height: 60,
-                              // width: 300,
-                              color: Color(0xFF7860DC),
-                              child: Center(
-                                child: Text(
-                                  'Pay Now',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: 'Medium',
-                                    color: Colors.white,
+                          Expanded(
+                            flex: 2,
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        PaymentScreen(map: map),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                height: 60,
+                                // width: 300,
+                                color: Color(0xFF7860DC),
+                                child: Center(
+                                  child: Text(
+                                    'Pay Now',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: 'Medium',
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                        SizedBox(
-                          width: 20,
-                        ),
-                      ],
+                          SizedBox(
+                            width: 20,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              } else {
-                return Container(
-                  height: 0.1,
-                );
-              }
-            },
-          );
-        },
-        onClosing: () {},
-      ),
+                  );
+                } else {
+                  return Container(
+                    height: 0.1,
+                  );
+                }
+              },
+            );
+          },
+        );
+      },
+      onClosing: () {},
     );
   }
 }

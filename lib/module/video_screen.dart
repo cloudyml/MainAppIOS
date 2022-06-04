@@ -58,16 +58,26 @@ class _VideoScreenState extends State<VideoScreen> {
   String? progressString = '';
 
   void getData() async {
-    var dt = await FirebaseFirestore.instance
+    await FirebaseFirestore.instance
+        .collection('courses')
+        .doc(courseId)
+        .collection('Modules')
+        .where('firstType', isEqualTo: 'video')
+        .get()
+        .then((value) {
+      moduleId = value.docs[0].id;
+    });
+    await FirebaseFirestore.instance
         .collection('courses')
         .doc(courseId)
         .collection('Modules')
         .doc(moduleId)
         .collection('Topics')
-        .where('sr', isEqualTo: widget.sr)
+        .where('sr', isEqualTo: 1)
         .get()
         .then((value) {
       setState(() {
+        print(value);
         data = value.docs[0].data();
         print(data);
         topicId = value.docs[0].id;
@@ -331,7 +341,7 @@ class _VideoScreenState extends State<VideoScreen> {
   void dispose() {
     super.dispose();
     _disposed = true;
-    _videoController!.pause();
+    // _videoController!.pause();
     _videoController!.dispose();
     _videoController = null;
     // _chewieController!.dispose();
@@ -340,6 +350,7 @@ class _VideoScreenState extends State<VideoScreen> {
   @override
   void initState() {
     super.initState();
+    // setModuleId();
     getData();
     // intializeVidController(videoUrl!);
   }
@@ -750,24 +761,21 @@ class _VideoScreenState extends State<VideoScreen> {
                                                             child: Padding(
                                                               padding:
                                                                   const EdgeInsets
-                                                                          .all(
-                                                                      8.0),
+                                                                      .all(8.0),
                                                               child: index < 9
                                                                   ? Text(
                                                                       '  ${index + 1}',
-                                                                      style:
-                                                                          TextStyle(
-                                                                        // fontSize:
-                                                                        //     18,
-                                                                      ),
+                                                                      style: TextStyle(
+                                                                          // fontSize:
+                                                                          //     18,
+                                                                          ),
                                                                     )
                                                                   : Text(
                                                                       '${index + 1}',
-                                                                      style:
-                                                                          TextStyle(
-                                                                        // fontSize:
-                                                                        //     17,
-                                                                      ),
+                                                                      style: TextStyle(
+                                                                          // fontSize:
+                                                                          //     17,
+                                                                          ),
                                                                     ),
                                                             ),
                                                           ),
@@ -784,7 +792,9 @@ class _VideoScreenState extends State<VideoScreen> {
                                                           Expanded(
                                                             child: Text(
                                                               map['name'],
-                                                              textScaleFactor: min(horizontalScale, verticalScale),
+                                                              textScaleFactor: min(
+                                                                  horizontalScale,
+                                                                  verticalScale),
                                                               style: TextStyle(
                                                                 fontWeight:
                                                                     FontWeight
@@ -793,7 +803,6 @@ class _VideoScreenState extends State<VideoScreen> {
                                                                 fontFamily:
                                                                     "Medium",
                                                               ),
-                                                             
                                                               maxLines: 2,
                                                             ),
                                                           ),

@@ -15,7 +15,6 @@ import 'authentication/firebase_auth.dart';
 import 'home.dart';
 import 'home_screen.dart';
 
-
 Row Star() {
   return Row(
     mainAxisAlignment: MainAxisAlignment.start,
@@ -48,6 +47,7 @@ Row Star() {
     ],
   );
 }
+
 Widget buildFile(BuildContext context, FirebaseFile file) => Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -75,56 +75,162 @@ Widget buildFile(BuildContext context, FirebaseFile file) => Row(
       ],
     );
 
-Padding pad(IconData Icn, String T1) {
+Widget featureTile(
+    IconData icon, String T1, double horizontalScale, double verticalScale) {
   return Padding(
-    padding: const EdgeInsets.all(8.0),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Icon(
-          Icn,
-          color: Color(0xFF7860DC),
+    padding: const EdgeInsets.only(bottom: 10),
+    child: Container(
+      width: 364 * horizontalScale,
+      height: 38 * verticalScale,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(8),
+          topRight: Radius.circular(8),
+          bottomLeft: Radius.circular(8),
+          bottomRight: Radius.circular(8),
         ),
-        SizedBox(
-          width: 13,
-        ),
-        Text(
-          '$T1',
-          style: TextStyle(
-            overflow: TextOverflow.ellipsis,
-            color: Colors.black,
-            fontSize: 13,
+        boxShadow: [
+          BoxShadow(
+              color: Color.fromRGBO(31, 31, 31, 0.25),
+              offset: Offset(0, 0),
+              blurRadius: 5)
+        ],
+        color: Color.fromRGBO(255, 255, 255, 1),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 38 * min(horizontalScale, verticalScale),
+            height: 38 * min(horizontalScale, verticalScale),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(8),
+                topRight: Radius.circular(8),
+                bottomLeft: Radius.circular(8),
+                bottomRight: Radius.circular(8),
+              ),
+              color: Color.fromRGBO(122, 98, 222, 1),
+            ),
+            child: Center(
+              child: Icon(
+                icon,
+                color: Colors.white,
+                size: 28 * min(horizontalScale, verticalScale),
+              ),
+            ),
           ),
-        ),
-      ],
+          SizedBox(
+            width: 10,
+          ),
+          Text(
+            '$T1',
+            textScaleFactor: min(horizontalScale, verticalScale),
+            style: TextStyle(
+              overflow: TextOverflow.ellipsis,
+              color: Colors.black,
+              fontSize: 16,
+            ),
+          ),
+        ],
+      ),
     ),
   );
+  // return Padding(
+  //   padding: const EdgeInsets.all(8.0),
+  //   child: Row(
+  //     mainAxisAlignment: MainAxisAlignment.start,
+  //     children: [
+  //       Icon(
+  //         Icn,
+  //         color: Color(0xFF7860DC),
+  //       ),
+  //       SizedBox(
+  //         width: 13,
+  //       ),
+  //       Text(
+  //         '$T1',
+  //         style: TextStyle(
+  //           overflow: TextOverflow.ellipsis,
+  //           color: Colors.black,
+  //           fontSize: 13,
+  //         ),
+  //       ),
+  //     ],
+  //   ),
+  // );
 }
 
-Column includes() {
+Column includes(BuildContext context) {
+  final screenHeight = MediaQuery.of(context).size.height;
+  final screenWidth = MediaQuery.of(context).size.width;
+  var verticalScale = screenHeight / mockUpHeight;
+  var horizontalScale = screenWidth / mockUpWidth;
   return Column(
     children: [
-      Text(
-        'COURSE  FEATURES',
-        style: TextStyle(
-          decoration: TextDecoration.underline,
-          overflow: TextOverflow.ellipsis,
-          color: Colors.black,
-          fontWeight: FontWeight.bold,
-          fontSize: 19,
-          // fontFamily: 'bold'
+      Align(
+        alignment: Alignment.topLeft,
+        child: Padding(
+          padding: const EdgeInsets.only(left: 10),
+          child: Text(
+            'Course Features!',
+            // textAlign: TextAlign.left,
+            textScaleFactor: min(horizontalScale, verticalScale),
+            style: TextStyle(
+                color: Color.fromRGBO(48, 48, 49, 1),
+                fontFamily: 'Poppins',
+                fontSize: 20,
+                letterSpacing:
+                    0 /*percentages not used in flutter. defaulting to zero*/,
+                fontWeight: FontWeight.bold,
+                height: 1),
+          ),
         ),
       ),
       SizedBox(
         height: 15,
       ),
-      pad(Icons.book, 'Guided Hands-On Assignment'),
-      pad(Icons.assignment, 'Capstone End to End Project'),
-      pad(Icons.badge, 'One Month Internship Opportunity'),
-      pad(Icons.call, '1-1 Skype Live Course Mentorship'),
-      pad(Icons.email, 'Job Referrals & Opening Mails'),
-      pad(Icons.picture_as_pdf, 'Interview Q&As PDF Collection'),
-      pad(Icons.picture_in_picture, 'Course Completion Certificates'),
+      featureTile(
+        Icons.book,
+        'Guided Hands-On Assignment',
+        horizontalScale,
+        verticalScale,
+      ),
+      featureTile(
+        Icons.assignment,
+        'Capstone End to End Project',
+        horizontalScale,
+        verticalScale,
+      ),
+      featureTile(
+        Icons.badge,
+        'One Month Internship Opportunity',
+        horizontalScale,
+        verticalScale,
+      ),
+      featureTile(
+        Icons.call,
+        '1-1 Skype Live Course Mentorship',
+        horizontalScale,
+        verticalScale,
+      ),
+      featureTile(
+        Icons.email,
+        'Job Referrals & Opening Mails',
+        horizontalScale,
+        verticalScale,
+      ),
+      featureTile(
+        Icons.picture_as_pdf,
+        'Interview Q&As PDF Collection',
+        horizontalScale,
+        verticalScale,
+      ),
+      featureTile(
+        Icons.picture_in_picture,
+        'Course Completion Certificates',
+        horizontalScale,
+        verticalScale,
+      ),
     ],
   );
 }
@@ -214,20 +320,15 @@ Row Button1(
 
 Container img(double width, double height, String link) {
   return Container(
-     height: height * .25,
-        width: width * 13,
-    child: Image(
-        image: NetworkImage(link),
-       
-        fit: BoxFit.fill
-        ),
+    height: height * .25,
+    width: width * 13,
+    child: Image(image: NetworkImage(link), fit: BoxFit.fill),
   );
 }
 
 Column colname(String text1, String text2) {
   return Column(children: [
     Container(
-      
       padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
       alignment: Alignment.topLeft,
       margin: EdgeInsets.fromLTRB(0, 15, 0, 0),
@@ -335,10 +436,10 @@ SingleChildScrollView safearea1(BuildContext context) {
   // final size = MediaQuery.of(context).size;
   //   final height = size.height;
   //   final width = size.width;
-   final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
-    var verticalScale = screenHeight / mockUpHeight;
-    var horizontalScale = screenWidth / mockUpWidth;
+  final screenHeight = MediaQuery.of(context).size.height;
+  final screenWidth = MediaQuery.of(context).size.width;
+  var verticalScale = screenHeight / mockUpHeight;
+  var horizontalScale = screenWidth / mockUpWidth;
   final LinearGradient _gradient = const LinearGradient(
     colors: [Colors.white, Colors.white],
   );
@@ -366,8 +467,7 @@ SingleChildScrollView safearea1(BuildContext context) {
                     image: AssetImage('assets/a1.png'),
                     height: 225,
                     width: 350,
-                    fit: BoxFit.fill
-                    ),
+                    fit: BoxFit.fill),
               ],
             ),
           ),
@@ -381,11 +481,14 @@ SingleChildScrollView safearea1(BuildContext context) {
             'About Me',
             textScaleFactor: min(horizontalScale, verticalScale),
             style: TextStyle(
-                fontSize: 20, fontWeight: FontWeight.normal, color: Colors.black,
-                fontFamily: 'Poppins',),
+              fontSize: 20,
+              fontWeight: FontWeight.normal,
+              color: Colors.black,
+              fontFamily: 'Poppins',
+            ),
           ),
         ),
-        
+
         Padding(
           padding: const EdgeInsets.fromLTRB(10, 15, 15, 0),
           child: Container(
@@ -570,175 +673,172 @@ SingleChildScrollView safearea1(BuildContext context) {
   );
 }
 
-Drawer dr(BuildContext context)
-{
+Drawer dr(BuildContext context) {
   double height = MediaQuery.of(context).size.height;
-    double width = MediaQuery.of(context).size.width;
+  double width = MediaQuery.of(context).size.width;
   return Drawer(
-        child: ListView(
-          padding: EdgeInsets.only(top: 0),
-          children: [
-            Container(
-                height: height * 0.27,
-                //decoration: BoxDecoration(gradient: gradient),
-                color: HexColor('7B62DF'),
-                child: StreamBuilder<QuerySnapshot>(
-                  stream: FirebaseFirestore.instance
-                      .collection("Users")
-                      .snapshots(),
-                  builder: (BuildContext context,
-                      AsyncSnapshot<QuerySnapshot> snapshot) {
-                    if (!snapshot.hasData) return const SizedBox.shrink();
-                    return ListView.builder(
-                      itemCount: snapshot.data!.docs.length,
-                      itemBuilder: (BuildContext context, index) {
-                        DocumentSnapshot document = snapshot.data!.docs[index];
-                        Map<String, dynamic> map = snapshot.data!.docs[index]
-                            .data() as Map<String, dynamic>;
-                        if (map["id"].toString() ==
-                            FirebaseAuth.instance.currentUser!.uid) {
-                          return Padding(
-                            padding: EdgeInsets.all(width * 0.05),
-                            child: Container(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  CircleAvatar(
-                                    radius: width * 0.089,
-                                    backgroundImage:
-                                        AssetImage('assets/user.jpg'),
-                                  ),
-                                  SizedBox(
-                                    height: height * 0.01,
-                                  ),
-                                  map['name'] != null
-                                      ? Text(
-                                          map['name'],
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: width * 0.049),
-                                        )
-                                      : Text(
-                                          map['mobilenumber'],
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: width * 0.049),
-                                        ),
-                                  SizedBox(
-                                    height: height * 0.007,
-                                  ),
-                                  map['email'] != null
-                                      ? Text(
-                                          map['email'],
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: width * 0.038),
-                                        )
-                                      : Container(),
-                                ],
+    child: ListView(
+      padding: EdgeInsets.only(top: 0),
+      children: [
+        Container(
+            height: height * 0.27,
+            //decoration: BoxDecoration(gradient: gradient),
+            color: HexColor('7B62DF'),
+            child: StreamBuilder<QuerySnapshot>(
+              stream:
+                  FirebaseFirestore.instance.collection("Users").snapshots(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (!snapshot.hasData) return const SizedBox.shrink();
+                return ListView.builder(
+                  itemCount: snapshot.data!.docs.length,
+                  itemBuilder: (BuildContext context, index) {
+                    DocumentSnapshot document = snapshot.data!.docs[index];
+                    Map<String, dynamic> map = snapshot.data!.docs[index].data()
+                        as Map<String, dynamic>;
+                    if (map["id"].toString() ==
+                        FirebaseAuth.instance.currentUser!.uid) {
+                      return Padding(
+                        padding: EdgeInsets.all(width * 0.05),
+                        child: Container(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              CircleAvatar(
+                                radius: width * 0.089,
+                                backgroundImage: AssetImage('assets/user.jpg'),
                               ),
-                            ),
-                          );
-                        } else {
-                          return Container();
-                        }
-                      },
-                    );
+                              SizedBox(
+                                height: height * 0.01,
+                              ),
+                              map['name'] != null
+                                  ? Text(
+                                      map['name'],
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: width * 0.049),
+                                    )
+                                  : Text(
+                                      map['mobilenumber'],
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: width * 0.049),
+                                    ),
+                              SizedBox(
+                                height: height * 0.007,
+                              ),
+                              map['email'] != null
+                                  ? Text(
+                                      map['email'],
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: width * 0.038),
+                                    )
+                                  : Container(),
+                            ],
+                          ),
+                        ),
+                      );
+                    } else {
+                      return Container();
+                    }
                   },
-                )),
-            InkWell(
-              child: ListTile(
-                title: Text('Home'),
-                leading: Icon(
-                  Icons.home,
-                  color: HexColor('6153D3'),
-                ),
-              ),
-              onTap: () {
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => HomePage()));
+                );
               },
+            )),
+        InkWell(
+          child: ListTile(
+            title: Text('Home'),
+            leading: Icon(
+              Icons.home,
+              color: HexColor('6153D3'),
             ),
-            // InkWell(
-            //   child: ListTile(
-            //     title: Text('My Account'),
-            //     leading: Icon(
-            //       Icons.person,
-            //       color: HexColor('6153D3'),
-            //     ),
-            //   ),
-            // ),
-            InkWell(
-              child: ListTile(
-                title: Text('My Courses'),
-                leading: Icon(
-                  Icons.book,
-                  color: HexColor('6153D3'),
-                ),
-              ),
-              onTap: () async {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => HomeScreen()));
-              },
-            ),
-            InkWell(
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => PaymentHistory()));
-              },
-              child: ListTile(
-                title: Text('Payment History'),
-                leading: Icon(
-                  Icons.payment_rounded,
-                  color: HexColor('6153D3'),
-                ),
-              ),
-            ),
-            Divider(
-              thickness: 2,
-            ),
-            InkWell(
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => PrivacyPolicy()));
-              },
-              child: ListTile(
-                title: Text('Privacy policy'),
-                leading: Icon(
-                  Icons.privacy_tip,
-                  color: HexColor('6153D3'),
-                ),
-              ),
-            ),
-            InkWell(
-              child: ListTile(
-                title: Text('About Us'),
-                leading: Icon(
-                  Icons.info,
-                  color: HexColor('6153D3'),
-                ),
-              ),
-              onTap: () async {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => AboutUs()));
-              },
-            ),
-            InkWell(
-              child: ListTile(
-                title: Text('LogOut'),
-                leading: Icon(
-                  Icons.logout,
-                  color: HexColor('6153D3'),
-                ),
-              ),
-              onTap: () {
-                logOut(context);
-              },
-            ),
-          ],
+          ),
+          onTap: () {
+            Navigator.pushReplacement(
+                context, MaterialPageRoute(builder: (context) => HomePage()));
+          },
         ),
-      );
+        // InkWell(
+        //   child: ListTile(
+        //     title: Text('My Account'),
+        //     leading: Icon(
+        //       Icons.person,
+        //       color: HexColor('6153D3'),
+        //     ),
+        //   ),
+        // ),
+        InkWell(
+          child: ListTile(
+            title: Text('My Courses'),
+            leading: Icon(
+              Icons.book,
+              color: HexColor('6153D3'),
+            ),
+          ),
+          onTap: () async {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => HomeScreen()));
+          },
+        ),
+        InkWell(
+          onTap: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => PaymentHistory()));
+          },
+          child: ListTile(
+            title: Text('Payment History'),
+            leading: Icon(
+              Icons.payment_rounded,
+              color: HexColor('6153D3'),
+            ),
+          ),
+        ),
+        Divider(
+          thickness: 2,
+        ),
+        InkWell(
+          onTap: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => PrivacyPolicy()));
+          },
+          child: ListTile(
+            title: Text('Privacy policy'),
+            leading: Icon(
+              Icons.privacy_tip,
+              color: HexColor('6153D3'),
+            ),
+          ),
+        ),
+        InkWell(
+          child: ListTile(
+            title: Text('About Us'),
+            leading: Icon(
+              Icons.info,
+              color: HexColor('6153D3'),
+            ),
+          ),
+          onTap: () async {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => AboutUs()));
+          },
+        ),
+        InkWell(
+          child: ListTile(
+            title: Text('LogOut'),
+            leading: Icon(
+              Icons.logout,
+              color: HexColor('6153D3'),
+            ),
+          ),
+          onTap: () {
+            logOut(context);
+          },
+        ),
+      ],
+    ),
+  );
 }

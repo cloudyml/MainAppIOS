@@ -120,60 +120,59 @@ class _VideoScreenOfflineState extends State<VideoScreenOffline> {
       // ),
       body: Column(
         children: [
-          
           Container(
-             decoration: BoxDecoration(
-                  color: Color(0xFF7860DC),
-                  // gradient: gradient
-                borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(0),
-                              topRight: Radius.circular(0),
-                              bottomLeft: Radius.circular(10),
-                              bottomRight: Radius.circular(10),
-                            ),
-                ),
+            decoration: BoxDecoration(
+              color: Color(0xFF7860DC),
+              // gradient: gradient
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(0),
+                topRight: Radius.circular(0),
+                bottomLeft: Radius.circular(10),
+                bottomRight: Radius.circular(10),
+              ),
+            ),
             // height: MediaQuery.of(context).size.height*.1 ,
-                  padding: const EdgeInsets.only(left: 0),
-                  child: Column(
-                    children: [
-                      SizedBox(height: MediaQuery.of(context).size.height*.08),
-                      Row(
-                        children: [
-                          IconButton(
-                            onPressed: () {
-                              Scaffold.of(context).openDrawer();
-                            },
-                            icon: Icon(
-                              Icons.menu,
-                              size: 40,
-                              color: Colors.white,
-                            ),
-                          ),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.1,
-                          ),
-                          Text(
-                            'Offline-Videos',
-                            style: TextStyle(
-                                fontSize: 25,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white),
-                          )
-                        ],
+            padding: const EdgeInsets.only(left: 0),
+            child: Column(
+              children: [
+                SizedBox(height: MediaQuery.of(context).size.height * .08),
+                Row(
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        Scaffold.of(context).openDrawer();
+                      },
+                      icon: Icon(
+                        Icons.menu,
+                        size: 40,
+                        color: Colors.white,
                       ),
-                      SizedBox(height: MediaQuery.of(context).size.height*.04),
-                    ],
-                  ),
+                    ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.1,
+                    ),
+                    Text(
+                      'Offline-Videos',
+                      style: TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
+                    )
+                  ],
                 ),
-                SizedBox(height: MediaQuery.of(context).size.height*.04),
+                SizedBox(height: MediaQuery.of(context).size.height * .04),
+              ],
+            ),
+          ),
+          SizedBox(height: MediaQuery.of(context).size.height * .04),
           loading!
               ? Center(
                   child: CircularProgressIndicator(),
                 )
               : videos.length == 0
                   ? Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 250, 0, 50),
-                    child: Center(
+                      padding: const EdgeInsets.fromLTRB(0, 250, 0, 50),
+                      child: Center(
                         child: Text(
                           'No downloaded videos',
                           style: TextStyle(
@@ -182,28 +181,32 @@ class _VideoScreenOfflineState extends State<VideoScreenOffline> {
                               color: Colors.black.withOpacity(0.4)),
                         ),
                       ),
-                  )
+                    )
                   : Expanded(
-                    flex:2,
-                    child: Container(
+                      flex: 2,
+                      child: Container(
                         height: MediaQuery.of(context).size.height,
                         child: Column(
                           children: [
                             showVideo
                                 ? AspectRatio(
-                                  aspectRatio: 16/9,
-                                  child: _chewieController != null
-                                      ? Chewie(controller: _chewieController!)
-                                      : Container(
-                                          color: Colors.black,
-                                          child: Center(
-                                            child: Text(
-                                              'Tap on downloaded Videos to play',
-                                              style: TextStyle(color: Colors.white),
+                                    aspectRatio: 16 / 9,
+                                    child: _chewieController != null
+                                        ? Container(
+                                            child: Chewie(
+                                                controller: _chewieController!),
+                                          )
+                                        : Container(
+                                            color: Colors.black,
+                                            child: Center(
+                                              child: Text(
+                                                'Tap on downloaded Videos to play',
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                )
+                                  )
                                 : Container(),
                             Expanded(
                               flex: loading! ? 10 : 2,
@@ -212,8 +215,8 @@ class _VideoScreenOfflineState extends State<VideoScreenOffline> {
                                 itemBuilder: (ctx, index) {
                                   print('getting info--${videos[index].path}');
                                   return Padding(
-                                    padding:
-                                        const EdgeInsets.symmetric(horizontal: 18.0),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 18.0),
                                     child: InkWell(
                                       onTap: () {
                                         setState(() {
@@ -236,7 +239,8 @@ class _VideoScreenOfflineState extends State<VideoScreenOffline> {
                                                 child: Container(
                                                   child: Padding(
                                                     padding:
-                                                        const EdgeInsets.all(8.0),
+                                                        const EdgeInsets.all(
+                                                            8.0),
                                                     child: index < 9
                                                         ? Text(
                                                             '  ${index + 1}',
@@ -282,7 +286,7 @@ class _VideoScreenOfflineState extends State<VideoScreenOffline> {
                           ],
                         ),
                       ),
-                  ),
+                    ),
         ],
       ),
     );

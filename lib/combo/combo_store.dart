@@ -1,17 +1,28 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloudyml_app2/coupon_code.dart';
+import 'package:cloudyml_app2/fun.dart';
 import 'package:cloudyml_app2/globals.dart';
 import 'package:cloudyml_app2/catalogue_screen.dart';
 import 'package:cloudyml_app2/home.dart';
 import 'package:cloudyml_app2/payment_portal.dart';
+import 'package:cloudyml_app2/payment_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/physics.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:ribbon_widget/ribbon_widget.dart';
 
 class ComboStore extends StatefulWidget {
   final List<dynamic>? courses;
+  static ValueNotifier<String> coursePrice = ValueNotifier('');
+  static ValueNotifier<Map<String, dynamic>>? map = ValueNotifier({});
+  static ValueNotifier<double> _currentPosition = ValueNotifier<double>(0.0);
+  static ValueNotifier<double> _closeBottomSheetAtInCombo =
+      ValueNotifier<double>(0.0);
   ComboStore({Key? key, this.courses}) : super(key: key);
 
   @override
@@ -26,6 +37,10 @@ class _ComboStoreState extends State<ComboStore> with CouponCodeMixin {
   final ScrollController _scrollController = ScrollController();
 
   String couponAppliedResponse = "";
+
+  Map<String, dynamic> comboMap = {};
+
+  String coursePrice = "";
 
   //If it is false amountpayble showed will be the amount fetched from db
   //If it is true which will be set to true if when right coupon code is
@@ -47,6 +62,23 @@ class _ComboStoreState extends State<ComboStore> with CouponCodeMixin {
 
   String discountedPrice = "";
 
+  String name = "";
+  GlobalKey _positionKey = GlobalKey();
+
+  void getCourseName() async {
+    await FirebaseFirestore.instance
+        .collection('courses')
+        .doc(courseId)
+        .get()
+        .then((value) {
+      setState(() {
+        comboMap = value.data()!;
+        coursePrice = value.data()!['Course Price'];
+        name = value.data()!['name'];
+        print('ufbufb--$name');
+      });
+    });
+  }
   // void _handlePaymentSuccess(PaymentSuccessResponse response) {
   //   showToast("Payment successful");
   //   addCoursetoUser(id!);
@@ -98,579 +130,499 @@ class _ComboStoreState extends State<ComboStore> with CouponCodeMixin {
   //   print("External wallet");
   // }
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
-  //   _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
-  //   _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+  @override
+  void initState() {
+    super.initState();
+    getCourseName();
+    _scrollController.addListener(_scrollListener);
+  }
+
+  // double closeBottomSheetAt() {
+  //   RenderBox box =
+  //       _positionKey.currentContext!.findRenderObject() as RenderBox;
+  //   Offset position = box.localToGlobal(Offset.zero); //this is global position
+  //   double pixels = position.dy;
+  //   return pixels;
   // }
+
+  void _scrollListener() {
+    RenderBox? box =
+        _positionKey.currentContext?.findRenderObject() as RenderBox;
+    Offset position = box.localToGlobal(Offset.zero); //this is global position
+    double pixels = position.dy;
+    ComboStore._closeBottomSheetAtInCombo.value = pixels;
+    ComboStore._currentPosition.value = _scrollController.position.pixels;
+    print(pixels);
+    print(_scrollController.position.pixels);
+  }
+
   @override
   void dispose() {
     super.dispose();
     couponCodeController.dispose();
+    _scrollController.removeListener(_scrollListener);
     _scrollController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    late final size;
-    double height, width;
-    size = MediaQuery.of(context).size;
-    height = size.height;
-    width = size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+    var verticalScale = screenHeight / mockUpHeight;
+    var horizontalScale = screenWidth / mockUpWidth;
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: InkWell(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: Padding(
-            padding: EdgeInsets.only(left: 15.0, bottom: 20),
-            child: Icon(
-              Icons.arrow_back,
-              color: Colors.black,
-            ),
-          ),
-        ),
+      bottomSheet: PayNowBottomSheet(
+        currentPosition: ComboStore._currentPosition,
+        coursePrice: coursePrice,
+        map: comboMap,
+        popBottomSheetAt: ComboStore._closeBottomSheetAtInCombo,
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+      body: Stack(
         children: [
-          Expanded(
-            flex: 1,
-            child: StreamBuilder<QuerySnapshot>(
-              stream:
-                  FirebaseFirestore.instance.collection('courses').snapshots(),
-              builder: (BuildContext context,
-                  AsyncSnapshot<QuerySnapshot> snapshot) {
-                if (!snapshot.hasData) return const SizedBox.shrink();
-                return ListView.builder(
-                  // controller: _scrollController,
-                  itemCount: snapshot.data!.docs.length,
-                  itemBuilder: (BuildContext context, index) {
-                    DocumentSnapshot document = snapshot.data!.docs[index];
-                    Map<String, dynamic> map = snapshot.data!.docs[index].data()
-                        as Map<String, dynamic>;
-                    if (map["name"].toString() == "null") {
-                      return Container();
-                    }
-                    if (widget.courses!.contains(map['id'])) {
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 8.0, top: 8),
-                        child: InkWell(
-                          onTap: () {
-                            /*setState(() {
-                              courseId = document.id;
-                            });
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const CatelogueScreen()),
-                            );*/
-                          },
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 18.0),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(28),
-                              child: Container(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.25,
-                                width: MediaQuery.of(context).size.width * .8,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(28),
-                                  color: Colors.grey.shade200,
-                                ),
-                                child: Row(
-                                  //card on combopage
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
-                                  children: [
-                                    Container(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.2,
-                                      width:
-                                          MediaQuery.of(context).size.height *
-                                              0.15,
-                                      child: Image.network(
-                                        map['image_url'].toString(),
-                                        fit: BoxFit.cover,
+          SingleChildScrollView(
+            controller: _scrollController,
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 217,
+                ),
+                includes(context),
+                SizedBox(
+                  height: 20,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 10),
+                  child: Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      'Courses you get',
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                          color: Color.fromRGBO(48, 48, 49, 1),
+                          fontFamily: 'Poppins',
+                          fontSize: 20,
+                          letterSpacing:
+                              0 /*percentages not used in flutter. defaulting to zero*/,
+                          fontWeight: FontWeight.bold,
+                          height: 1),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  key: _positionKey,
+                  height: 20,
+                ),
+                Container(
+                  width: screenWidth,
+                  height: 300 * verticalScale,
+                  child: StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('courses')
+                        .snapshots(),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<QuerySnapshot> snapshot) {
+                      if (!snapshot.hasData) return const SizedBox.shrink();
+                      return MediaQuery.removePadding(
+                        context: context,
+                        removeTop: true,
+                        child: ListView.builder(
+                          // controller: _scrollController,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: snapshot.data!.docs.length,
+                          itemBuilder: (BuildContext context, index) {
+                            DocumentSnapshot document =
+                                snapshot.data!.docs[index];
+                            Map<String, dynamic> map =
+                                snapshot.data!.docs[index].data()
+                                    as Map<String, dynamic>;
+                            if (map["name"].toString() == "null") {
+                              return Container();
+                            }
+                            if (widget.courses!.contains(map['id'])) {
+                              return Padding(
+                                padding: const EdgeInsets.only(
+                                    bottom: 8.0,
+                                    top: 8,
+                                    left: 20.0,
+                                    right: 20.0),
+                                child: InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      courseId = document.id;
+                                    });
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const CatelogueScreen()),
+                                    );
+                                  },
+                                  child: Container(
+                                    width: 354 * horizontalScale,
+                                    height: 133 * verticalScale,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(25),
+                                        topRight: Radius.circular(25),
+                                        bottomLeft: Radius.circular(25),
+                                        bottomRight: Radius.circular(25),
                                       ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                            color: Color.fromRGBO(
+                                                58, 57, 60, 0.5699999928474426),
+                                            offset: Offset(2, 2),
+                                            blurRadius: 3)
+                                      ],
+                                      color: Color.fromRGBO(233, 225, 252, 1),
                                     ),
-                                    SizedBox(
-                                      width: 5,
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(16.0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Container(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.45,
-                                            child: Text(
-                                              map["name"],
-                                              style: const TextStyle(
-                                                  fontFamily: 'Bold',
+                                    child: Row(
+                                      //card on combopage
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.stretch,
+                                      children: [
+                                        SizedBox(width: 10),
+                                        ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(25),
+                                          child: Container(
+                                            width: 145,
+                                            height: 111,
+                                            decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(15),
+                                              topRight: Radius.circular(15),
+                                              bottomLeft: Radius.circular(15),
+                                              bottomRight: Radius.circular(15),
+                                            )),
+                                            child:
+                                                Image.network(map['image_url']),
+                                          ),
+                                        ),
+                                        SizedBox(width: 10),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            // SizedBox(
+                                            //   height: 10,
+                                            // ),
+                                            Container(
+                                              width: 170,
+                                              // height: 42,
+                                              child: Text(
+                                                map["name"],
+                                                textScaleFactor: min(
+                                                    horizontalScale,
+                                                    verticalScale),
+                                                style: TextStyle(
+                                                  color: Color.fromRGBO(
+                                                      0, 0, 0, 1),
+                                                  fontFamily: 'Poppins',
                                                   fontSize: 20,
-                                                  fontWeight: FontWeight.w500),
-                                              overflow: TextOverflow.ellipsis,
+                                                  letterSpacing: 0,
+                                                  fontWeight: FontWeight.bold,
+                                                  height: 1,
+                                                ),
+                                              ),
                                             ),
-                                          ),
-                                          SizedBox(
-                                            height: 10,
-                                          ),
-                                          Container(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.45,
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
+                                            // SizedBox(
+                                            //   height: 5,
+                                            // ),
+                                            Container(
+                                              width: 184 * horizontalScale,
+                                              // height: 24.000001907348633,
+                                              child: Text(
+                                                map['description'],
+                                                textScaleFactor: min(
+                                                    horizontalScale,
+                                                    verticalScale),
+                                                style: TextStyle(
+                                                    color: Color.fromRGBO(
+                                                        0, 0, 0, 1),
+                                                    fontFamily: 'Poppins',
+                                                    fontSize: 10,
+                                                    letterSpacing:
+                                                        0 /*percentages not used in flutter. defaulting to zero*/,
+                                                    fontWeight:
+                                                        FontWeight.normal,
+                                                    height: 1),
+                                              ),
+                                            ),
+                                            Row(
                                               children: [
-                                                Container(
-                                                  child: Text(
-                                                    map["language"],
-                                                    style: TextStyle(
-                                                        fontFamily: 'Medium',
-                                                        color: Colors.black
-                                                            .withOpacity(0.4),
-                                                        fontSize: 13,
-                                                        fontWeight:
-                                                            FontWeight.w500),
-                                                  ),
+                                                Text(
+                                                  map['Course Price'],
+                                                  textAlign: TextAlign.left,
+                                                  textScaleFactor: min(
+                                                      horizontalScale,
+                                                      verticalScale),
+                                                  style: TextStyle(
+                                                      color: Color.fromRGBO(
+                                                          155, 117, 237, 1),
+                                                      fontFamily: 'Poppins',
+                                                      fontSize: 20,
+                                                      letterSpacing:
+                                                          0 /*percentages not used in flutter. defaulting to zero*/,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      height: 1),
                                                 ),
                                                 SizedBox(
-                                                  width: 4,
+                                                  width: 40 * horizontalScale,
                                                 ),
                                                 Container(
-                                                  height: 30,
-                                                  width: width * .25,
+                                                  width: 70 * horizontalScale,
+                                                  height: 25 * verticalScale,
                                                   decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20),
-                                                      color:
-                                                          Colors.grey.shade300),
+                                                    borderRadius:
+                                                        BorderRadius.only(
+                                                      topLeft:
+                                                          Radius.circular(50),
+                                                      topRight:
+                                                          Radius.circular(50),
+                                                      bottomLeft:
+                                                          Radius.circular(50),
+                                                      bottomRight:
+                                                          Radius.circular(50),
+                                                    ),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                          color: Color.fromRGBO(
+                                                              48,
+                                                              209,
+                                                              151,
+                                                              0.44999998807907104),
+                                                          offset: Offset(0, 10),
+                                                          blurRadius: 25)
+                                                    ],
+                                                    color: Color.fromRGBO(
+                                                        48, 209, 151, 1),
+                                                  ),
                                                   child: Center(
                                                     child: Text(
-                                                      '${map['videosCount']} videos',
+                                                      'Enroll now',
+                                                      textAlign: TextAlign.left,
+                                                      textScaleFactor: min(
+                                                          horizontalScale,
+                                                          verticalScale),
                                                       style: TextStyle(
-                                                          fontFamily: 'Medium',
-                                                          color: Colors.black
-                                                              .withOpacity(0.7),
-                                                          fontSize: 10),
-                                                      // overflow: TextOverflow.ellipsis,
+                                                          color: Color.fromRGBO(
+                                                              255, 255, 255, 1),
+                                                          fontFamily: 'Poppins',
+                                                          fontSize: 10,
+                                                          letterSpacing:
+                                                              0 /*percentages not used in flutter. defaulting to zero*/,
+                                                          fontWeight:
+                                                              FontWeight.normal,
+                                                          height: 1),
                                                     ),
                                                   ),
                                                 )
                                               ],
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            height: 12,
-                                          ),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              Container(
-                                                height: height * .07,
-                                                width: width * .29,
-                                                decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            30),
-                                                    gradient: gradient),
-                                                child: Center(
-                                                  child: Text(
-                                                    map['Amount Payable'],
-                                                    style: TextStyle(
-                                                        fontFamily: 'Bold',
-                                                        color: Colors.black,
-                                                        fontSize: 12),
-                                                  ),
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                width: 6,
-                                              ),
-                                              Text(
-                                                map['Course Price'],
-                                                style: TextStyle(
-                                                    decoration: TextDecoration
-                                                        .lineThrough,
-                                                    fontFamily: 'Bold',
-                                                    color: Colors.black
-                                                        .withOpacity(0.5),
-                                                    fontSize: 10),
-                                                overflow: TextOverflow.ellipsis,
-                                              )
-                                            ],
-                                          ),
-                                        ],
-                                      ),
+                                            )
+                                          ],
+                                        ),
+                                      ],
                                     ),
-                                  ],
+                                  ),
                                 ),
-                              ),
-                            ),
-                          ),
+                              );
+                            } else {
+                              return Container();
+                            }
+                          },
                         ),
                       );
-                    } else {
-                      return Container();
-                    }
-                  },
-                );
-              },
+                    },
+                  ),
+                ),
+                // Container(
+                //   key: _positionKey,
+                // ),
+                Ribbon(
+                  nearLength: 1,
+                  farLength: .5,
+                  title: ' ',
+                  titleStyle: TextStyle(
+                      color: Colors.black,
+                      // Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold),
+                  color: Color.fromARGB(255, 11, 139, 244),
+                  location: RibbonLocation.topStart,
+                  child: Container(
+                    //  key:key,
+                    // width: width * .9,
+                    // height: height * .5,
+                    color: Color.fromARGB(255, 24, 4, 104),
+                    child: Padding(
+                      padding: const EdgeInsets.all(40.0),
+                      child: Column(
+                        //  key:Gkey,
+                        children: [
+                          SizedBox(
+                            height: screenHeight * .03,
+                          ),
+                          Text(
+                            'Complete Course Fee',
+                            style: TextStyle(
+                                fontFamily: 'Bold',
+                                fontSize: 21,
+                                color: Colors.white),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            '( Everything with Lifetime Access )',
+                            style: TextStyle(
+                                fontFamily: 'Bold',
+                                fontSize: 11,
+                                color: Colors.white),
+                          ),
+                          SizedBox(
+                            height: 30,
+                          ),
+                          Text(
+                            coursePrice,
+                            style: TextStyle(
+                                fontFamily: 'Medium',
+                                fontSize: 30,
+                                color: Colors.white),
+                          ),
+                          SizedBox(height: 35),
+                          InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => PaymentScreen(
+                                    map: comboMap,
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(30),
+                                    // boxShadow: [
+                                    //   BoxShadow(
+                                    //     color: Color.fromARGB(255, 176, 224, 250)
+                                    //         .withOpacity(0.3),
+                                    //     spreadRadius: 2,
+                                    //     blurRadius: 3,
+                                    //     offset: Offset(3,
+                                    //         6), // changes position of shadow
+                                    //   ),
+                                    // ],
+                                    color: Color.fromARGB(255, 119, 191, 249),
+                                    gradient: gradient),
+                                height: screenHeight * .08,
+                                width: screenWidth * .6,
+                                child: Center(
+                                  child: Text(
+                                    'Buy Now',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 20),
+                                  ),
+                                )),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-          Expanded(
-              flex: 3,
-              child: StreamBuilder<QuerySnapshot>(
-                stream: FirebaseFirestore.instance
-                    .collection("courses")
-                    .snapshots(),
-                builder: (BuildContext context,
-                    AsyncSnapshot<QuerySnapshot> snapshot) {
-                  if (!snapshot.hasData) return const SizedBox.shrink();
-                  return ListView.builder(
-                    controller: _scrollController,
-                    itemCount: snapshot.data!.docs.length,
-                    itemBuilder: (BuildContext context, index) {
-                      DocumentSnapshot document = snapshot.data!.docs[index];
-                      Map<String, dynamic> map = snapshot.data!.docs[index]
-                          .data() as Map<String, dynamic>;
-                      if (map["name"].toString() == "null") {
-                        return Container();
-                      }
-
-                      if (document.id == courseId) {
-                        return Stack(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 00.0, right: 18, left: 18, bottom: 10),
-                              child: SingleChildScrollView(
-                                child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Column(
-                                        children: [],
-                                      ),
-                                      Text(
-                                        "PRICE DETAILS",
-                                        style: TextStyle(
-                                          fontFamily: 'Bold',
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 25,
-                                      ),
-                                      Align(
-                                        alignment: Alignment.topLeft,
-                                        child: Text(
-                                          'Coupon code',
-                                          style:
-                                              TextStyle(fontFamily: 'Medium'),
-                                        ),
-                                      ),
-                                      TextField(
-                                        enabled: NoCouponApplied ? true : false,
-                                        controller: couponCodeController,
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          letterSpacing: 1.2,
-                                          fontFamily: 'Medium',
-                                        ),
-                                        decoration: InputDecoration(
-                                          suffixIcon: TextButton(
-                                            child: Text(
-                                              'Apply',
-                                              style: TextStyle(
-                                                color: Color(0xFFaefb2a),
-                                                fontFamily: 'Medium',
-                                                fontSize: 18,
-                                              ),
-                                            ),
-                                            onPressed: () {
-                                              setState(() {
-                                                NoCouponApplied =
-                                                    whetherCouponApplied(
-                                                  couponCodeText:
-                                                      couponCodeController.text,
-                                                );
-                                                couponAppliedResponse =
-                                                    whenCouponApplied(
-                                                  couponCodeText:
-                                                      couponCodeController.text,
-                                                );
-                                                finalamountToDisplay =
-                                                    amountToDisplayAfterCCA(
-                                                  amountPayable:
-                                                      map['Amount Payable'],
-                                                  couponCodeText:
-                                                      couponCodeController.text,
-                                                );
-                                                finalAmountToPay =
-                                                    amountToPayAfterCCA(
-                                                  couponCodeText:
-                                                      couponCodeController.text,
-                                                  amountPayable:
-                                                      map['Amount Payable'],
-                                                );
-                                                discountedPrice =
-                                                    discountAfterCCA(
-                                                        couponCodeText:
-                                                            couponCodeController
-                                                                .text,
-                                                        amountPayable: map[
-                                                            'Amount Payable']);
-                                              });
-                                              print('Button working');
-                                            },
-                                          ),
-                                          fillColor: Colors.grey.shade100,
-                                          filled: true,
-                                          suffixIconConstraints: BoxConstraints(
-                                              maxHeight: 50, minWidth: 100),
-                                          // contentPadding: EdgeInsets.symmetric(horizontal: 0.0,vertical: 0),
-                                          enabledBorder: InputBorder.none,
-                                          focusedBorder: InputBorder.none,
-                                          disabledBorder: InputBorder.none,
-                                        ),
-                                      ),
-                                      Align(
-                                        alignment: Alignment.bottomLeft,
-                                        child: Text(
-                                          couponAppliedResponse,
-                                          style: TextStyle(
-                                            color: Colors.deepOrange,
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 15,
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            top: 20.0, bottom: 10, right: 18),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              "Course Price",
-                                              style: TextStyle(
-                                                fontFamily: 'Medium',
-                                                fontSize: 18,
-                                              ),
-                                            ),
-                                            Text(
-                                              map["Course Price"],
-                                              style: TextStyle(
-                                                fontFamily: 'Medium',
-                                                fontSize: 15,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            top: 5.0, bottom: 10, right: 18),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              "Discount",
-                                              style: TextStyle(
-                                                fontFamily: 'Medium',
-                                                fontSize: 18,
-                                              ),
-                                            ),
-                                            Text(
-                                              NoCouponApplied
-                                                  ? '₹${map["Discount"]} /-'
-                                                  : discountedPrice,
-                                              style: TextStyle(
-                                                fontFamily: 'Medium',
-                                                fontSize: 15,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Divider(
-                                        height: 20,
-                                        thickness: 1,
-                                        indent: 0,
-                                        endIndent: 0,
-                                        color: Colors.black.withOpacity(0.5),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            top: 5.0, bottom: 10, right: 18),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            const Text(
-                                              "Amount Payable",
-                                              style: TextStyle(
-                                                fontFamily: 'Medium',
-                                                fontSize: 18,
-                                              ),
-                                            ),
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(30),
-                                                  color: Colors.grey.shade300),
-                                              child: Center(
-                                                child: Padding(
-                                                  padding: const EdgeInsets.all(
-                                                      14.0),
-                                                  child: Text(
-                                                    NoCouponApplied
-                                                        ? '₹${map["Amount Payable"]} /-'
-                                                        : finalamountToDisplay,
-                                                    style: TextStyle(
-                                                      fontFamily: 'Medium',
-                                                      fontSize: 15,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 20,
-                                      ),
-                                      PaymentButton(
-                                        amountString: (double.parse(
-                                                    NoCouponApplied
-                                                        ? map[
-                                                            'Amount_Payablepay']
-                                                        : finalAmountToPay) *
-                                                100.00)
-                                            .toString(),
-                                        buttonText:
-                                            "Buy Now for ${map['Course Price']}",
-                                        buttonTextForCode:
-                                            "Buy Now for $finalamountToDisplay",
-                                        changeState: () {
-                                          setState(() {
-                                            isPayButtonPressed =
-                                                !isPayButtonPressed;
-                                          });
-                                        },
-                                        courseDescription: map['description'],
-                                        courseName: map['name'],
-                                        isPayButtonPressed: isPayButtonPressed,
-                                        NoCouponApplied: NoCouponApplied,
-                                        scrollController: _scrollController,
-                                        updateCourseIdToCouponDetails: () {
-                                          setState(() {
-                                            id = map['id'];
-                                          });
-                                        },
-                                        // isPayInPartsPressed: isPayInPartsPressed,
-                                        outStandingAmountString: (double.parse(
-                                                    NoCouponApplied
-                                                        ? map[
-                                                            'Amount_Payablepay']
-                                                        : finalAmountToPay) -
-                                                1000)
-                                            .toString(),
-                                        // isMinAmountCheckerPressed:
-                                        //     isMinAmountCheckerPressed,
-                                        // isOutStandingAmountCheckerPressed:
-                                        //     isOutStandingAmountCheckerPressed,
-                                        couponCodeText:
-                                            couponCodeController.text,
-                                        courseId: map['id'],
-                                        isItComboCourse: true,
-                                        whichCouponCode: whichCouponCode(
-                                            couponCodeText:
-                                                couponCodeController.text),
-                                      ),
-                                      /*InkWell(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      PageTransition(
-                                          duration: Duration(milliseconds: 400),
-                                          curve: Curves.bounceInOut,
-                                          type: PageTransitionType.rightToLeft,
-                                          child: DemoCourse()),
-                                    );
-                                  },
-                                  child: Container(
-                                    height: 50.0,
-                                    width: 350.0,
-                                    color: Colors.transparent,
-                                    child: Container(
-                                        decoration: BoxDecoration(
-                                            gradient: gradient,
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(50.0))),
-                                        child: const Center(
-                                          child: Text(
-                                            "Try Demo",
-                                            style: TextStyle(
-                                                fontFamily: 'Bold',
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.bold),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        )),
-                                  ),
-                                ),*/
-                                      SizedBox(
-                                        height: 20,
-                                      ),
-                                      Container(
-                                        width: 200,
-                                        child: Text(
-                                          "* Amount payable is inclusive of taxes. TERMS & CONDITIONS APPLY",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            fontFamily: 'Regular',
-                                            fontSize: 12,
-                                          ),
-                                        ),
-                                      ),
-                                    ]),
-                              ),
-                            ),
-                          ],
-                        );
-                      } else {
-                        return Container();
-                      }
-                    },
-                  );
-                },
-              ))
+          Container(
+            width: 414 * horizontalScale,
+            height: 217 * verticalScale,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(0),
+                topRight: Radius.circular(0),
+                bottomLeft: Radius.circular(25),
+                bottomRight: Radius.circular(25),
+              ),
+              color: Color.fromRGBO(122, 98, 222, 1),
+            ),
+            child: Stack(
+              children: [
+                Positioned(
+                  top: -15 * verticalScale,
+                  right: -15 * horizontalScale,
+                  child: Container(
+                    width: 128 * min(horizontalScale, verticalScale),
+                    height: 128 * min(verticalScale, horizontalScale),
+                    decoration: BoxDecoration(
+                      color: Color.fromRGBO(129, 105, 229, 1),
+                      borderRadius: BorderRadius.all(
+                        Radius.elliptical(128, 128),
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: 80 * verticalScale,
+                  left: -31 * horizontalScale,
+                  child: Container(
+                    width: 62 * min(horizontalScale, verticalScale),
+                    height: 62 * min(verticalScale, horizontalScale),
+                    decoration: BoxDecoration(
+                      color: Color.fromRGBO(129, 105, 229, 1),
+                      borderRadius: BorderRadius.all(
+                        Radius.elliptical(62, 62),
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: 100 * verticalScale,
+                  left: 30 * horizontalScale,
+                  child: Container(
+                    // width: 230,
+                    // height: 81,
+                    child: Row(
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: Icon(
+                            Icons.arrow_back,
+                            color: Colors.white,
+                            size: 30 * min(horizontalScale, verticalScale),
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        Center(
+                          child: Text(
+                            name,
+                            textScaleFactor:
+                                min(horizontalScale, verticalScale),
+                            style: TextStyle(
+                                color: Color.fromRGBO(255, 255, 255, 1),
+                                fontFamily: 'Poppins',
+                                fontSize: 35,
+                                letterSpacing: 0,
+                                fontWeight: FontWeight.normal,
+                                height: 1),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
