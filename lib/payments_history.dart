@@ -520,7 +520,8 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                                   min(horizontalScale,
                                                       verticalScale),
                                             ),
-                                            userMap['payInPartsDetails'][map['id']] !=
+                                            userMap['payInPartsDetails']
+                                                            [map['id']] !=
                                                         null &&
                                                     !userMap['payInPartsDetails']
                                                             [map['id']]
@@ -561,7 +562,8 @@ class _PaymentHistoryState extends State<PaymentHistory> {
                                                     child: Icon(
                                                       Icons.check,
                                                       color: Colors.white,
-                                                    )),
+                                                    ),
+                                                  ),
                                           ],
                                         ),
                                       ],
@@ -861,7 +863,7 @@ class _PaymentHistoryState extends State<PaymentHistory> {
               },
               child: Icon(
                 Icons.arrow_back_outlined,
-                size: 40* min(horizontalScale, verticalScale),
+                size: 40 * min(horizontalScale, verticalScale),
                 color: Colors.white,
               ),
             ),

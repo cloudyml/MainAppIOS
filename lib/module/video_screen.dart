@@ -33,12 +33,10 @@ class VideoScreen extends StatefulWidget {
 class _VideoScreenState extends State<VideoScreen> {
   VideoPlayerController? _videoController;
   ChewieController? _chewieController;
-  // bool? loading = false;
   bool? downloading = false;
   bool downloaded = false;
   Map<String, dynamic>? data;
   String? videoUrl;
-  // ValueNotifier<bool>? loading = ValueNotifier(true);
   Future<void>? playVideo;
   bool enablePauseScreen = false;
   bool showAssignment = false;
@@ -58,15 +56,7 @@ class _VideoScreenState extends State<VideoScreen> {
   String? progressString = '';
 
   void getData() async {
-    await FirebaseFirestore.instance
-        .collection('courses')
-        .doc(courseId)
-        .collection('Modules')
-        .where('firstType', isEqualTo: 'video')
-        .get()
-        .then((value) {
-      moduleId = value.docs[0].id;
-    });
+    await setModuleId();
     await FirebaseFirestore.instance
         .collection('courses')
         .doc(courseId)
@@ -77,9 +67,7 @@ class _VideoScreenState extends State<VideoScreen> {
         .get()
         .then((value) {
       setState(() {
-        print(value);
         data = value.docs[0].data();
-        print(data);
         topicId = value.docs[0].id;
         videoUrl = value.docs[0].data()['url'];
         serialNo = widget.sr;
@@ -96,6 +84,18 @@ class _VideoScreenState extends State<VideoScreen> {
     } catch (e) {
       showToast(e.toString());
     }
+  }
+
+  Future<void> setModuleId() async {
+    await FirebaseFirestore.instance
+        .collection('courses')
+        .doc(courseId)
+        .collection('Modules')
+        .where('firstType', isEqualTo: 'video')
+        .get()
+        .then((value) {
+      moduleId = value.docs[0].id;
+    });
   }
 
   String convertToTwoDigits(int value) {
@@ -247,22 +247,17 @@ class _VideoScreenState extends State<VideoScreen> {
   }
 
   void intializeVidController(String url) async {
-    // VideoPlayerController? _localVideoController;
     try {
       final oldVideoController = _videoController;
       if (oldVideoController != null) {
-        // setState(() {
         oldVideoController.removeListener(_onVideoControllerUpdate);
         oldVideoController.pause();
         oldVideoController.dispose();
-        // });
       }
-      // setState(() {});
       final _localVideoController = await VideoPlayerController.network(url);
       setState(() {
         _videoController = _localVideoController;
       });
-      // _videoController!.dispose();
       playVideo = _localVideoController.initialize().then((value) {
         setState(() {
           _localVideoController.addListener(_onVideoControllerUpdate);
@@ -477,7 +472,25 @@ class _VideoScreenState extends State<VideoScreen> {
                                                     color: Colors.white),
                                                 timeElapsedString(),
                                                 timeRemainingString(),
-                                                progressIndicator(),
+                                                Positioned(
+                                                  bottom: 42.5 * verticalScale,
+                                                  left: 55 * horizontalScale,
+                                                  right: 100 * horizontalScale,
+                                                  child: VideoProgressIndicator(
+                                                    _videoController!,
+                                                    allowScrubbing: true,
+                                                    colors: VideoProgressColors(
+                                                      backgroundColor:
+                                                          Color.fromARGB(74,
+                                                              255, 255, 255),
+                                                      bufferedColor:
+                                                          Color(0xFFC0AAF5),
+                                                      playedColor:
+                                                          Color(0xFF7860DC),
+                                                    ),
+                                                  ),
+                                                ),
+                                                // progressIndicator(),
                                                 fullScreenIcon(
                                                     isPortrait: isPortrait),
                                                 Positioned(
@@ -908,7 +921,6 @@ class replay10 extends StatelessWidget {
   Widget build(BuildContext context) {
     return Positioned(
       left: 0,
-      // right: 0,
       top: 0,
       bottom: 0,
       child: Padding(
