@@ -13,7 +13,7 @@ import 'package:cloudyml_app2/globals.dart';
 import 'aboutus.dart';
 import 'authentication/firebase_auth.dart';
 import 'home.dart';
-import 'home_screen.dart';
+import 'my_Courses.dart';
 
 Row Star() {
   return Row(

@@ -1,12 +1,12 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cloudyml_app2/coupon_code.dart';
+import 'package:cloudyml_app2/widgets/coupon_code.dart';
 import 'package:cloudyml_app2/fun.dart';
 import 'package:cloudyml_app2/globals.dart';
 import 'package:cloudyml_app2/catalogue_screen.dart';
 import 'package:cloudyml_app2/home.dart';
-import 'package:cloudyml_app2/payment_portal.dart';
+import 'package:cloudyml_app2/widgets/payment_portal.dart';
 import 'package:cloudyml_app2/payment_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

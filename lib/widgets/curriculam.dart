@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cloudyml_app2/demo_video.dart';
+import 'package:cloudyml_app2/widgets/demo_video.dart';
 import 'package:cloudyml_app2/globals.dart';
 import 'package:flutter/material.dart';
 

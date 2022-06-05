@@ -32,20 +32,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   bool? load = true;
 
-  // void setModuleId(String courseId) async {
-  //   await FirebaseFirestore.instance
-  //       .collection('courses')
-  //       .doc(courseId)
-  //       .collection('Modules')
-  //       .where('firstType', isEqualTo: 'video')
-  //       .get()
-  //       .then((value) {
-  //     setState(() {
-  //       moduleId = value.docs[0].id;
-  //     });
-  //   });
-  // }
-
   void fetchCourses() async {
     await FirebaseFirestore.instance
         .collection('Users')

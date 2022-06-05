@@ -1,5 +1,5 @@
-import 'package:cloudyml_app2/coupon_code.dart';
-import 'package:cloudyml_app2/payment_portal.dart';
+import 'package:cloudyml_app2/widgets/coupon_code.dart';
+import 'package:cloudyml_app2/widgets/payment_portal.dart';
 import 'package:flutter/material.dart';
 
 class PaymentScreen extends StatefulWidget {
