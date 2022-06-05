@@ -462,7 +462,7 @@ class _HomeState extends State<Home> {
                     height: height * .045,
                     child: Row(
                       children: [
-                        FlatButton(
+                        TextButton(
                           onPressed: () {
                             Navigator.push(
                               context,

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloudyml_app2/MyAccount/myaccount.dart';
 import 'package:cloudyml_app2/aboutus.dart';
 import 'package:cloudyml_app2/authentication/firebase_auth.dart';
 import 'package:cloudyml_app2/payments_history.dart';
@@ -179,15 +180,19 @@ class _HomePageState extends State<HomePage> {
                     MaterialPageRoute(builder: (context) => HomePage()));
               },
             ),
-            // InkWell(
-            //   child: ListTile(
-            //     title: Text('My Account'),
-            //     leading: Icon(
-            //       Icons.person,
-            //       color: HexColor('6153D3'),
-            //     ),
-            //   ),
-            // ),
+            InkWell(
+              child: ListTile(
+                title: Text('My Account'),
+                leading: Icon(
+                  Icons.person,
+                  color: HexColor('6153D3'),
+                ),
+              ),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => MyAccountPage()));
+              },
+            ),
             InkWell(
               child: ListTile(
                 title: Text('My Courses'),
