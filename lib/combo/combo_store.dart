@@ -176,6 +176,7 @@ class _ComboStoreState extends State<ComboStore> with CouponCodeMixin {
         coursePrice: coursePrice,
         map: comboMap,
         popBottomSheetAt: ComboStore._closeBottomSheetAtInCombo,
+        isItComboCourse: true,
       ),
       body: Stack(
         children: [
@@ -503,6 +504,7 @@ class _ComboStoreState extends State<ComboStore> with CouponCodeMixin {
                                 MaterialPageRoute(
                                   builder: (context) => PaymentScreen(
                                     map: comboMap,
+                                    isItComboCourse: true,
                                   ),
                                 ),
                               );

@@ -20,7 +20,7 @@ import 'package:ribbon_widget/ribbon_widget.dart';
 class CatelogueScreen extends StatefulWidget {
   const CatelogueScreen({Key? key}) : super(key: key);
   static ValueNotifier<String> coursePrice = ValueNotifier('');
-  static ValueNotifier<Map<String, dynamic>>? map = ValueNotifier({});
+  // static ValueNotifier<Map<String, dynamic>>? map = ValueNotifier({});
   static ValueNotifier<double> _currentPosition = ValueNotifier<double>(0.0);
   static ValueNotifier<double> _closeBottomSheetAt = ValueNotifier<double>(0.0);
   @override
@@ -38,7 +38,7 @@ class _CatelogueScreenState extends State<CatelogueScreen>
 
   // double closeBottomSheetAt = 0.0;
   // final scaffoldState = GlobalKey<ScaffoldState>();
-  Map<String, dynamic> comboMap = {};
+  Map<String, dynamic> courseMap = {};
 
   String coursePrice = "";
 
@@ -85,7 +85,7 @@ class _CatelogueScreenState extends State<CatelogueScreen>
         .get()
         .then((value) {
       setState(() {
-        comboMap = value.data()!;
+        courseMap = value.data()!;
         coursePrice = value.data()!['Course Price'];
       });
     });
@@ -140,8 +140,9 @@ class _CatelogueScreenState extends State<CatelogueScreen>
       bottomSheet: PayNowBottomSheet(
         currentPosition: CatelogueScreen._currentPosition,
         coursePrice: coursePrice,
-        map: comboMap,
+        map: courseMap,
         popBottomSheetAt: CatelogueScreen._closeBottomSheetAt,
+        isItComboCourse: false,
         // closeBottomSheetAt: closeBottomSheetAt(positionKey),
       ),
       backgroundColor: Colors.white,
@@ -170,7 +171,7 @@ class _CatelogueScreenState extends State<CatelogueScreen>
                   }
                   if (document.id == courseId) {
                     CatelogueScreen.coursePrice.value = map['Course Price'];
-                    CatelogueScreen.map!.value = map;
+                    // CatelogueScreen.map!.value = map;
                     return Stack(
                       children: [
                         Padding(
@@ -315,10 +316,12 @@ class _CatelogueScreenState extends State<CatelogueScreen>
                                             Navigator.push(
                                               context,
                                               MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      PaymentScreen(
-                                                          map: CatelogueScreen
-                                                              .map!.value)),
+                                                builder: (context) =>
+                                                    PaymentScreen(
+                                                  map: courseMap,
+                                                  isItComboCourse: false,
+                                                ),
+                                              ),
                                             );
                                           },
                                           child: Container(
@@ -369,6 +372,7 @@ class PayNowBottomSheet extends StatelessWidget {
   ValueListenable<double> popBottomSheetAt;
   String coursePrice;
   Map<String, dynamic> map;
+  bool isItComboCourse;
   // double closeBottomSheetAt;
 
   PayNowBottomSheet({
@@ -376,6 +380,7 @@ class PayNowBottomSheet extends StatelessWidget {
     required this.coursePrice,
     required this.map,
     required this.popBottomSheetAt,
+    required this.isItComboCourse,
     Key? key,
   }) : super(key: key);
 
@@ -420,8 +425,10 @@ class PayNowBottomSheet extends StatelessWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) =>
-                                        PaymentScreen(map: map),
+                                    builder: (context) => PaymentScreen(
+                                      map: map,
+                                      isItComboCourse: isItComboCourse,
+                                    ),
                                   ),
                                 );
                               },

@@ -4,7 +4,10 @@ import 'package:flutter/material.dart';
 
 class PaymentScreen extends StatefulWidget {
   final Map<String, dynamic>? map;
-  const PaymentScreen({Key? key, required this.map}) : super(key: key);
+  final bool isItComboCourse;
+  const PaymentScreen(
+      {Key? key, required this.map, required this.isItComboCourse})
+      : super(key: key);
 
   @override
   State<PaymentScreen> createState() => _PaymentScreenState();
@@ -134,7 +137,8 @@ class _PaymentScreenState extends State<PaymentScreen> with CouponCodeMixin {
                   height: 15,
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 20.0, bottom: 10, right: 18),
+                  padding:
+                      const EdgeInsets.only(top: 20.0, bottom: 10, right: 18),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -156,7 +160,8 @@ class _PaymentScreenState extends State<PaymentScreen> with CouponCodeMixin {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 5.0, bottom: 10, right: 18),
+                  padding:
+                      const EdgeInsets.only(top: 5.0, bottom: 10, right: 18),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -168,7 +173,9 @@ class _PaymentScreenState extends State<PaymentScreen> with CouponCodeMixin {
                         ),
                       ),
                       Text(
-                        NoCouponApplied ? '₹${widget.map!["Discount"]} /-' : discountedPrice,
+                        NoCouponApplied
+                            ? '₹${widget.map!["Discount"]} /-'
+                            : discountedPrice,
                         style: TextStyle(
                           fontFamily: 'Medium',
                           fontSize: 15,
@@ -185,7 +192,8 @@ class _PaymentScreenState extends State<PaymentScreen> with CouponCodeMixin {
                   color: Colors.black.withOpacity(0.5),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 5.0, bottom: 10, right: 18),
+                  padding:
+                      const EdgeInsets.only(top: 5.0, bottom: 10, right: 18),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -282,7 +290,6 @@ class _PaymentScreenState extends State<PaymentScreen> with CouponCodeMixin {
                   courseName: widget.map!['name'],
                   isPayButtonPressed: isPayButtonPressed,
                   NoCouponApplied: NoCouponApplied,
-                  // razorpay: _razorpay,
                   scrollController: _scrollController,
                   updateCourseIdToCouponDetails: () {
                     void addCourseId() {
@@ -290,11 +297,10 @@ class _PaymentScreenState extends State<PaymentScreen> with CouponCodeMixin {
                         id = widget.map!['id'];
                       });
                     }
-              
+
                     addCourseId();
                     print(NoCouponApplied);
                   },
-                  // isPayInPartsPressed: isPayInPartsPressed,
                   outStandingAmountString: (double.parse(NoCouponApplied
                               ? widget.map!['Amount_Payablepay']
                               : finalAmountToPay) -
@@ -302,8 +308,8 @@ class _PaymentScreenState extends State<PaymentScreen> with CouponCodeMixin {
                       .toStringAsFixed(2),
                   courseId: widget.map!['id'],
                   couponCodeText: couponCodeController.text,
-                  isItComboCourse: false,
-                  whichCouponCode: '',
+                  isItComboCourse: widget.isItComboCourse,
+                  whichCouponCode: couponCodeController.text,
                 ),
                 SizedBox(
                   height: 20,
