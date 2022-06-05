@@ -1,24 +1,18 @@
 import 'dart:io';
-import 'dart:math' as Math;
 import 'dart:math';
 
 import 'package:auto_orientation/auto_orientation.dart';
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloudyml_app2/offline/db.dart';
 import 'package:cloudyml_app2/globals.dart';
 import 'package:cloudyml_app2/models/offline_model.dart';
 import 'package:cloudyml_app2/module/assignment_screen.dart';
-import 'package:cloudyml_app2/module/quiz_screen.dart';
-import 'package:chewie/chewie.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:video_player/video_player.dart';
-import 'package:flutter_vlc_player/flutter_vlc_player.dart';
 
 class VideoScreen extends StatefulWidget {
   final int? sr;
@@ -32,7 +26,6 @@ class VideoScreen extends StatefulWidget {
 
 class _VideoScreenState extends State<VideoScreen> {
   VideoPlayerController? _videoController;
-  ChewieController? _chewieController;
   bool? downloading = false;
   bool downloaded = false;
   Map<String, dynamic>? data;
@@ -41,7 +34,7 @@ class _VideoScreenState extends State<VideoScreen> {
   bool enablePauseScreen = false;
   bool showAssignment = false;
   int? serialNo;
-  String? assignVideoUrl;
+  String? assignMentVideoUrl;
   bool _disposed = false;
   bool _isPlaying = false;
   bool _isBuffering = false;
@@ -113,21 +106,19 @@ class _VideoScreenState extends State<VideoScreen> {
 
     return Positioned(
       bottom: 33,
-      // left: 0,
       right: 55,
       child: Text(
         timeRemaining,
         style: TextStyle(
-            color: Colors.white,
-            // fontSize: 12,
-            fontWeight: FontWeight.bold),
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }
 
   Widget timeElapsedString() {
     var timeElapsedString = "00.00";
-    // final duration = _duration?.inSeconds ?? 0;
     final currentPosition = _position?.inSeconds ?? 0;
     final mins = convertToTwoDigits(currentPosition ~/ 60);
     final seconds = convertToTwoDigits(currentPosition % 60);
@@ -318,8 +309,6 @@ class _VideoScreenState extends State<VideoScreen> {
       DatabaseHelper _dbhelper = DatabaseHelper();
       OfflineModel video = OfflineModel(
           topic: topicName,
-          // module: 'Module 1',
-          // course: courseName,
           path: '${directory.path}/${fileName!.replaceAll(' ', '')}.mp4');
       _dbhelper.insertTask(video);
 
@@ -336,18 +325,14 @@ class _VideoScreenState extends State<VideoScreen> {
   void dispose() {
     super.dispose();
     _disposed = true;
-    // _videoController!.pause();
     _videoController!.dispose();
     _videoController = null;
-    // _chewieController!.dispose();
   }
 
   @override
   void initState() {
     super.initState();
-    // setModuleId();
     getData();
-    // intializeVidController(videoUrl!);
   }
 
   @override
@@ -735,7 +720,7 @@ class _VideoScreenState extends State<VideoScreen> {
                                                       showAssignment =
                                                           !showAssignment;
                                                       serialNo = map['sr'];
-                                                      assignVideoUrl =
+                                                      assignMentVideoUrl =
                                                           map['solution'];
                                                     });
                                                   }
