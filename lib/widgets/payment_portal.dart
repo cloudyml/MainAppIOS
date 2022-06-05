@@ -7,7 +7,7 @@ import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:upi_plugin/upi_plugin.dart';
-import 'package:cloudyml_app2/coupon_code.dart';
+import 'package:cloudyml_app2/widgets/coupon_code.dart';
 
 class PaymentButton extends StatefulWidget {
   final ScrollController scrollController;

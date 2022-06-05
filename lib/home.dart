@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloudyml_app2/aboutus.dart';
 import 'package:cloudyml_app2/authentication/firebase_auth.dart';
 import 'package:cloudyml_app2/payments_history.dart';
-import 'package:cloudyml_app2/home_screen.dart';
+import 'package:cloudyml_app2/my_Courses.dart';
 import 'package:cloudyml_app2/homepage.dart';
 import 'package:cloudyml_app2/offline/offline_videos.dart';
 import 'package:cloudyml_app2/privacy_policy.dart';
