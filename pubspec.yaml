@@ -83,6 +83,7 @@ dependencies:
   auto_size_text: ^3.0.0
   auto_orientation: ^2.2.1
   external_app_launcher: ^2.0.2
+  dotted_line: ^3.1.0
   # floating_ribbon: ^1.0.1
 
 dev_dependencies:
