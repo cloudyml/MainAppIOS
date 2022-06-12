@@ -1,16 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloudyml_app2/aboutus.dart';
 import 'package:cloudyml_app2/authentication/firebase_auth.dart';
+import 'package:cloudyml_app2/models/course_details.dart';
 import 'package:cloudyml_app2/payments_history.dart';
 import 'package:cloudyml_app2/my_Courses.dart';
 import 'package:cloudyml_app2/homepage.dart';
 import 'package:cloudyml_app2/offline/offline_videos.dart';
 import 'package:cloudyml_app2/privacy_policy.dart';
 import 'package:cloudyml_app2/screens/groups_list.dart';
+import 'package:cloudyml_app2/services/database_service.dart';
 import 'package:cloudyml_app2/store.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -109,7 +112,8 @@ class _HomePageState extends State<HomePage> {
                     return ListView.builder(
                       itemCount: snapshot.data!.docs.length,
                       itemBuilder: (BuildContext context, index) {
-                        DocumentSnapshot document = snapshot.data!.docs[index];
+                        DocumentSnapshot document =
+                            snapshot.data!.docs[index];
                         Map<String, dynamic> map = snapshot.data!.docs[index]
                             .data() as Map<String, dynamic>;
                         if (map["id"].toString() ==
@@ -203,8 +207,10 @@ class _HomePageState extends State<HomePage> {
             ),
             InkWell(
               onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => PaymentHistory()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => PaymentHistory()));
               },
               child: ListTile(
                 title: Text('Payment History'),

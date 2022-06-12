@@ -5,15 +5,9 @@ import 'package:cloudyml_app2/widgets/coupon_code.dart';
 import 'package:cloudyml_app2/fun.dart';
 import 'package:cloudyml_app2/globals.dart';
 import 'package:cloudyml_app2/catalogue_screen.dart';
-import 'package:cloudyml_app2/home.dart';
-import 'package:cloudyml_app2/widgets/payment_portal.dart';
 import 'package:cloudyml_app2/payment_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloudyml_app2/widgets/pay_now_bottomsheet.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/physics.dart';
-import 'package:flutter_styled_toast/flutter_styled_toast.dart';
-import 'package:page_transition/page_transition.dart';
-import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:ribbon_widget/ribbon_widget.dart';
 
 class ComboStore extends StatefulWidget {

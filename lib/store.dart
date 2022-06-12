@@ -4,29 +4,29 @@ import 'package:cloudyml_app2/combo/combo_store.dart';
 import 'package:cloudyml_app2/fun.dart';
 import 'package:cloudyml_app2/globals.dart';
 import 'package:cloudyml_app2/home.dart';
+import 'package:cloudyml_app2/models/course_details.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class StoreScreen extends StatefulWidget {
   const StoreScreen({Key? key}) : super(key: key);
 
   @override
   State<StoreScreen> createState() => _StoreScreenState();
-  
 }
 
 class _StoreScreenState extends State<StoreScreen> {
-
-    final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
+    List<CourseDetails> course = Provider.of<List<CourseDetails>>(context);
     return Scaffold(
-      key:_scaffoldKey,
+      key: _scaffoldKey,
       // drawer: dr(context),
       body: Container(
         color: Colors.deepPurple,
-        child: Stack(
-            children: [
+        child: Stack(children: [
           Positioned(
             // left: -50,
             // width: 100,
@@ -81,10 +81,9 @@ class _StoreScreenState extends State<StoreScreen> {
                       IconButton(
                         onPressed: () {
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>  HomePage()),
-                            );
+                            context,
+                            MaterialPageRoute(builder: (context) => HomePage()),
+                          );
                           // Scaffold.of(context).openDrawer();
                         },
                         icon: Icon(
@@ -107,7 +106,7 @@ class _StoreScreenState extends State<StoreScreen> {
                   ),
                 ),
                 SizedBox(
-                  height: MediaQuery.of(context).size.height*0.06,
+                  height: MediaQuery.of(context).size.height * 0.06,
                 ),
                 Expanded(
                   child: Container(
@@ -118,269 +117,227 @@ class _StoreScreenState extends State<StoreScreen> {
                             topLeft: Radius.circular(40),
                             topRight: Radius.circular(40)),
                         color: Colors.white),
-                    child: StreamBuilder<QuerySnapshot>(
-                        stream: FirebaseFirestore.instance
-                            .collection("courses")
-                            .snapshots(),
-                        builder: (BuildContext context,
-                            AsyncSnapshot<QuerySnapshot> snapshot) {
-                          if (!snapshot.hasData)
-                            return const SizedBox.shrink();
-                          return MediaQuery.removePadding(
-                            context: context,
-                            removeTop: true,
-                            child: GridView.builder(
-                                gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                                    maxCrossAxisExtent: MediaQuery.of(context).size.width * .5,
-                                    childAspectRatio: .68),
-                                itemCount: snapshot.data!.docs.length,
-                                itemBuilder: (context, index) {
-                                  DocumentSnapshot document =
-                                  snapshot.data!.docs[index];
-                                  Map<String, dynamic> map =
-                                  snapshot.data!.docs[index].data()
-                                  as Map<String, dynamic>;
-                                  return InkWell(
-                                    onTap: () {
-                                      setState(() {
-                                        courseId = document.id;
-                                      });
+                    child: MediaQuery.removePadding(
+                      context: context,
+                      removeTop: true,
+                      child: GridView.builder(
+                          gridDelegate:
+                              SliverGridDelegateWithMaxCrossAxisExtent(
+                                  maxCrossAxisExtent:
+                                      MediaQuery.of(context).size.width * .5,
+                                  childAspectRatio: .68),
+                          itemCount: course.length,
+                          itemBuilder: (context, index) {
+                            return InkWell(
+                              onTap: () {
+                                setState(() {
+                                  courseId = course[index].courseDocumentId;
+                                });
 
-                                      print(courseId);
-                                      if (map['combo']) {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                ComboStore(
-                                                  courses: map['courses'],
-                                                ),
-                                          ),
-                                        );
-                                      } else {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                              const CatelogueScreen()),
-                                        );
-                                      }
-                                    },
-                                    child: Container(
-                                      margin: EdgeInsets.all(10),
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                          BorderRadius.circular(25),
-                                          color: Color.fromARGB(
-                                              192, 255, 255, 255),
-                                          boxShadow: [
-                                            BoxShadow(
-                                                color: Color.fromRGBO(
-                                                    168,
-                                                    133,
-                                                    250,
-                                                    0.7099999785423279),
-                                                offset: Offset(2, 2),
-                                                blurRadius: 5)
-                                          ]),
-                                      child: Padding(
-                                        padding:
-                                        const EdgeInsets.all(08.0),
-                                        child: Column(
-                                          //mainAxisSize: MainAxisSize.min,
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Padding(
-                                              padding:
-                                              const EdgeInsets.only(
-                                                  top: 5),
-                                              child: Container(
-                                                child: ClipRRect(
-                                                  borderRadius:
-                                                  BorderRadius
-                                                      .circular(15),
-                                                  child: Image.network(
-                                                    map['image_url']
-                                                        .toString(),
-                                                    fit: BoxFit.cover,
-                                                    height: MediaQuery.of(
-                                                        context)
-                                                        .size
-                                                        .height *
-                                                        .15,
-                                                    width: MediaQuery.of(
-                                                        context)
-                                                        .size
-                                                        .width *
-                                                        .4,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              height: 10,
-                                            ),
-                                            Container(
-                                              height:
-                                              MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                                  .06,
-                                              child: Text(
-                                                map['name'],
-                                                style: TextStyle(
-                                                    fontWeight:
-                                                    FontWeight.bold,
-                                                    fontSize: MediaQuery.of(
-                                                        context)
-                                                        .size
-                                                        .width *
-                                                        .035),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              height:
-                                              MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                                  .004,
-                                            ),
-                                            Row(
-                                              // mainAxisAlignment:
-                                              //     MainAxisAlignment
-                                              //         .center,
-                                              children: [
-                                                Text(
-                                                  map['language'],
-                                                  style: TextStyle(
-                                                      fontSize: MediaQuery.of(
-                                                          context)
-                                                          .size
-                                                          .width *
-                                                          .03),
-                                                ),
-                                                SizedBox(
-                                                  width: MediaQuery.of(
-                                                      context)
-                                                      .size
-                                                      .width *
-                                                      .02,
-                                                ),
-                                                Text(
-                                                  '||',
-                                                  style: TextStyle(
-                                                      fontSize: MediaQuery.of(
-                                                          context)
-                                                          .size
-                                                          .width *
-                                                          .03),
-                                                ),
-                                                SizedBox(
-                                                  width: MediaQuery.of(
-                                                      context)
-                                                      .size
-                                                      .width *
-                                                      .02,
-                                                ),
-                                                Text(
-                                                  map['videosCount']
-                                                      .toString(),
-                                                  style: TextStyle(
-                                                      fontSize: MediaQuery.of(
-                                                          context)
-                                                          .size
-                                                          .width *
-                                                          .03),
-                                                ),
-                                                // const SizedBox(
-                                                //   height: 10,
-                                                // ),
-                                              ],
-                                            ),
-                                            SizedBox(
-                                              height:
-                                              MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                                  .015,
-                                            ),
-                                            // Row(
-                                            //   children: [
-                                            //     Container(
-                                            //       width:
-                                            //           MediaQuery.of(context)
-                                            //                   .size
-                                            //                   .width *
-                                            //               0.20,
-                                            //       height:
-                                            //           MediaQuery.of(context)
-                                            //                   .size
-                                            //                   .height *
-                                            //               0.030,
-                                            //       decoration: BoxDecoration(
-                                            //           borderRadius:
-                                            //               BorderRadius
-                                            //                   .circular(10),
-                                            //           color: Colors.green),
-                                            //       child: const Center(
-                                            //         child: Text(
-                                            //           'ENROLL NOW',
-                                            //           style: TextStyle(
-                                            //               fontSize: 10,
-                                            //               color:
-                                            //                   Colors.white),
-                                            //         ),
-                                            //       ),
-                                            //     ),
-                                            //     const SizedBox(
-                                            //       width: 15,
-                                            //     ),
-                                            //     Text(
-                                            //       map['Course Price'],
-                                            //       style: const TextStyle(
-                                            //         fontSize: 13,
-                                            //         color: Colors.indigo,
-                                            //         fontWeight:
-                                            //             FontWeight.bold,
-                                            //       ),
-                                            //     ),
-                                            //   ],
-                                            // ),
-                                            Row(
-
-                                              children: [
-                                                // SizedBox(
-                                                //     width: MediaQuery.of(
-                                                //         context)
-                                                //         .size
-                                                //         .width *
-                                                //         .23),
-                                                Text(
-                                                  map['Course Price'],
-                                                  style: TextStyle(
-                                                    fontSize: MediaQuery.of(
-                                                        context)
-                                                        .size
-                                                        .width *
-                                                        .03,
-                                                    color: Colors.indigo,
-                                                    fontWeight:
-                                                    FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
+                                print(courseId);
+                                if (course[index].isItComboCourse) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ComboStore(
+                                        courses: course[index].courses,
                                       ),
                                     ),
                                   );
-                                }),
-                          );
-                        }),
+                                } else {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const CatelogueScreen()),
+                                  );
+                                }
+                              },
+                              child: Container(
+                                margin: EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(25),
+                                    color: Color.fromARGB(192, 255, 255, 255),
+                                    boxShadow: [
+                                      BoxShadow(
+                                          color: Color.fromRGBO(168, 133, 250,
+                                              0.7099999785423279),
+                                          offset: Offset(2, 2),
+                                          blurRadius: 5)
+                                    ]),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(08.0),
+                                  child: Column(
+                                    //mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 5),
+                                        child: Container(
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(15),
+                                            child: Image.network(
+                                              course[index].courseImageUrl,
+                                              fit: BoxFit.cover,
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  .15,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  .4,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Container(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                .06,
+                                        child: Text(
+                                          course[index].courseName,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  .035),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                .004,
+                                      ),
+                                      Row(
+                                        // mainAxisAlignment:
+                                        //     MainAxisAlignment
+                                        //         .center,
+                                        children: [
+                                          Text(
+                                            course[index].courseLanguage,
+                                            style: TextStyle(
+                                                fontSize: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    .03),
+                                          ),
+                                          SizedBox(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                .02,
+                                          ),
+                                          Text(
+                                            '||',
+                                            style: TextStyle(
+                                                fontSize: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    .03),
+                                          ),
+                                          SizedBox(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                .02,
+                                          ),
+                                          Text(
+                                            course[index].numOfVideos,
+                                            style: TextStyle(
+                                                fontSize: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    .03),
+                                          ),
+                                          // const SizedBox(
+                                          //   height: 10,
+                                          // ),
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                .015,
+                                      ),
+                                      // Row(
+                                      //   children: [
+                                      //     Container(
+                                      //       width:
+                                      //           MediaQuery.of(context)
+                                      //                   .size
+                                      //                   .width *
+                                      //               0.20,
+                                      //       height:
+                                      //           MediaQuery.of(context)
+                                      //                   .size
+                                      //                   .height *
+                                      //               0.030,
+                                      //       decoration: BoxDecoration(
+                                      //           borderRadius:
+                                      //               BorderRadius
+                                      //                   .circular(10),
+                                      //           color: Colors.green),
+                                      //       child: const Center(
+                                      //         child: Text(
+                                      //           'ENROLL NOW',
+                                      //           style: TextStyle(
+                                      //               fontSize: 10,
+                                      //               color:
+                                      //                   Colors.white),
+                                      //         ),
+                                      //       ),
+                                      //     ),
+                                      //     const SizedBox(
+                                      //       width: 15,
+                                      //     ),
+                                      //     Text(
+                                      //       map['Course Price'],
+                                      //       style: const TextStyle(
+                                      //         fontSize: 13,
+                                      //         color: Colors.indigo,
+                                      //         fontWeight:
+                                      //             FontWeight.bold,
+                                      //       ),
+                                      //     ),
+                                      //   ],
+                                      // ),
+                                      Row(
+                                        children: [
+                                          // SizedBox(
+                                          //     width: MediaQuery.of(
+                                          //         context)
+                                          //         .size
+                                          //         .width *
+                                          //         .23),
+                                          Text(
+                                            course[index].coursePrice,
+                                            style: TextStyle(
+                                              fontSize: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  .03,
+                                              color: Colors.indigo,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          }),
+                    ),
                   ),
                 ),
-
               ],
             ),
           ),

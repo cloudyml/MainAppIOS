@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:cloudyml_app2/authentication/firebase_auth.dart';
 import 'package:cloudyml_app2/globals.dart';
+import 'package:cloudyml_app2/models/course_details.dart';
 import 'package:cloudyml_app2/offline/offline_videos.dart';
 import 'package:cloudyml_app2/screens/splash.dart';
+import 'package:cloudyml_app2/services/database_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,7 +13,6 @@ import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
-
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -162,19 +163,27 @@ class MyApp extends StatelessWidget {
         fullWidth: false,
         isHideKeyboard: false,
         isIgnoring: true,
-        child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'CloudyML',
-          builder: (BuildContext context, Widget? widget) {
-            ErrorWidget.builder = (FlutterErrorDetails errorDetails) {
-              return Container();
-            };
-            return widget!;
-          },
-          theme: ThemeData(
-            primarySwatch: Colors.blue,
+        child: MultiProvider(
+          providers: [
+            StreamProvider<List<CourseDetails>>.value(
+              value: DatabaseService().courseDetails,
+              initialData: [],
+            ),
+          ],
+          child: MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'CloudyML',
+            builder: (BuildContext context, Widget? widget) {
+              ErrorWidget.builder = (FlutterErrorDetails errorDetails) {
+                return Container();
+              };
+              return widget!;
+            },
+            theme: ThemeData(
+              primarySwatch: Colors.blue,
+            ),
+            home: splash(),
           ),
-          home: splash(),
         ),
       ),
     );

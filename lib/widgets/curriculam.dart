@@ -10,7 +10,7 @@ class Curriculam extends StatefulWidget {
   // final List assignmentTitles;
   // final List interviewQuestions;
   // final String id;
-  final Map<String, dynamic>? map;
+  final map;
 
   const Curriculam({
     Key? key,
@@ -84,7 +84,7 @@ class _CurriculamState extends State<Curriculam> {
               child: ListView.builder(
                 physics: BouncingScrollPhysics(),
                 shrinkWrap: true,
-                itemCount: widget.map!['curriculum']['sectionsName'].length,
+                itemCount: widget.map['sectionsName'].length,
                 itemBuilder: (context, index1) {
                   return Column(
                     children: [
@@ -94,7 +94,7 @@ class _CurriculamState extends State<Curriculam> {
                         child: Row(
                           children: [
                             Text(
-                              widget.map!['curriculum']['sectionsName'][index1],
+                              widget.map['sectionsName'][index1],
                               style: TextStyle(
                                 fontSize: 15,
                                 fontFamily: 'Medium',
@@ -112,8 +112,8 @@ class _CurriculamState extends State<Curriculam> {
                               physics: NeverScrollableScrollPhysics(),
                               shrinkWrap: true,
                               itemCount: widget
-                                  .map!['curriculum'][
-                                      '${widget.map!['curriculum']['sectionsName'][index1]}']
+                                  .map[
+                                      '${widget.map['sectionsName'][index1]}']
                                   .length,
                               itemBuilder: ((context, index) {
                                 return Column(
@@ -140,8 +140,8 @@ class _CurriculamState extends State<Curriculam> {
                                           Expanded(
                                             flex: 10,
                                             child: Text(
-                                              widget.map!['curriculum'][
-                                                      '${widget.map!['curriculum']['sectionsName'][index1]}']
+                                              widget.map[
+                                                      '${widget.map!['sectionsName'][index1]}']
                                                   [index],
                                               style: TextStyle(
                                                 fontSize: 14,
@@ -215,8 +215,8 @@ class _CurriculamState extends State<Curriculam> {
                             ),
                           ),
                           widget
-                                      .map!['curriculum'][
-                                          '${widget.map!['curriculum']['sectionsName'][index1]}']
+                                      .map![
+                                          '${widget.map['sectionsName'][index1]}']
                                       .length >
                                   4
                               ? TextButton(
