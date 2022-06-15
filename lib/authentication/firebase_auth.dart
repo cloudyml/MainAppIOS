@@ -27,15 +27,7 @@ class Authenticate extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (_auth.currentUser != null) {
-      // if(emailsigned){
-      //   if(isVerifyy){
-      //     return HomePage();
-      //   }else{
-      //     return Onboardew();
-      //   }
-      // }else{
       return HomePage();
-      //}
     } else {
       return Onboardew();
     }

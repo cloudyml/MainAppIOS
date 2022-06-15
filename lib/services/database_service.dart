@@ -28,6 +28,7 @@ class DatabaseService {
                       documentSnapshot.data()['videosCount'].toString(),
                   curriculum: documentSnapshot.data()['curriculum'],
                   courseDescription: documentSnapshot.data()['description'],
+                  FcSerialNumber: documentSnapshot.data()['FC'] ?? '',
                 ),
               )
               .toList(),

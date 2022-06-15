@@ -112,8 +112,7 @@ class _HomePageState extends State<HomePage> {
                     return ListView.builder(
                       itemCount: snapshot.data!.docs.length,
                       itemBuilder: (BuildContext context, index) {
-                        DocumentSnapshot document =
-                            snapshot.data!.docs[index];
+                        DocumentSnapshot document = snapshot.data!.docs[index];
                         Map<String, dynamic> map = snapshot.data!.docs[index]
                             .data() as Map<String, dynamic>;
                         if (map["id"].toString() ==
@@ -179,8 +178,12 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               onTap: () {
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => HomePage()));
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HomePage(),
+                  ),
+                );
               },
             ),
             // InkWell(
@@ -201,16 +204,18 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               onTap: () async {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => HomeScreen()));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HomeScreen(),
+                  ),
+                );
               },
             ),
             InkWell(
               onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => PaymentHistory()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => PaymentHistory()));
               },
               child: ListTile(
                 title: Text('Payment History'),

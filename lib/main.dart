@@ -82,7 +82,7 @@ class MyApp extends StatelessWidget {
                                   PageTransition(
                                       duration: Duration(milliseconds: 200),
                                       curve: Curves.bounceInOut,
-                                      type: PageTransitionType.rightToLeft,
+                                      type: PageTransitionType.fade,
                                       child: VideoScreenOffline()),
                                   (route) => false);
                             },

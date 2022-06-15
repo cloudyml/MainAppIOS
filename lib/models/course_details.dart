@@ -13,6 +13,7 @@ class CourseDetails {
   List courses;
   dynamic curriculum;
   String numOfVideos;
+  String FcSerialNumber;
 
   CourseDetails({
     required this.courseName,
@@ -29,5 +30,6 @@ class CourseDetails {
     required this.numOfVideos,
     required this.createdBy,
     required this.courseDocumentId,
+    required this.FcSerialNumber,
   });
 }
