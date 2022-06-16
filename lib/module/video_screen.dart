@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:auto_orientation/auto_orientation.dart';
+import 'package:cloudyml_app2/models/video_details.dart';
 import 'package:cloudyml_app2/offline/db.dart';
 import 'package:cloudyml_app2/globals.dart';
 import 'package:cloudyml_app2/models/offline_model.dart';
@@ -12,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoScreen extends StatefulWidget {
@@ -341,6 +343,7 @@ class _VideoScreenState extends State<VideoScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
     var verticalScale = screenHeight / mockUpHeight;
     var horizontalScale = screenWidth / mockUpWidth;
+    List<VideoDetails> _video = Provider.of<List<VideoDetails>>(context);
     return Scaffold(
         body: SafeArea(
       child: Container(
@@ -695,33 +698,39 @@ class _VideoScreenState extends State<VideoScreen> {
                                     if (snapshot.data != null) {
                                       return ListView.builder(
                                           shrinkWrap: true,
-                                          itemCount: snapshot.data!.docs.length,
+                                          itemCount: _video.length,
                                           itemBuilder: (context, index) {
                                             // VideoPlayerController? _videoController;
                                             Map<String, dynamic> map = snapshot
                                                 .data!.docs[index]
                                                 .data();
+
                                             // VideoScreen.urlString!.value = map['url'];
                                             if (map['type'] == 'video') {
                                               return InkWell(
                                                 onTap: () {
                                                   setState(() {
-                                                    serialNo = map['sr'];
+                                                    serialNo = int.parse(
+                                                        _video[index].serialNo);
                                                   });
-                                                  if (map['type'] == 'video') {
+                                                  if (_video[index].type ==
+                                                      'video') {
                                                     setState(() {
                                                       showAssignment = false;
                                                     });
                                                     intializeVidController(
-                                                        map['url']);
-                                                  } else if (map['type'] ==
+                                                        _video[index].videoUrl);
+                                                  } else if (_video[index]
+                                                          .type ==
                                                       'assignment') {
                                                     setState(() {
                                                       showAssignment =
                                                           !showAssignment;
-                                                      serialNo = map['sr'];
-                                                      assignMentVideoUrl =
-                                                          map['solution'];
+                                                      serialNo = int.parse(
+                                                          _video[index]
+                                                              .serialNo);
+                                                      // assignMentVideoUrl =
+                                                      //     map['solution'];
                                                     });
                                                   }
                                                   setState(() {
@@ -732,18 +741,13 @@ class _VideoScreenState extends State<VideoScreen> {
                                                 },
                                                 child: Container(
                                                   decoration: BoxDecoration(
-                                                    color: serialNo == map['sr']
+                                                    color: serialNo ==
+                                                            int.parse(
+                                                                _video[index]
+                                                                    .serialNo)
                                                         ? Color(0xFFDDD2FB)
                                                             .withOpacity(0.3)
                                                         : Colors.transparent,
-                                                    // border: widget.sr == map['sr']
-                                                    //     ? Border.all(
-                                                    //         color: Color(0xFFaefb2a)
-                                                    //             .withOpacity(0.8),
-                                                    //         width: 2)
-                                                    //     : Border.all(
-                                                    //         color:
-                                                    //             Colors.transparent)
                                                   ),
                                                   child: Column(
                                                     children: [
@@ -789,7 +793,8 @@ class _VideoScreenState extends State<VideoScreen> {
                                                           ),
                                                           Expanded(
                                                             child: Text(
-                                                              map['name'],
+                                                              _video[index]
+                                                                  .videoTitle,
                                                               textScaleFactor: min(
                                                                   horizontalScale,
                                                                   verticalScale),
@@ -804,53 +809,6 @@ class _VideoScreenState extends State<VideoScreen> {
                                                               maxLines: 2,
                                                             ),
                                                           ),
-                                                          // Expanded(
-                                                          //   flex: 1,
-                                                          //   child: InkWell(
-                                                          //     onTap: () async {
-                                                          //       var directory =
-                                                          //           await getApplicationDocumentsDirectory();
-                                                          //       download(
-                                                          //         dio: Dio(),
-                                                          //         fileName: map[
-                                                          //             'name'],
-                                                          //         url: map[
-                                                          //             'url'],
-                                                          //         savePath:
-                                                          //             "${directory.path}/${data!['name'].replaceAll(' ', '')}.mp4",
-                                                          //         topicName: map[
-                                                          //             'name'],
-                                                          //       );
-                                                          //       print(directory
-                                                          //           .path);
-                                                          //     },
-                                                          //     child: downloading!
-                                                          //         ? data!['name'] == map['name']
-                                                          //             ? Icon(
-                                                          //                 Icons
-                                                          //                     .downloading_sharp,
-                                                          //                 color:
-                                                          //                     Color(0xFFC0AAF5),
-                                                          //               )
-                                                          //             : Icon(
-                                                          //                 Icons
-                                                          //                     .download_for_offline,
-                                                          //               )
-                                                          //         : !downloaded
-                                                          //             ? Icon(
-                                                          //                 Icons
-                                                          //                     .download_for_offline,
-                                                          //               )
-                                                          //             : data!['name'] == map['name']
-                                                          //                 ? Icon(
-                                                          //                     Icons.download_done_sharp,
-                                                          //                     color: Color(0xFF7860DC),
-                                                          //                   )
-                                                          //                 : Icon(
-                                                          //                     Icons.download_for_offline,
-                                                          //                   ),
-                                                          //   ),
-                                                          // )
                                                         ],
                                                       ),
                                                       SizedBox(
@@ -873,14 +831,6 @@ class _VideoScreenState extends State<VideoScreen> {
                             : AssignmentScreen(
                                 isdemo: false,
                                 sr: serialNo,
-                                // playSolVideo: () {
-                                //   setState(() {
-                                //     showAssignment = false;
-                                //     showAssignSol = false;
-                                //     // switchTOAssignment = false;
-                                //   });
-                                //   intializeVidController(assignVideoUrl!);
-                                // },
                               ),
                       )
                     : Container(),

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloudyml_app2/authentication/firebase_auth.dart';
 import 'package:cloudyml_app2/globals.dart';
 import 'package:cloudyml_app2/models/course_details.dart';
+import 'package:cloudyml_app2/models/video_details.dart';
 import 'package:cloudyml_app2/offline/offline_videos.dart';
 import 'package:cloudyml_app2/screens/splash.dart';
 import 'package:cloudyml_app2/services/database_service.dart';
@@ -167,6 +168,10 @@ class MyApp extends StatelessWidget {
           providers: [
             StreamProvider<List<CourseDetails>>.value(
               value: DatabaseService().courseDetails,
+              initialData: [],
+            ),
+            StreamProvider<List<VideoDetails>>.value(
+              value: DatabaseService().videoDetails,
               initialData: [],
             ),
           ],

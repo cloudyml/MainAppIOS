@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloudyml_app2/globals.dart';
 import 'package:cloudyml_app2/models/course_details.dart';
+import 'package:cloudyml_app2/models/video_details.dart';
 
 class DatabaseService {
   final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
@@ -29,6 +31,31 @@ class DatabaseService {
                   curriculum: documentSnapshot.data()['curriculum'],
                   courseDescription: documentSnapshot.data()['description'],
                   FcSerialNumber: documentSnapshot.data()['FC'] ?? '',
+                ),
+              )
+              .toList(),
+        );
+  }
+
+  Stream<List<VideoDetails>> get videoDetails {
+    return _fireStore
+        .collection('courses')
+        .doc(courseId)
+        .collection('Modules')
+        .doc(moduleId)
+        .collection('Topics')
+        .orderBy('sr')
+        .snapshots()
+        .map(
+          (querySnapshot) => querySnapshot.docs
+              .map(
+                (documentSnapshot) => VideoDetails(
+                  videoId: documentSnapshot.data()['id'] ?? '',
+                  type: documentSnapshot.data()['type'] ?? '',
+                  canSaveOffline: documentSnapshot.data()['Offline'] ?? true,
+                  serialNo: documentSnapshot.data()['sr'].toString(),
+                  videoTitle: documentSnapshot.data()['name'] ?? '',
+                  videoUrl: documentSnapshot.data()['url'] ?? '',
                 ),
               )
               .toList(),
