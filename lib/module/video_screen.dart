@@ -1,24 +1,20 @@
 import 'dart:io';
-import 'dart:math' as Math;
 import 'dart:math';
 
 import 'package:auto_orientation/auto_orientation.dart';
-import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cloudyml_app2/models/video_details.dart';
 import 'package:cloudyml_app2/offline/db.dart';
 import 'package:cloudyml_app2/globals.dart';
 import 'package:cloudyml_app2/models/offline_model.dart';
 import 'package:cloudyml_app2/module/assignment_screen.dart';
-import 'package:cloudyml_app2/module/quiz_screen.dart';
-import 'package:chewie/chewie.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
-import 'package:flutter_vlc_player/flutter_vlc_player.dart';
 
 class VideoScreen extends StatefulWidget {
   final int? sr;
@@ -32,18 +28,15 @@ class VideoScreen extends StatefulWidget {
 
 class _VideoScreenState extends State<VideoScreen> {
   VideoPlayerController? _videoController;
-  ChewieController? _chewieController;
-  // bool? loading = false;
   bool? downloading = false;
   bool downloaded = false;
   Map<String, dynamic>? data;
   String? videoUrl;
-  // ValueNotifier<bool>? loading = ValueNotifier(true);
   Future<void>? playVideo;
   bool enablePauseScreen = false;
   bool showAssignment = false;
   int? serialNo;
-  String? assignVideoUrl;
+  String? assignMentVideoUrl;
   bool _disposed = false;
   bool _isPlaying = false;
   bool _isBuffering = false;
@@ -58,15 +51,7 @@ class _VideoScreenState extends State<VideoScreen> {
   String? progressString = '';
 
   void getData() async {
-    await FirebaseFirestore.instance
-        .collection('courses')
-        .doc(courseId)
-        .collection('Modules')
-        .where('firstType', isEqualTo: 'video')
-        .get()
-        .then((value) {
-      moduleId = value.docs[0].id;
-    });
+    await setModuleId();
     await FirebaseFirestore.instance
         .collection('courses')
         .doc(courseId)
@@ -77,9 +62,7 @@ class _VideoScreenState extends State<VideoScreen> {
         .get()
         .then((value) {
       setState(() {
-        print(value);
         data = value.docs[0].data();
-        print(data);
         topicId = value.docs[0].id;
         videoUrl = value.docs[0].data()['url'];
         serialNo = widget.sr;
@@ -98,6 +81,18 @@ class _VideoScreenState extends State<VideoScreen> {
     }
   }
 
+  Future<void> setModuleId() async {
+    await FirebaseFirestore.instance
+        .collection('courses')
+        .doc(courseId)
+        .collection('Modules')
+        .where('firstType', isEqualTo: 'video')
+        .get()
+        .then((value) {
+      moduleId = value.docs[0].id;
+    });
+  }
+
   String convertToTwoDigits(int value) {
     return value < 10 ? "0$value" : "$value";
   }
@@ -113,21 +108,19 @@ class _VideoScreenState extends State<VideoScreen> {
 
     return Positioned(
       bottom: 33,
-      // left: 0,
       right: 55,
       child: Text(
         timeRemaining,
         style: TextStyle(
-            color: Colors.white,
-            // fontSize: 12,
-            fontWeight: FontWeight.bold),
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }
 
   Widget timeElapsedString() {
     var timeElapsedString = "00.00";
-    // final duration = _duration?.inSeconds ?? 0;
     final currentPosition = _position?.inSeconds ?? 0;
     final mins = convertToTwoDigits(currentPosition ~/ 60);
     final seconds = convertToTwoDigits(currentPosition % 60);
@@ -247,22 +240,17 @@ class _VideoScreenState extends State<VideoScreen> {
   }
 
   void intializeVidController(String url) async {
-    // VideoPlayerController? _localVideoController;
     try {
       final oldVideoController = _videoController;
       if (oldVideoController != null) {
-        // setState(() {
         oldVideoController.removeListener(_onVideoControllerUpdate);
         oldVideoController.pause();
         oldVideoController.dispose();
-        // });
       }
-      // setState(() {});
       final _localVideoController = await VideoPlayerController.network(url);
       setState(() {
         _videoController = _localVideoController;
       });
-      // _videoController!.dispose();
       playVideo = _localVideoController.initialize().then((value) {
         setState(() {
           _localVideoController.addListener(_onVideoControllerUpdate);
@@ -323,8 +311,6 @@ class _VideoScreenState extends State<VideoScreen> {
       DatabaseHelper _dbhelper = DatabaseHelper();
       OfflineModel video = OfflineModel(
           topic: topicName,
-          // module: 'Module 1',
-          // course: courseName,
           path: '${directory.path}/${fileName!.replaceAll(' ', '')}.mp4');
       _dbhelper.insertTask(video);
 
@@ -341,18 +327,14 @@ class _VideoScreenState extends State<VideoScreen> {
   void dispose() {
     super.dispose();
     _disposed = true;
-    // _videoController!.pause();
     _videoController!.dispose();
     _videoController = null;
-    // _chewieController!.dispose();
   }
 
   @override
   void initState() {
     super.initState();
-    // setModuleId();
     getData();
-    // intializeVidController(videoUrl!);
   }
 
   @override
@@ -361,6 +343,7 @@ class _VideoScreenState extends State<VideoScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
     var verticalScale = screenHeight / mockUpHeight;
     var horizontalScale = screenWidth / mockUpWidth;
+    List<VideoDetails> _video = Provider.of<List<VideoDetails>>(context);
     return Scaffold(
         body: SafeArea(
       child: Container(
@@ -477,7 +460,25 @@ class _VideoScreenState extends State<VideoScreen> {
                                                     color: Colors.white),
                                                 timeElapsedString(),
                                                 timeRemainingString(),
-                                                progressIndicator(),
+                                                Positioned(
+                                                  bottom: 42.5 * verticalScale,
+                                                  left: 55 * horizontalScale,
+                                                  right: 100 * horizontalScale,
+                                                  child: VideoProgressIndicator(
+                                                    _videoController!,
+                                                    allowScrubbing: true,
+                                                    colors: VideoProgressColors(
+                                                      backgroundColor:
+                                                          Color.fromARGB(74,
+                                                              255, 255, 255),
+                                                      bufferedColor:
+                                                          Color(0xFFC0AAF5),
+                                                      playedColor:
+                                                          Color(0xFF7860DC),
+                                                    ),
+                                                  ),
+                                                ),
+                                                // progressIndicator(),
                                                 fullScreenIcon(
                                                     isPortrait: isPortrait),
                                                 Positioned(
@@ -558,8 +559,6 @@ class _VideoScreenState extends State<VideoScreen> {
                           }
                         },
                       ),
-                      // },
-                      // ),
                     ),
                   ),
                 ),
@@ -571,7 +570,6 @@ class _VideoScreenState extends State<VideoScreen> {
                           ),
                           Container(
                             width: MediaQuery.of(context).size.width,
-                            // color: Colors.white,
                             child: Row(
                               children: [
                                 SizedBox(
@@ -591,11 +589,6 @@ class _VideoScreenState extends State<VideoScreen> {
                           SizedBox(
                             height: 10,
                           ),
-                          // Divider(
-                          //   indent: 0,
-                          //   thickness: 4,
-                          //   color: Color(0xFFC0AAF5),
-                          // ),
                           Container(
                             height: 60,
                             child: Center(
@@ -683,206 +676,123 @@ class _VideoScreenState extends State<VideoScreen> {
                         child: !switchTOAssignment
                             ? Container(
                                 // height: 500,
-                                child: StreamBuilder(
-                                  stream: FirebaseFirestore.instance
-                                      .collection('courses')
-                                      .doc(courseId)
-                                      .collection('Modules')
-                                      .doc(moduleId)
-                                      .collection('Topics')
-                                      .orderBy('sr')
-                                      .snapshots(),
-                                  builder: (BuildContext context,
-                                      AsyncSnapshot snapshot) {
-                                    if (snapshot.data != null) {
-                                      return ListView.builder(
-                                          shrinkWrap: true,
-                                          itemCount: snapshot.data!.docs.length,
-                                          itemBuilder: (context, index) {
-                                            // VideoPlayerController? _videoController;
-                                            Map<String, dynamic> map = snapshot
-                                                .data!.docs[index]
-                                                .data();
-                                            // VideoScreen.urlString!.value = map['url'];
-                                            if (map['type'] == 'video') {
-                                              return InkWell(
-                                                onTap: () {
-                                                  setState(() {
-                                                    serialNo = map['sr'];
-                                                  });
-                                                  if (map['type'] == 'video') {
-                                                    setState(() {
-                                                      showAssignment = false;
-                                                    });
-                                                    intializeVidController(
-                                                        map['url']);
-                                                  } else if (map['type'] ==
-                                                      'assignment') {
-                                                    setState(() {
-                                                      showAssignment =
-                                                          !showAssignment;
-                                                      serialNo = map['sr'];
-                                                      assignVideoUrl =
-                                                          map['solution'];
-                                                    });
-                                                  }
-                                                  setState(() {
-                                                    data = map;
-                                                    downloading = false;
-                                                    downloaded = false;
-                                                  });
-                                                },
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                    color: serialNo == map['sr']
-                                                        ? Color(0xFFDDD2FB)
-                                                            .withOpacity(0.3)
-                                                        : Colors.transparent,
-                                                    // border: widget.sr == map['sr']
-                                                    //     ? Border.all(
-                                                    //         color: Color(0xFFaefb2a)
-                                                    //             .withOpacity(0.8),
-                                                    //         width: 2)
-                                                    //     : Border.all(
-                                                    //         color:
-                                                    //             Colors.transparent)
-                                                  ),
-                                                  child: Column(
-                                                    children: [
-                                                      SizedBox(
-                                                        height: 10,
-                                                      ),
-                                                      Row(
-                                                        children: [
-                                                          SizedBox(
-                                                            width: 30,
+                                child: ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: _video.length,
+                                itemBuilder: (context, index) {
+                                  if (_video[index].type == 'video') {
+                                    return InkWell(
+                                      onTap: () {
+                                        setState(() {
+                                          serialNo =
+                                              int.parse(_video[index].serialNo);
+                                        });
+                                        if (_video[index].type == 'video') {
+                                          setState(() {
+                                            showAssignment = false;
+                                          });
+                                          intializeVidController(
+                                              _video[index].videoUrl);
+                                        } else if (_video[index].type ==
+                                            'assignment') {
+                                          setState(() {
+                                            showAssignment = !showAssignment;
+                                            serialNo = int.parse(
+                                                _video[index].serialNo);
+                                            // assignMentVideoUrl =
+                                            //     map['solution'];
+                                          });
+                                        }
+                                        setState(() {
+                                          data = _video[index]
+                                              as Map<String, dynamic>;
+                                          downloading = false;
+                                          downloaded = false;
+                                        });
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: serialNo ==
+                                                  int.parse(
+                                                      _video[index].serialNo)
+                                              ? Color(0xFFDDD2FB)
+                                                  .withOpacity(0.3)
+                                              : Colors.transparent,
+                                        ),
+                                        child: Column(
+                                          children: [
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            Row(
+                                              children: [
+                                                SizedBox(
+                                                  width: 30,
+                                                ),
+                                                Container(
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                    child: index < 9
+                                                        ? Text(
+                                                            '  ${index + 1}',
+                                                            style: TextStyle(
+                                                                // fontSize:
+                                                                //     18,
+                                                                ),
+                                                          )
+                                                        : Text(
+                                                            '${index + 1}',
+                                                            style: TextStyle(
+                                                                // fontSize:
+                                                                //     17,
+                                                                ),
                                                           ),
-                                                          Container(
-                                                            child: Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .all(8.0),
-                                                              child: index < 9
-                                                                  ? Text(
-                                                                      '  ${index + 1}',
-                                                                      style: TextStyle(
-                                                                          // fontSize:
-                                                                          //     18,
-                                                                          ),
-                                                                    )
-                                                                  : Text(
-                                                                      '${index + 1}',
-                                                                      style: TextStyle(
-                                                                          // fontSize:
-                                                                          //     17,
-                                                                          ),
-                                                                    ),
-                                                            ),
-                                                          ),
-                                                          SizedBox(
-                                                            width: 10,
-                                                          ),
-                                                          Icon(
-                                                              Icons
-                                                                  .play_circle_fill_rounded,
-                                                              size: 15),
-                                                          SizedBox(
-                                                            width: 10,
-                                                          ),
-                                                          Expanded(
-                                                            child: Text(
-                                                              map['name'],
-                                                              textScaleFactor: min(
-                                                                  horizontalScale,
-                                                                  verticalScale),
-                                                              style: TextStyle(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                fontSize: 17,
-                                                                fontFamily:
-                                                                    "Medium",
-                                                              ),
-                                                              maxLines: 2,
-                                                            ),
-                                                          ),
-                                                          // Expanded(
-                                                          //   flex: 1,
-                                                          //   child: InkWell(
-                                                          //     onTap: () async {
-                                                          //       var directory =
-                                                          //           await getApplicationDocumentsDirectory();
-                                                          //       download(
-                                                          //         dio: Dio(),
-                                                          //         fileName: map[
-                                                          //             'name'],
-                                                          //         url: map[
-                                                          //             'url'],
-                                                          //         savePath:
-                                                          //             "${directory.path}/${data!['name'].replaceAll(' ', '')}.mp4",
-                                                          //         topicName: map[
-                                                          //             'name'],
-                                                          //       );
-                                                          //       print(directory
-                                                          //           .path);
-                                                          //     },
-                                                          //     child: downloading!
-                                                          //         ? data!['name'] == map['name']
-                                                          //             ? Icon(
-                                                          //                 Icons
-                                                          //                     .downloading_sharp,
-                                                          //                 color:
-                                                          //                     Color(0xFFC0AAF5),
-                                                          //               )
-                                                          //             : Icon(
-                                                          //                 Icons
-                                                          //                     .download_for_offline,
-                                                          //               )
-                                                          //         : !downloaded
-                                                          //             ? Icon(
-                                                          //                 Icons
-                                                          //                     .download_for_offline,
-                                                          //               )
-                                                          //             : data!['name'] == map['name']
-                                                          //                 ? Icon(
-                                                          //                     Icons.download_done_sharp,
-                                                          //                     color: Color(0xFF7860DC),
-                                                          //                   )
-                                                          //                 : Icon(
-                                                          //                     Icons.download_for_offline,
-                                                          //                   ),
-                                                          //   ),
-                                                          // )
-                                                        ],
-                                                      ),
-                                                      SizedBox(
-                                                        height: 10,
-                                                      ),
-                                                    ],
                                                   ),
                                                 ),
-                                              );
-                                            } else {
-                                              return Container();
-                                            }
-                                          });
-                                    } else {
-                                      return Container();
-                                    }
-                                  },
-                                ),
-                              )
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Icon(
+                                                    Icons
+                                                        .play_circle_fill_rounded,
+                                                    size: 15),
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Expanded(
+                                                  child: Text(
+                                                    _video[index].videoTitle,
+                                                    textScaleFactor: min(
+                                                        horizontalScale,
+                                                        verticalScale),
+                                                    style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      fontSize: 17,
+                                                      fontFamily: "Medium",
+                                                    ),
+                                                    maxLines: 2,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  } else {
+                                    return Container();
+                                  }
+                                },
+                              ))
                             : AssignmentScreen(
                                 isdemo: false,
                                 sr: serialNo,
-                                // playSolVideo: () {
-                                //   setState(() {
-                                //     showAssignment = false;
-                                //     showAssignSol = false;
-                                //     // switchTOAssignment = false;
-                                //   });
-                                //   intializeVidController(assignVideoUrl!);
-                                // },
                               ),
                       )
                     : Container(),
@@ -908,7 +818,6 @@ class replay10 extends StatelessWidget {
   Widget build(BuildContext context) {
     return Positioned(
       left: 0,
-      // right: 0,
       top: 0,
       bottom: 0,
       child: Padding(

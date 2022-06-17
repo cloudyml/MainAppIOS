@@ -374,26 +374,39 @@ class _PaymentButtonState extends State<PaymentButton> with CouponCodeMixin {
             },
             child: Center(
               child: Container(
-                height: 60.0,
-                width: 350.0,
-                color: Colors.transparent,
-                child: Container(
-                  decoration: BoxDecoration(
-                      gradient: gradient,
-                      borderRadius: BorderRadius.all(Radius.circular(50.0))),
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        widget.NoCouponApplied
-                            ? widget.buttonText
-                            : widget.buttonTextForCode,
-                        style: TextStyle(
-                            fontFamily: 'Bold',
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold),
-                        textAlign: TextAlign.center,
-                      ),
+                width: 253,
+                height: 48,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(10),
+                    topRight: Radius.circular(10),
+                    bottomLeft: Radius.circular(10),
+                    bottomRight: Radius.circular(10),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                        color:
+                            Color.fromRGBO(48, 209, 151, 0.20000000298023224),
+                        offset: Offset(0, 10),
+                        blurRadius: 8)
+                  ],
+                  color: Color.fromRGBO(49, 209, 152, 1),
+                ),
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      widget.NoCouponApplied
+                          ? widget.buttonText
+                          : widget.buttonTextForCode,
+                      style: TextStyle(
+                          color: Color.fromRGBO(255, 255, 255, 1),
+                          fontFamily: 'Poppins',
+                          fontSize: 20,
+                          letterSpacing:
+                              0 /*percentages not used in flutter. defaulting to zero*/,
+                          fontWeight: FontWeight.bold,
+                          height: 1),
                     ),
                   ),
                 ),

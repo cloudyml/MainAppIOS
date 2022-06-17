@@ -4,8 +4,11 @@ import 'package:cloudyml_app2/Providers/AppProvider.dart';
 import 'package:cloudyml_app2/Providers/UserProvider.dart';
 import 'package:cloudyml_app2/authentication/firebase_auth.dart';
 import 'package:cloudyml_app2/globals.dart';
+import 'package:cloudyml_app2/models/course_details.dart';
+import 'package:cloudyml_app2/models/video_details.dart';
 import 'package:cloudyml_app2/offline/offline_videos.dart';
 import 'package:cloudyml_app2/screens/splash.dart';
+import 'package:cloudyml_app2/services/database_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -82,7 +85,7 @@ class MyApp extends StatelessWidget {
                                   PageTransition(
                                       duration: Duration(milliseconds: 200),
                                       curve: Curves.bounceInOut,
-                                      type: PageTransitionType.rightToLeft,
+                                      type: PageTransitionType.fade,
                                       child: VideoScreenOffline()),
                                   (route) => false);
                             },
@@ -140,50 +143,59 @@ class MyApp extends StatelessWidget {
         }
       },
     );
-    return MultiProvider(providers: [
-      ChangeNotifierProvider.value(value: UserProvider.initialize()),
-      ChangeNotifierProvider.value(value: AppProvider()),
-
-    ],
-        child: ChangeNotifierProvider(
-          create: (context) => GoogleSignInProvider(),
-          child: StyledToast(
-            locale: const Locale('en', 'US'),
-            textStyle: TextStyle(
-                fontSize: 16.0, color: Colors.white, fontFamily: 'Medium'),
-            backgroundColor: Colors.black,
-            borderRadius: BorderRadius.circular(30.0),
-            textPadding: EdgeInsets.symmetric(horizontal: 17.0, vertical: 10.0),
-            toastAnimation: StyledToastAnimation.slideFromBottom,
-            reverseAnimation: StyledToastAnimation.slideToBottom,
-            startOffset: Offset(0.0, 3.0),
-            reverseEndOffset: Offset(0.0, 3.0),
-            duration: Duration(seconds: 3),
-            animDuration: Duration(milliseconds: 500),
-            alignment: Alignment.center,
-            toastPositions: StyledToastPosition.bottom,
-            curve: Curves.bounceIn,
-            reverseCurve: Curves.bounceOut,
-            dismissOtherOnShow: true,
-            fullWidth: false,
-            isHideKeyboard: false,
-            isIgnoring: true,
-            child: MaterialApp(
-              debugShowCheckedModeBanner: false,
-              title: 'CloudyML',
-              builder: (BuildContext context, Widget? widget) {
-                ErrorWidget.builder = (FlutterErrorDetails errorDetails) {
-                  return Container();
-                };
-                return widget!;
-              },
-              theme: ThemeData(
-                primarySwatch: Colors.blue,
-              ),
-              home: splash(),
+    return ChangeNotifierProvider(
+      create: (context) => GoogleSignInProvider(),
+      child: StyledToast(
+        locale: const Locale('en', 'US'),
+        textStyle: TextStyle(
+            fontSize: 16.0, color: Colors.white, fontFamily: 'Medium'),
+        backgroundColor: Colors.black,
+        borderRadius: BorderRadius.circular(30.0),
+        textPadding: EdgeInsets.symmetric(horizontal: 17.0, vertical: 10.0),
+        toastAnimation: StyledToastAnimation.slideFromBottom,
+        reverseAnimation: StyledToastAnimation.slideToBottom,
+        startOffset: Offset(0.0, 3.0),
+        reverseEndOffset: Offset(0.0, 3.0),
+        duration: Duration(seconds: 3),
+        animDuration: Duration(milliseconds: 500),
+        alignment: Alignment.center,
+        toastPositions: StyledToastPosition.bottom,
+        curve: Curves.bounceIn,
+        reverseCurve: Curves.bounceOut,
+        dismissOtherOnShow: true,
+        fullWidth: false,
+        isHideKeyboard: false,
+        isIgnoring: true,
+        child: MultiProvider(
+          providers: [
+            ChangeNotifierProvider.value(value: UserProvider.initialize()),
+            ChangeNotifierProvider.value(value: AppProvider()),
+            StreamProvider<List<CourseDetails>>.value(
+              value: DatabaseService().courseDetails,
+              initialData: [],
             ),
+            StreamProvider<List<VideoDetails>>.value(
+              value: DatabaseService().videoDetails,
+              initialData: [],
+            ),
+          ],
+          child: MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'CloudyML',
+            builder: (BuildContext context, Widget? widget) {
+              ErrorWidget.builder = (FlutterErrorDetails errorDetails) {
+                return Container();
+              };
+              return widget!;
+            },
+            theme: ThemeData(
+              primarySwatch: Colors.blue,
+            ),
+            home: splash(),
           ),
-        )
+        ),
+      ),
+// >>>>>>> d97b62ccaae2609fb9b01662c615627ce2bc65d3
     );
   }
 }

@@ -52,22 +52,30 @@ Widget buildFile(BuildContext context, FirebaseFile file) => Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         InkWell(
-          onTap: () => Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => ImagePage(file: file),
-          )),
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => ImagePage(file: file),
+            ),
+          ),
           child: solidBorder(
-            child: Container(
-              decoration: BoxDecoration(boxShadow: [
-                BoxShadow(
-                  color: Colors.grey,
-                  blurRadius: 8.0,
-                  spreadRadius: .09,
-                  offset: Offset(1, 5),
-                )
-              ]),
-              child: Image.network(
-                file.url,
-                fit: BoxFit.cover,
+            child: Padding(
+              padding: EdgeInsets.all(10),
+              child: Container(
+                decoration: BoxDecoration(boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey,
+                    blurRadius: 8.0,
+                    spreadRadius: .09,
+                    offset: Offset(1, 5),
+                  )
+                ]),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Image.network(
+                    file.url,
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ),
             ),
           ),

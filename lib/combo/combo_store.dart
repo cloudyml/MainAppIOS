@@ -1,19 +1,15 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloudyml_app2/models/course_details.dart';
 import 'package:cloudyml_app2/widgets/coupon_code.dart';
 import 'package:cloudyml_app2/fun.dart';
 import 'package:cloudyml_app2/globals.dart';
 import 'package:cloudyml_app2/catalogue_screen.dart';
-import 'package:cloudyml_app2/home.dart';
-import 'package:cloudyml_app2/widgets/payment_portal.dart';
 import 'package:cloudyml_app2/payment_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloudyml_app2/widgets/pay_now_bottomsheet.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/physics.dart';
-import 'package:flutter_styled_toast/flutter_styled_toast.dart';
-import 'package:page_transition/page_transition.dart';
-import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:ribbon_widget/ribbon_widget.dart';
 
 class ComboStore extends StatefulWidget {
@@ -166,6 +162,7 @@ class _ComboStoreState extends State<ComboStore> with CouponCodeMixin {
 
   @override
   Widget build(BuildContext context) {
+    List<CourseDetails> course = Provider.of<List<CourseDetails>>(context);
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     var verticalScale = screenHeight / mockUpHeight;
@@ -214,234 +211,218 @@ class _ComboStoreState extends State<ComboStore> with CouponCodeMixin {
                   height: 20,
                 ),
                 Container(
-                  width: screenWidth,
-                  height: 300 * verticalScale,
-                  child: StreamBuilder<QuerySnapshot>(
-                    stream: FirebaseFirestore.instance
-                        .collection('courses')
-                        .snapshots(),
-                    builder: (BuildContext context,
-                        AsyncSnapshot<QuerySnapshot> snapshot) {
-                      if (!snapshot.hasData) return const SizedBox.shrink();
-                      return MediaQuery.removePadding(
-                        context: context,
-                        removeTop: true,
-                        child: ListView.builder(
-                          // controller: _scrollController,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: snapshot.data!.docs.length,
-                          itemBuilder: (BuildContext context, index) {
-                            DocumentSnapshot document =
-                                snapshot.data!.docs[index];
-                            Map<String, dynamic> map =
-                                snapshot.data!.docs[index].data()
-                                    as Map<String, dynamic>;
-                            if (map["name"].toString() == "null") {
-                              return Container();
-                            }
-                            if (widget.courses!.contains(map['id'])) {
-                              return Padding(
-                                padding: const EdgeInsets.only(
-                                    bottom: 8.0,
-                                    top: 8,
-                                    left: 20.0,
-                                    right: 20.0),
-                                child: InkWell(
-                                  onTap: () {
-                                    setState(() {
-                                      courseId = document.id;
-                                    });
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const CatelogueScreen()),
-                                    );
-                                  },
-                                  child: Container(
-                                    width: 354 * horizontalScale,
-                                    height: 133 * verticalScale,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(25),
-                                        topRight: Radius.circular(25),
-                                        bottomLeft: Radius.circular(25),
-                                        bottomRight: Radius.circular(25),
-                                      ),
-                                      boxShadow: [
-                                        BoxShadow(
-                                            color: Color.fromRGBO(
-                                                58, 57, 60, 0.5699999928474426),
-                                            offset: Offset(2, 2),
-                                            blurRadius: 3)
-                                      ],
-                                      color: Color.fromRGBO(233, 225, 252, 1),
+                    width: screenWidth,
+                    height: 300 * verticalScale,
+                    child: MediaQuery.removePadding(
+                      context: context,
+                      removeTop: true,
+                      child: ListView.builder(
+                        // controller: _scrollController,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: course.length,
+                        itemBuilder: (BuildContext context, index) {
+                          if (course[index].courseName == "null") {
+                            return Container();
+                          }
+                          if (widget.courses!
+                              .contains(course[index].courseId)) {
+                            return Padding(
+                              padding: const EdgeInsets.only(
+                                  bottom: 8.0, top: 8, left: 20.0, right: 20.0),
+                              child: InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    courseId = course[index].courseDocumentId;
+                                  });
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const CatelogueScreen(),
                                     ),
-                                    child: Row(
-                                      //card on combopage
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.stretch,
-                                      children: [
-                                        SizedBox(width: 10),
-                                        ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(25),
-                                          child: Container(
-                                            width: 145,
-                                            height: 111,
-                                            decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.only(
-                                              topLeft: Radius.circular(15),
-                                              topRight: Radius.circular(15),
-                                              bottomLeft: Radius.circular(15),
-                                              bottomRight: Radius.circular(15),
-                                            )),
-                                            child:
-                                                Image.network(map['image_url']),
+                                  );
+                                },
+                                child: Container(
+                                  width: 354 * horizontalScale,
+                                  height: 133 * verticalScale,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(25),
+                                      topRight: Radius.circular(25),
+                                      bottomLeft: Radius.circular(25),
+                                      bottomRight: Radius.circular(25),
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                          color: Color.fromRGBO(
+                                            58,
+                                            57,
+                                            60,
+                                            0.57,
                                           ),
+                                          offset: Offset(2, 2),
+                                          blurRadius: 3)
+                                    ],
+                                    color: Color.fromRGBO(233, 225, 252, 1),
+                                  ),
+                                  child: Row(
+                                    //card on combopage
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
+                                    children: [
+                                      SizedBox(width: 10),
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(25),
+                                        child: Container(
+                                          width: 145,
+                                          height: 111,
+                                          decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(15),
+                                            topRight: Radius.circular(15),
+                                            bottomLeft: Radius.circular(15),
+                                            bottomRight: Radius.circular(15),
+                                          )),
+                                          child: Image.network(
+                                              course[index].courseImageUrl),
                                         ),
-                                        SizedBox(width: 10),
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            // SizedBox(
-                                            //   height: 10,
-                                            // ),
-                                            Container(
-                                              width: 170,
-                                              // height: 42,
-                                              child: Text(
-                                                map["name"],
-                                                textScaleFactor: min(
-                                                    horizontalScale,
-                                                    verticalScale),
-                                                style: TextStyle(
+                                      ),
+                                      SizedBox(width: 10),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          // SizedBox(
+                                          //   height: 10,
+                                          // ),
+                                          Container(
+                                            width: 170,
+                                            // height: 42,
+                                            child: Text(
+                                              course[index].courseName,
+                                              textScaleFactor: min(
+                                                  horizontalScale,
+                                                  verticalScale),
+                                              style: TextStyle(
+                                                color:
+                                                    Color.fromRGBO(0, 0, 0, 1),
+                                                fontFamily: 'Poppins',
+                                                fontSize: 20,
+                                                letterSpacing: 0,
+                                                fontWeight: FontWeight.bold,
+                                                height: 1,
+                                              ),
+                                            ),
+                                          ),
+                                          // SizedBox(
+                                          //   height: 5,
+                                          // ),
+                                          Container(
+                                            width: 184 * horizontalScale,
+                                            // height: 24.000001907348633,
+                                            child: Text(
+                                              course[index].courseDescription,
+                                              textScaleFactor: min(
+                                                  horizontalScale,
+                                                  verticalScale),
+                                              style: TextStyle(
                                                   color: Color.fromRGBO(
                                                       0, 0, 0, 1),
                                                   fontFamily: 'Poppins',
-                                                  fontSize: 20,
-                                                  letterSpacing: 0,
-                                                  fontWeight: FontWeight.bold,
-                                                  height: 1,
-                                                ),
-                                              ),
+                                                  fontSize: 10,
+                                                  letterSpacing:
+                                                      0 /*percentages not used in flutter. defaulting to zero*/,
+                                                  fontWeight: FontWeight.normal,
+                                                  height: 1),
                                             ),
-                                            // SizedBox(
-                                            //   height: 5,
-                                            // ),
-                                            Container(
-                                              width: 184 * horizontalScale,
-                                              // height: 24.000001907348633,
-                                              child: Text(
-                                                map['description'],
+                                          ),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                course[index].coursePrice,
+                                                textAlign: TextAlign.left,
                                                 textScaleFactor: min(
                                                     horizontalScale,
                                                     verticalScale),
                                                 style: TextStyle(
                                                     color: Color.fromRGBO(
-                                                        0, 0, 0, 1),
+                                                        155, 117, 237, 1),
                                                     fontFamily: 'Poppins',
-                                                    fontSize: 10,
+                                                    fontSize: 20,
                                                     letterSpacing:
                                                         0 /*percentages not used in flutter. defaulting to zero*/,
-                                                    fontWeight:
-                                                        FontWeight.normal,
+                                                    fontWeight: FontWeight.bold,
                                                     height: 1),
                                               ),
-                                            ),
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  map['Course Price'],
-                                                  textAlign: TextAlign.left,
-                                                  textScaleFactor: min(
-                                                      horizontalScale,
-                                                      verticalScale),
-                                                  style: TextStyle(
-                                                      color: Color.fromRGBO(
-                                                          155, 117, 237, 1),
-                                                      fontFamily: 'Poppins',
-                                                      fontSize: 20,
-                                                      letterSpacing:
-                                                          0 /*percentages not used in flutter. defaulting to zero*/,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      height: 1),
-                                                ),
-                                                SizedBox(
-                                                  width: 40 * horizontalScale,
-                                                ),
-                                                Container(
-                                                  width: 70 * horizontalScale,
-                                                  height: 25 * verticalScale,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.only(
-                                                      topLeft:
-                                                          Radius.circular(50),
-                                                      topRight:
-                                                          Radius.circular(50),
-                                                      bottomLeft:
-                                                          Radius.circular(50),
-                                                      bottomRight:
-                                                          Radius.circular(50),
-                                                    ),
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                          color: Color.fromRGBO(
-                                                              48,
-                                                              209,
-                                                              151,
-                                                              0.44999998807907104),
-                                                          offset: Offset(0, 10),
-                                                          blurRadius: 25)
-                                                    ],
-                                                    color: Color.fromRGBO(
-                                                        48, 209, 151, 1),
+                                              SizedBox(
+                                                width: 40 * horizontalScale,
+                                              ),
+                                              Container(
+                                                width: 70 * horizontalScale,
+                                                height: 25 * verticalScale,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.only(
+                                                    topLeft:
+                                                        Radius.circular(50),
+                                                    topRight:
+                                                        Radius.circular(50),
+                                                    bottomLeft:
+                                                        Radius.circular(50),
+                                                    bottomRight:
+                                                        Radius.circular(50),
                                                   ),
-                                                  child: Center(
-                                                    child: Text(
-                                                      'Enroll now',
-                                                      textAlign: TextAlign.left,
-                                                      textScaleFactor: min(
-                                                          horizontalScale,
-                                                          verticalScale),
-                                                      style: TextStyle(
-                                                          color: Color.fromRGBO(
-                                                              255, 255, 255, 1),
-                                                          fontFamily: 'Poppins',
-                                                          fontSize: 10,
-                                                          letterSpacing:
-                                                              0 /*percentages not used in flutter. defaulting to zero*/,
-                                                          fontWeight:
-                                                              FontWeight.normal,
-                                                          height: 1),
-                                                    ),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                        color: Color.fromRGBO(
+                                                            48,
+                                                            209,
+                                                            151,
+                                                            0.44999998807907104),
+                                                        offset: Offset(0, 10),
+                                                        blurRadius: 25)
+                                                  ],
+                                                  color: Color.fromRGBO(
+                                                      48, 209, 151, 1),
+                                                ),
+                                                child: Center(
+                                                  child: Text(
+                                                    'Enroll now',
+                                                    textAlign: TextAlign.left,
+                                                    textScaleFactor: min(
+                                                        horizontalScale,
+                                                        verticalScale),
+                                                    style: TextStyle(
+                                                        color: Color.fromRGBO(
+                                                            255, 255, 255, 1),
+                                                        fontFamily: 'Poppins',
+                                                        fontSize: 10,
+                                                        letterSpacing:
+                                                            0 /*percentages not used in flutter. defaulting to zero*/,
+                                                        fontWeight:
+                                                            FontWeight.normal,
+                                                        height: 1),
                                                   ),
-                                                )
-                                              ],
-                                            )
-                                          ],
-                                        ),
-                                      ],
-                                    ),
+                                                ),
+                                              )
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    ],
                                   ),
                                 ),
-                              );
-                            } else {
-                              return Container();
-                            }
-                          },
-                        ),
-                      );
-                    },
-                  ),
-                ),
+                              ),
+                            );
+                          } else {
+                            return Container();
+                          }
+                        },
+                      ),
+                    )),
                 // Container(
                 //   key: _positionKey,
                 // ),
