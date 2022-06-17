@@ -559,8 +559,6 @@ class _VideoScreenState extends State<VideoScreen> {
                           }
                         },
                       ),
-                      // },
-                      // ),
                     ),
                   ),
                 ),
@@ -572,7 +570,6 @@ class _VideoScreenState extends State<VideoScreen> {
                           ),
                           Container(
                             width: MediaQuery.of(context).size.width,
-                            // color: Colors.white,
                             child: Row(
                               children: [
                                 SizedBox(
@@ -592,11 +589,7 @@ class _VideoScreenState extends State<VideoScreen> {
                           SizedBox(
                             height: 10,
                           ),
-                          // Divider(
-                          //   indent: 0,
-                          //   thickness: 4,
-                          //   color: Color(0xFFC0AAF5),
-                          // ),
+                      
                           Container(
                             height: 60,
                             child: Center(
@@ -684,29 +677,11 @@ class _VideoScreenState extends State<VideoScreen> {
                         child: !switchTOAssignment
                             ? Container(
                                 // height: 500,
-                                child: StreamBuilder(
-                                  stream: FirebaseFirestore.instance
-                                      .collection('courses')
-                                      .doc(courseId)
-                                      .collection('Modules')
-                                      .doc(moduleId)
-                                      .collection('Topics')
-                                      .orderBy('sr')
-                                      .snapshots(),
-                                  builder: (BuildContext context,
-                                      AsyncSnapshot snapshot) {
-                                    if (snapshot.data != null) {
-                                      return ListView.builder(
+                                child: ListView.builder(
                                           shrinkWrap: true,
                                           itemCount: _video.length,
                                           itemBuilder: (context, index) {
-                                            // VideoPlayerController? _videoController;
-                                            Map<String, dynamic> map = snapshot
-                                                .data!.docs[index]
-                                                .data();
-
-                                            // VideoScreen.urlString!.value = map['url'];
-                                            if (map['type'] == 'video') {
+                                            if(_video[index].type == 'video') {
                                               return InkWell(
                                                 onTap: () {
                                                   setState(() {
@@ -821,12 +796,8 @@ class _VideoScreenState extends State<VideoScreen> {
                                             } else {
                                               return Container();
                                             }
-                                          });
-                                    } else {
-                                      return Container();
-                                    }
-                                  },
-                                ),
+                                          },)
+                               
                               )
                             : AssignmentScreen(
                                 isdemo: false,

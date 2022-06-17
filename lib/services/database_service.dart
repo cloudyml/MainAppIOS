@@ -36,7 +36,6 @@ class DatabaseService {
               .toList(),
         );
   }
-
   Stream<List<VideoDetails>> get videoDetails {
     return _fireStore
         .collection('courses')
