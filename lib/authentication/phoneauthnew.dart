@@ -434,9 +434,10 @@ class _PhoneAuthenticationState extends State<PhoneAuthentication> {
                                 .get();
                             if (userDocs.data() == null) {
                               userprofile(
-                                  name: null,
+                                  name: '',
+                                  image: '',
                                   mobilenumber: mobile.text,
-                                  email: null);
+                                  email: '');
                               showToast('Account Created');
                             }
                             await Future.delayed(Duration(seconds: 4));
