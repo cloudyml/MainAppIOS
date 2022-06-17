@@ -589,7 +589,6 @@ class _VideoScreenState extends State<VideoScreen> {
                           SizedBox(
                             height: 10,
                           ),
-                      
                           Container(
                             height: 60,
                             child: Center(
@@ -678,127 +677,119 @@ class _VideoScreenState extends State<VideoScreen> {
                             ? Container(
                                 // height: 500,
                                 child: ListView.builder(
-                                          shrinkWrap: true,
-                                          itemCount: _video.length,
-                                          itemBuilder: (context, index) {
-                                            if(_video[index].type == 'video') {
-                                              return InkWell(
-                                                onTap: () {
-                                                  setState(() {
-                                                    serialNo = int.parse(
-                                                        _video[index].serialNo);
-                                                  });
-                                                  if (_video[index].type ==
-                                                      'video') {
-                                                    setState(() {
-                                                      showAssignment = false;
-                                                    });
-                                                    intializeVidController(
-                                                        _video[index].videoUrl);
-                                                  } else if (_video[index]
-                                                          .type ==
-                                                      'assignment') {
-                                                    setState(() {
-                                                      showAssignment =
-                                                          !showAssignment;
-                                                      serialNo = int.parse(
-                                                          _video[index]
-                                                              .serialNo);
-                                                      // assignMentVideoUrl =
-                                                      //     map['solution'];
-                                                    });
-                                                  }
-                                                  setState(() {
-                                                    data = map;
-                                                    downloading = false;
-                                                    downloaded = false;
-                                                  });
-                                                },
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                    color: serialNo ==
-                                                            int.parse(
-                                                                _video[index]
-                                                                    .serialNo)
-                                                        ? Color(0xFFDDD2FB)
-                                                            .withOpacity(0.3)
-                                                        : Colors.transparent,
-                                                  ),
-                                                  child: Column(
-                                                    children: [
-                                                      SizedBox(
-                                                        height: 10,
-                                                      ),
-                                                      Row(
-                                                        children: [
-                                                          SizedBox(
-                                                            width: 30,
+                                shrinkWrap: true,
+                                itemCount: _video.length,
+                                itemBuilder: (context, index) {
+                                  if (_video[index].type == 'video') {
+                                    return InkWell(
+                                      onTap: () {
+                                        setState(() {
+                                          serialNo =
+                                              int.parse(_video[index].serialNo);
+                                        });
+                                        if (_video[index].type == 'video') {
+                                          setState(() {
+                                            showAssignment = false;
+                                          });
+                                          intializeVidController(
+                                              _video[index].videoUrl);
+                                        } else if (_video[index].type ==
+                                            'assignment') {
+                                          setState(() {
+                                            showAssignment = !showAssignment;
+                                            serialNo = int.parse(
+                                                _video[index].serialNo);
+                                            // assignMentVideoUrl =
+                                            //     map['solution'];
+                                          });
+                                        }
+                                        setState(() {
+                                          data = _video[index]
+                                              as Map<String, dynamic>;
+                                          downloading = false;
+                                          downloaded = false;
+                                        });
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: serialNo ==
+                                                  int.parse(
+                                                      _video[index].serialNo)
+                                              ? Color(0xFFDDD2FB)
+                                                  .withOpacity(0.3)
+                                              : Colors.transparent,
+                                        ),
+                                        child: Column(
+                                          children: [
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            Row(
+                                              children: [
+                                                SizedBox(
+                                                  width: 30,
+                                                ),
+                                                Container(
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                    child: index < 9
+                                                        ? Text(
+                                                            '  ${index + 1}',
+                                                            style: TextStyle(
+                                                                // fontSize:
+                                                                //     18,
+                                                                ),
+                                                          )
+                                                        : Text(
+                                                            '${index + 1}',
+                                                            style: TextStyle(
+                                                                // fontSize:
+                                                                //     17,
+                                                                ),
                                                           ),
-                                                          Container(
-                                                            child: Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .all(8.0),
-                                                              child: index < 9
-                                                                  ? Text(
-                                                                      '  ${index + 1}',
-                                                                      style: TextStyle(
-                                                                          // fontSize:
-                                                                          //     18,
-                                                                          ),
-                                                                    )
-                                                                  : Text(
-                                                                      '${index + 1}',
-                                                                      style: TextStyle(
-                                                                          // fontSize:
-                                                                          //     17,
-                                                                          ),
-                                                                    ),
-                                                            ),
-                                                          ),
-                                                          SizedBox(
-                                                            width: 10,
-                                                          ),
-                                                          Icon(
-                                                              Icons
-                                                                  .play_circle_fill_rounded,
-                                                              size: 15),
-                                                          SizedBox(
-                                                            width: 10,
-                                                          ),
-                                                          Expanded(
-                                                            child: Text(
-                                                              _video[index]
-                                                                  .videoTitle,
-                                                              textScaleFactor: min(
-                                                                  horizontalScale,
-                                                                  verticalScale),
-                                                              style: TextStyle(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                fontSize: 17,
-                                                                fontFamily:
-                                                                    "Medium",
-                                                              ),
-                                                              maxLines: 2,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      SizedBox(
-                                                        height: 10,
-                                                      ),
-                                                    ],
                                                   ),
                                                 ),
-                                              );
-                                            } else {
-                                              return Container();
-                                            }
-                                          },)
-                               
-                              )
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Icon(
+                                                    Icons
+                                                        .play_circle_fill_rounded,
+                                                    size: 15),
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Expanded(
+                                                  child: Text(
+                                                    _video[index].videoTitle,
+                                                    textScaleFactor: min(
+                                                        horizontalScale,
+                                                        verticalScale),
+                                                    style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      fontSize: 17,
+                                                      fontFamily: "Medium",
+                                                    ),
+                                                    maxLines: 2,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  } else {
+                                    return Container();
+                                  }
+                                },
+                              ))
                             : AssignmentScreen(
                                 isdemo: false,
                                 sr: serialNo,
