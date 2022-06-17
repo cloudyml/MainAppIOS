@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:cloudyml_app2/Providers/AppProvider.dart';
+import 'package:cloudyml_app2/Providers/UserProvider.dart';
 import 'package:cloudyml_app2/authentication/firebase_auth.dart';
 import 'package:cloudyml_app2/globals.dart';
 import 'package:cloudyml_app2/offline/offline_videos.dart';
@@ -138,44 +140,60 @@ class MyApp extends StatelessWidget {
         }
       },
     );
-    return ChangeNotifierProvider(
-      create: (context) => GoogleSignInProvider(),
-      child: StyledToast(
-        locale: const Locale('en', 'US'),
-        textStyle: TextStyle(
-            fontSize: 16.0, color: Colors.white, fontFamily: 'Medium'),
-        backgroundColor: Colors.black,
-        borderRadius: BorderRadius.circular(30.0),
-        textPadding: EdgeInsets.symmetric(horizontal: 17.0, vertical: 10.0),
-        toastAnimation: StyledToastAnimation.slideFromBottom,
-        reverseAnimation: StyledToastAnimation.slideToBottom,
-        startOffset: Offset(0.0, 3.0),
-        reverseEndOffset: Offset(0.0, 3.0),
-        duration: Duration(seconds: 3),
-        animDuration: Duration(milliseconds: 500),
-        alignment: Alignment.center,
-        toastPositions: StyledToastPosition.bottom,
-        curve: Curves.bounceIn,
-        reverseCurve: Curves.bounceOut,
-        dismissOtherOnShow: true,
-        fullWidth: false,
-        isHideKeyboard: false,
-        isIgnoring: true,
-        child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'CloudyML',
-          builder: (BuildContext context, Widget? widget) {
-            ErrorWidget.builder = (FlutterErrorDetails errorDetails) {
-              return Container();
-            };
-            return widget!;
-          },
-          theme: ThemeData(
-            primarySwatch: Colors.blue,
+    return MultiProvider(providers: [
+      ChangeNotifierProvider.value(value: UserProvider.initialize()),
+      ChangeNotifierProvider.value(value: AppProvider()),
+
+    ],
+        child: ChangeNotifierProvider(
+          create: (context) => GoogleSignInProvider(),
+          child: StyledToast(
+            locale: const Locale('en', 'US'),
+            textStyle: TextStyle(
+                fontSize: 16.0, color: Colors.white, fontFamily: 'Medium'),
+            backgroundColor: Colors.black,
+            borderRadius: BorderRadius.circular(30.0),
+            textPadding: EdgeInsets.symmetric(horizontal: 17.0, vertical: 10.0),
+            toastAnimation: StyledToastAnimation.slideFromBottom,
+            reverseAnimation: StyledToastAnimation.slideToBottom,
+            startOffset: Offset(0.0, 3.0),
+            reverseEndOffset: Offset(0.0, 3.0),
+            duration: Duration(seconds: 3),
+            animDuration: Duration(milliseconds: 500),
+            alignment: Alignment.center,
+            toastPositions: StyledToastPosition.bottom,
+            curve: Curves.bounceIn,
+            reverseCurve: Curves.bounceOut,
+            dismissOtherOnShow: true,
+            fullWidth: false,
+            isHideKeyboard: false,
+            isIgnoring: true,
+            child: MaterialApp(
+              debugShowCheckedModeBanner: false,
+              title: 'CloudyML',
+              builder: (BuildContext context, Widget? widget) {
+                ErrorWidget.builder = (FlutterErrorDetails errorDetails) {
+                  return Container();
+                };
+                return widget!;
+              },
+              theme: ThemeData(
+                primarySwatch: Colors.blue,
+              ),
+              home: splash(),
+            ),
           ),
-          home: splash(),
-        ),
-      ),
+        )
     );
   }
 }
+
+class ScreenController extends StatelessWidget {
+  const ScreenController({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}
+

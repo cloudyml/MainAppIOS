@@ -27,15 +27,7 @@ class Authenticate extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (_auth.currentUser != null) {
-      // if(emailsigned){
-      //   if(isVerifyy){
-      //     return HomePage();
-      //   }else{
-      //     return Onboardew();
-      //   }
-      // }else{
       return HomePage();
-      //}
     } else {
       return Onboardew();
     }
@@ -136,15 +128,7 @@ class GoogleSignInProvider extends ChangeNotifier {
           .doc(FirebaseAuth.instance.currentUser!.uid)
           .get();
       if (userDocs.data() == null) {
-        // Navigator.pushAndRemoveUntil(
-        //     context,
-        //     PageTransition(
-        //         duration: Duration(milliseconds: 200),
-        //         curve: Curves.bounceInOut,
-        //         type: PageTransitionType.rightToLeft,
-        //         child: DetailsScreen()),
-        //     (route) => false);
-        userprofile(name: _user?.displayName, email: _user?.email);
+        userprofile(name: _user?.displayName, email: _user?.email,mobilenumber: '',image:_user?.photoUrl);
         showToast('Account Created');
       }
       Navigator.pushAndRemoveUntil(
@@ -185,7 +169,7 @@ class GoogleSignInProvider extends ChangeNotifier {
   }
 }
 
-void userprofile({String? name, var mobilenumber, var email}) async {
+void userprofile({String? name, var mobilenumber, var email,var image}) async {
   await FirebaseFirestore.instance
       .collection("Users")
       .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -201,5 +185,6 @@ void userprofile({String? name, var mobilenumber, var email}) async {
     "role": "student",
     "couponCodeDetails": {},
     "payInPartsDetails": {},
+    "image":image
   });
 }
