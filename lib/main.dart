@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:cloudyml_app2/Providers/AppProvider.dart';
+import 'package:cloudyml_app2/Providers/UserProvider.dart';
 import 'package:cloudyml_app2/authentication/firebase_auth.dart';
 import 'package:cloudyml_app2/globals.dart';
 import 'package:cloudyml_app2/models/course_details.dart';
@@ -166,6 +168,8 @@ class MyApp extends StatelessWidget {
         isIgnoring: true,
         child: MultiProvider(
           providers: [
+            ChangeNotifierProvider.value(value: UserProvider.initialize()),
+            ChangeNotifierProvider.value(value: AppProvider()),
             StreamProvider<List<CourseDetails>>.value(
               value: DatabaseService().courseDetails,
               initialData: [],
@@ -191,6 +195,17 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
+// >>>>>>> d97b62ccaae2609fb9b01662c615627ce2bc65d3
     );
   }
 }
+
+class ScreenController extends StatelessWidget {
+  const ScreenController({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}
+

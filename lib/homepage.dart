@@ -112,7 +112,7 @@ class _HomeState extends State<Home> {
                             Text(
                               'Home',
                               textScaleFactor:
-                                  min(horizontalScale, verticalScale),
+                              min(horizontalScale, verticalScale),
                               style: TextStyle(
                                   fontSize: 30,
                                   fontWeight: FontWeight.bold,
@@ -137,7 +137,7 @@ class _HomeState extends State<Home> {
                   fontFamily: 'Poppins',
                   fontSize: 23,
                   letterSpacing:
-                      0 /*percentages not used in flutter. defaulting to zero*/,
+                  0 /*percentages not used in flutter. defaulting to zero*/,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -177,7 +177,7 @@ class _HomeState extends State<Home> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      const CatelogueScreen()),
+                                  const CatelogueScreen()),
                             );
                           }
                         },
@@ -233,7 +233,7 @@ class _HomeState extends State<Home> {
                                       child: Text(
                                         course[index].courseName,
                                         textScaleFactor:
-                                            min(horizontalScale, verticalScale),
+                                        min(horizontalScale, verticalScale),
                                         textAlign: TextAlign.left,
                                         style: TextStyle(
                                           color: Color.fromRGBO(0, 0, 0, 1),
@@ -266,11 +266,11 @@ class _HomeState extends State<Home> {
                                               horizontalScale, verticalScale),
                                           style: TextStyle(
                                               color:
-                                                  Color.fromRGBO(88, 88, 88, 1),
+                                              Color.fromRGBO(88, 88, 88, 1),
                                               fontFamily: 'Poppins',
                                               fontSize: 12,
                                               letterSpacing:
-                                                  0 /*percentages not used in flutter. defaulting to zero*/,
+                                              0 /*percentages not used in flutter. defaulting to zero*/,
                                               fontWeight: FontWeight.normal,
                                               height: 1),
                                         ),
@@ -288,7 +288,7 @@ class _HomeState extends State<Home> {
                                               fontFamily: 'Poppins',
                                               fontSize: 18,
                                               letterSpacing:
-                                                  0 /*percentages not used in flutter. defaulting to zero*/,
+                                              0 /*percentages not used in flutter. defaulting to zero*/,
                                               fontWeight: FontWeight.bold,
                                               height: 1),
                                         ),
@@ -322,7 +322,7 @@ class _HomeState extends State<Home> {
                     fontFamily: 'Poppins',
                     fontSize: 23,
                     letterSpacing:
-                        0 /*percentages not used in flutter. defaulting to zero*/,
+                    0 /*percentages not used in flutter. defaulting to zero*/,
                     fontWeight: FontWeight.w500,
                     height: 1),
               ),
@@ -341,9 +341,9 @@ class _HomeState extends State<Home> {
                       if (snapshot.hasError) {
                         return Center(
                             child: Text(
-                          'Some error occurred!',
-                          textScaleFactor: min(horizontalScale, verticalScale),
-                        ));
+                              'Some error occurred!',
+                              textScaleFactor: min(horizontalScale, verticalScale),
+                            ));
                       } else {
                         final files = snapshot.data!;
 
@@ -362,10 +362,10 @@ class _HomeState extends State<Home> {
                                   return buildFile(context, file);
                                 },
                                 gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 2,
-                                        crossAxisSpacing: 1,
-                                        mainAxisSpacing: 4),
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    crossAxisSpacing: 1,
+                                    mainAxisSpacing: 4),
                               ),
                             ),
                           ],
@@ -402,7 +402,7 @@ class _HomeState extends State<Home> {
                         fontFamily: 'Poppins',
                         fontSize: 25,
                         letterSpacing:
-                            0 /*percentages not used in flutter. defaulting to zero*/,
+                        0 /*percentages not used in flutter. defaulting to zero*/,
                         fontWeight: FontWeight.w500,
                         height: 1),
                   ),
