@@ -59,7 +59,7 @@ class _HomeState extends State<Home> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              width: screenWidth * horizontalScale,
+              width: screenWidth ,
               decoration: BoxDecoration(
                 boxShadow: [
                   BoxShadow(
@@ -445,7 +445,7 @@ class _HomeState extends State<Home> {
                 height: 40 * verticalScale,
                 child: Row(
                   children: [
-                    FlatButton(
+                    TextButton(
                       onPressed: () {
                         Navigator.push(
                           context,
