@@ -60,18 +60,23 @@ class MyApp extends StatelessWidget {
                       SizedBox(),
                       Row(
                         children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: Text(
-                                'Skip',
-                                style: TextStyle(
-                                    fontFamily: 'SemiBold',
-                                    fontSize: 18,
-                                    color: Colors.black),
+                          InkWell(
+                            onTap: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: Text(
+                                  'Skip',
+                                  style: TextStyle(
+                                      fontFamily: 'SemiBold',
+                                      fontSize: 18,
+                                      color: Colors.black),
+                                ),
                               ),
                             ),
                           ),
@@ -208,4 +213,3 @@ class ScreenController extends StatelessWidget {
     return Container();
   }
 }
-

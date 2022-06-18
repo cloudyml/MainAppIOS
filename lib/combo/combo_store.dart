@@ -491,30 +491,31 @@ class _ComboStoreState extends State<ComboStore> with CouponCodeMixin {
                               );
                             },
                             child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(30),
-                                    // boxShadow: [
-                                    //   BoxShadow(
-                                    //     color: Color.fromARGB(255, 176, 224, 250)
-                                    //         .withOpacity(0.3),
-                                    //     spreadRadius: 2,
-                                    //     blurRadius: 3,
-                                    //     offset: Offset(3,
-                                    //         6), // changes position of shadow
-                                    //   ),
-                                    // ],
-                                    color: Color.fromARGB(255, 119, 191, 249),
-                                    gradient: gradient),
-                                height: screenHeight * .08,
-                                width: screenWidth * .6,
-                                child: Center(
-                                  child: Text(
-                                    'Buy Now',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 20),
-                                  ),
-                                )),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(30),
+                                  // boxShadow: [
+                                  //   BoxShadow(
+                                  //     color: Color.fromARGB(255, 176, 224, 250)
+                                  //         .withOpacity(0.3),
+                                  //     spreadRadius: 2,
+                                  //     blurRadius: 3,
+                                  //     offset: Offset(3,
+                                  //         6), // changes position of shadow
+                                  //   ),
+                                  // ],
+                                  color: Color.fromARGB(255, 119, 191, 249),
+                                  gradient: gradient),
+                              height: screenHeight * .08,
+                              width: screenWidth * .6,
+                              child: Center(
+                                child: Text(
+                                  'Buy Now',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 20),
+                                ),
+                              ),
+                            ),
                           ),
                         ],
                       ),
