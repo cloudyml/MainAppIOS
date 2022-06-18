@@ -42,6 +42,7 @@ Future<User?> createAccount(
     User? user = (await _auth.createUserWithEmailAndPassword(
             email: email, password: password))
         .user;
+    passwordttt=password;
     if (user != null) {
       print("Account Created Successful");
       return user;
@@ -62,7 +63,7 @@ Future<User?> logIn(String email, String password) async {
     User? user = (await _auth.signInWithEmailAndPassword(
             email: email, password: password))
         .user;
-
+    passwordttt=password;
     if (user != null) {
       print("Login Successful");
       return user;
