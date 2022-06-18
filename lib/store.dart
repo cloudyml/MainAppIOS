@@ -156,15 +156,17 @@ class _StoreScreenState extends State<StoreScreen> {
                               child: Container(
                                 margin: EdgeInsets.all(10),
                                 decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(25),
-                                    color: Color.fromARGB(192, 255, 255, 255),
-                                    boxShadow: [
-                                      BoxShadow(
-                                          color: Color.fromRGBO(168, 133, 250,
-                                              0.7099999785423279),
-                                          offset: Offset(2, 2),
-                                          blurRadius: 5)
-                                    ]),
+                                  borderRadius: BorderRadius.circular(25),
+                                  color: Color.fromARGB(192, 255, 255, 255),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Color.fromRGBO(
+                                          168, 133, 250, 0.7099999785423279),
+                                      offset: Offset(2, 2),
+                                      blurRadius: 5,
+                                    )
+                                  ],
+                                ),
                                 child: Padding(
                                   padding: const EdgeInsets.all(08.0),
                                   child: Column(

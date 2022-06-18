@@ -236,19 +236,20 @@ class _PaymentScreenState extends State<PaymentScreen> with CouponCodeMixin {
                   enabled: NoCouponApplied ? true : false,
                   controller: couponCodeController,
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 16 * min(horizontalScale, verticalScale),
                     letterSpacing: 1.2,
                     fontFamily: 'Medium',
                   ),
                   decoration: InputDecoration(
-                    constraints: BoxConstraints(minHeight: 52, minWidth: 366),
+                    // constraints: BoxConstraints(minHeight: 52, minWidth: 366),
                     suffixIcon: TextButton(
                       child: Text(
                         'Apply',
                         style: TextStyle(
                           color: Color(0xFF7860DC),
                           fontFamily: 'Medium',
-                          fontSize: 18,
+                          fontSize: 18 * min(horizontalScale, verticalScale),
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                       onPressed: () {
@@ -271,7 +272,6 @@ class _PaymentScreenState extends State<PaymentScreen> with CouponCodeMixin {
                               couponCodeText: couponCodeController.text,
                               amountPayable: widget.map!['Amount Payable']);
                         });
-                        print('Button working');
                       },
                     ),
                     hintText: 'Enter coupon code',
@@ -280,9 +280,27 @@ class _PaymentScreenState extends State<PaymentScreen> with CouponCodeMixin {
                     suffixIconConstraints:
                         BoxConstraints(minHeight: 52, minWidth: 100),
                     // contentPadding: EdgeInsets.symmetric(horizontal: 0.0,vertical: 0),
-                    // enabledBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    disabledBorder: InputBorder.none,
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: BorderSide(
+                        color: Colors.grey.shade300,
+                        width: 2,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: BorderSide(
+                        color: Colors.grey.shade300,
+                        width: 2,
+                      ),
+                    ),
+                    disabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: BorderSide(
+                        color: Colors.grey.shade300,
+                        width: 2,
+                      ),
+                    ),
                   ),
                 ),
                 SizedBox(
