@@ -1,6 +1,4 @@
 import 'dart:async';
-
-import 'package:cloudyml_app2/globals.dart';
 import 'package:cloudyml_app2/screens/group_info.dart';
 import 'package:cloudyml_app2/widgets/audio_msg_tile.dart';
 import 'package:cloudyml_app2/widgets/bottom_sheet.dart';

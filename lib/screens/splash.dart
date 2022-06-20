@@ -1,8 +1,5 @@
-// import 'package:chat/home.dart';
-// import 'package:chat/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:drop_shadow_image/drop_shadow_image.dart';
 
