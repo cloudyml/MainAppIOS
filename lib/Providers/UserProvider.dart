@@ -1,6 +1,5 @@
 import 'package:cloudyml_app2/Services/UserServices.dart';
 import 'package:cloudyml_app2/models/UserModel.dart';
-import 'package:cloudyml_app2/screens/splash.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 

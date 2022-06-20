@@ -13,6 +13,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
@@ -195,6 +196,7 @@ class MyApp extends StatelessWidget {
             },
             theme: ThemeData(
               primarySwatch: Colors.blue,
+              // textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme)
             ),
             home: splash(),
           ),

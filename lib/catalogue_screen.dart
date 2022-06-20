@@ -1,23 +1,13 @@
-import 'dart:ui';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloudyml_app2/models/course_details.dart';
 import 'package:cloudyml_app2/widgets/coupon_code.dart';
 import 'package:cloudyml_app2/widgets/curriculam.dart';
-import 'package:cloudyml_app2/demo/demo_course.dart';
 import 'package:cloudyml_app2/fun.dart';
 import 'package:cloudyml_app2/globals.dart';
-import 'package:cloudyml_app2/home.dart';
 import 'package:cloudyml_app2/widgets/pay_now_bottomsheet.dart';
-import 'package:cloudyml_app2/widgets/payment_portal.dart';
 import 'package:cloudyml_app2/payment_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_styled_toast/flutter_styled_toast.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
-import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:ribbon_widget/ribbon_widget.dart';
 
 class CatelogueScreen extends StatefulWidget {
@@ -179,17 +169,17 @@ class _CatelogueScreenState extends State<CatelogueScreen>
                           SingleChildScrollView(
                             child: Column(
                               children: [
-                                Row(
+                                Column(
                                   children: [
                                     ClipRRect(
                                       borderRadius: BorderRadius.circular(28),
                                       child: Container(
                                         height:
                                             MediaQuery.of(context).size.height *
-                                                0.12,
+                                                0.3,
                                         width:
                                             MediaQuery.of(context).size.height *
-                                                0.12,
+                                                0.6,
                                         child: Image.network(
                                           course[index].courseImageUrl,
                                           fit: BoxFit.cover,
@@ -197,7 +187,7 @@ class _CatelogueScreenState extends State<CatelogueScreen>
                                       ),
                                     ),
                                     SizedBox(
-                                      width: 20,
+                                      height: 20,
                                     ),
                                     Column(
                                       crossAxisAlignment:
@@ -207,13 +197,13 @@ class _CatelogueScreenState extends State<CatelogueScreen>
                                           width: MediaQuery.of(context)
                                                   .size
                                                   .width *
-                                              0.58,
+                                              0.9,
                                           child: Text(
                                             course[index].courseName,
                                             style: TextStyle(
                                                 fontFamily: 'Bold',
                                                 color: Colors.black,
-                                                fontSize: 24),
+                                                fontSize: 20),
                                           ),
                                         ),
                                         SizedBox(
@@ -223,7 +213,7 @@ class _CatelogueScreenState extends State<CatelogueScreen>
                                           width: MediaQuery.of(context)
                                                   .size
                                                   .width *
-                                              0.58,
+                                              0.9,
                                           child: Text(
                                             course[index].courseDescription,
                                             style: TextStyle(
@@ -240,7 +230,7 @@ class _CatelogueScreenState extends State<CatelogueScreen>
                             ),
                           ),
                           SizedBox(
-                            height: 65,
+                            height: 45,
                           ),
                           includes(context),
                           Container(

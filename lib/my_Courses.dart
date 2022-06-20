@@ -3,13 +3,11 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloudyml_app2/combo/combo_course.dart';
 import 'package:cloudyml_app2/combo/combo_store.dart';
-import 'package:cloudyml_app2/course.dart';
 import 'package:cloudyml_app2/globals.dart';
 import 'package:cloudyml_app2/models/course_details.dart';
 import 'package:cloudyml_app2/module/video_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 
@@ -83,21 +81,9 @@ class _HomeScreenState extends State<HomeScreen> {
           .inDays);
       print(daysLeft);
       return daysLeft < 1;
-      // final secondsLeft = (DateTime.parse(
-      //         userMap['payInPartsDetails'][id]['endDateOfLimitedAccess'])
-      //     .difference(DateTime.now())
-      //     .inSeconds);
-      // print(secondsLeft);
-      // return secondsLeft < 0;
     } else {
       return false;
     }
-    // final secondsLeft = (DateTime.parse(
-    //         userMap['payInPartsDetails'][id]['endDateOfLimitedAccess'])
-    //     .difference(DateTime.now())
-    //     .inSeconds);
-    // print(secondsLeft);
-    // return secondsLeft < 0;
   }
 
   bool statusOfPayInParts(String id) {
@@ -129,8 +115,6 @@ class _HomeScreenState extends State<HomeScreen> {
     var verticalScale = screenHeight / mockUpHeight;
     var horizontalScale = screenWidth / mockUpWidth;
     return Scaffold(
-        // appBar: AppBar(title:Text('My Courses'),elevation: 0,centerTitle: true,),
-        //   backgroundColor: Colors.white,
         body: Stack(
       children: [
         Positioned(
@@ -329,8 +313,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             height: 200 * verticalScale / 2,
                                             decoration: BoxDecoration(
                                               borderRadius: BorderRadius.only(
-                                                // topLeft: Radius.circular(25),
-                                                // topRight: Radius.circular(25),
+                                              
                                                 bottomLeft: Radius.circular(25),
                                                 bottomRight:
                                                     Radius.circular(25),
@@ -646,7 +629,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   BoxShadow(
                                       color: Color.fromRGBO(29, 28, 30, 0.3),
                                       offset: Offset(2, 2),
-                                      // spreadRadius: 5,
+                                      
                                       blurStyle: BlurStyle.outer,
                                       blurRadius: 35)
                                 ],

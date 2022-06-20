@@ -1,7 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cloudyml_app2/authentication/email_signup.dart';
-import 'package:cloudyml_app2/authentication/login.dart';
-import 'package:cloudyml_app2/authentication/onboard.dart';
 import 'package:cloudyml_app2/authentication/onboardnew.dart';
 import 'package:cloudyml_app2/globals.dart';
 import 'package:cloudyml_app2/home.dart';

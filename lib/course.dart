@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloudyml_app2/globals.dart';
 import 'package:cloudyml_app2/module/assignment_screen.dart';
-import 'package:cloudyml_app2/module/quiz_screen.dart';
 import 'package:cloudyml_app2/module/video_screen.dart';
 import 'package:cloudyml_app2/screens/chat_group.dart';
 import 'package:flutter/cupertino.dart';
@@ -118,16 +117,17 @@ class _CouseState extends State<Couse> {
                                         sr: 1,
                                       )),
                                 );
-                              } else {
-                                Navigator.push(
-                                  context,
-                                  PageTransition(
-                                      duration: Duration(milliseconds: 400),
-                                      curve: Curves.bounceInOut,
-                                      type: PageTransitionType.rightToLeft,
-                                      child: QuizPage()),
-                                );
-                              }
+                              } 
+                              // else {
+                              //   Navigator.push(
+                              //     context,
+                              //     PageTransition(
+                              //         duration: Duration(milliseconds: 400),
+                              //         curve: Curves.bounceInOut,
+                              //         type: PageTransitionType.rightToLeft,
+                              //         child: QuizPage()),
+                              //   );
+                              // }
 
                               setState(() {
                                 moduleId = document.id;

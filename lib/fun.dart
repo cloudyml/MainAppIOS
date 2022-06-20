@@ -59,7 +59,7 @@ Widget buildFile(BuildContext context, FirebaseFile file) => Row(
           ),
           child: solidBorder(
             child: Padding(
-              padding: EdgeInsets.all(10),
+              padding: EdgeInsets.all(5),
               child: Container(
                 decoration: BoxDecoration(boxShadow: [
                   BoxShadow(
