@@ -8,6 +8,7 @@ import 'package:cloudyml_app2/globals.dart';
 import 'package:cloudyml_app2/widgets/loading.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 
@@ -35,29 +36,25 @@ class _ChangePasswordState extends State<ChangePassword> {
     newpasswordController.dispose();
     super.dispose();
   }
-  changePassword(String? email) async{
-        try{
-          final cred = EmailAuthProvider.credential(email: email.toString(), password: passwordttt.toString());
-
-          currentuser!.reauthenticateWithCredential(cred).then((value) {
-            currentuser!.updatePassword(newPassword).then((_) {
-              logOut(context);
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Onboardew()));
-              ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Your Password has been changed..Login Again!')));
+  changePassword(String? email,String password) async{
+          final cred = EmailAuthProvider.credential(email: email.toString(), password: password.toString());
+          try{
+            currentuser!.reauthenticateWithCredential(cred).then((value) {
+              currentuser!.updatePassword(newPassword).then((_) {
+                logOut(context);
+                Provider.of<AppProvider>(context, listen: false).changeIsLoading();
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Onboardew()));
+                ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Your Password has been changed..Login Again!')));
+              });
+            }).catchError((error){
+              Provider.of<AppProvider>(context, listen: false).changeIsLoading();
+                ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('${error.toString()}')));
+              print('dsssd ${error.toString()}');
             });
-            });
-          // AuthCredential credential = EmailAuthProvider.credential(email: , password: currentuser.);
-          // // Reauthenticate
-          // await FirebaseAuth.instance.currentUser!.reauthenticateWithCredential(credential);
-          // await currentuser!.updatePassword(newPassword);
-          // logOut(context);
-          // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Onboardew()));
-          // ScaffoldMessenger.of(context).showSnackBar(
-          //     SnackBar(content: Text('Your Password has been changed..Login Again!')));
         }catch(error){
-          Provider.of<AppProvider>(context, listen: false).changeIsLoading();
-            print(error);
+          print(error);
         }
   }
   @override
@@ -82,18 +79,6 @@ class _ChangePasswordState extends State<ChangePassword> {
               child: Container(
                   child:Column(
                     children: [
-                      // Padding(
-                      //   padding: EdgeInsets.all(min(horizontalScale,verticalScale)*20.0),
-                      //   child: Text('Change Password',
-                      //     textAlign:TextAlign.center,
-                      //     style: TextStyle(
-                      //         fontSize: 22,
-                      //         color:HexColor('7A62DE'),
-                      //         fontWeight: FontWeight.bold
-                      //     ),
-                      //     textScaleFactor:min(horizontalScale,verticalScale) ,
-                      //   ),
-                      // ),
                       SizedBox(height: verticalScale*10,),
                       Text('Use the form below to change the password for your account.',
                         textAlign: TextAlign.center,
@@ -124,7 +109,6 @@ class _ChangePasswordState extends State<ChangePassword> {
                         child: Text(userprovider.userModel!.email??'',
                           style: TextStyle(
                             fontSize: 16,
-                            //fontWeight: FontWeight.w600
                           ),
                           textScaleFactor:min(horizontalScale,verticalScale) ,
                         ),
@@ -154,6 +138,56 @@ class _ChangePasswordState extends State<ChangePassword> {
                       ),
                       Divider(thickness: 2,),
                       SizedBox(height: verticalScale*10,),
+                      Text('Enter Old Password ',
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600
+                        ),
+                        textScaleFactor:min(horizontalScale,verticalScale) ,
+                      ),
+                      SizedBox(height: verticalScale*18,),
+                      TextFormField(
+                        controller: pass,
+                        decoration: InputDecoration(
+                            hintText: 'Enter old Password',
+                            hintStyle: TextStyle(
+                              fontSize: 20 * min(horizontalScale, verticalScale),
+                            ),
+                            labelStyle: TextStyle(
+                              fontSize: 18 * min(horizontalScale, verticalScale),
+                            ),
+                            labelText: 'Password',
+                            floatingLabelStyle: TextStyle(
+                                fontSize: 18 * min(horizontalScale, verticalScale),
+                                fontWeight: FontWeight.w500,
+                                color: HexColor('7B62DF')),
+                            focusedBorder: OutlineInputBorder(
+                                borderSide:
+                                BorderSide(color: HexColor('7B62DF'), width: 2)),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: HexColor('7B62DF'), width: 2),
+                            ),
+                            suffix: InkWell(
+                              onTap: _togglepasswordview,
+                              child: Icon(
+                                _isHidden ? Icons.visibility_off : Icons.visibility,
+                                color: HexColor('6153D3'),
+                              ),
+                            ),
+                            errorMaxLines: 2),
+                        obscureText: _isHidden,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Set the Password';
+                          } else if (!RegExp(
+                              r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$')
+                              .hasMatch(value)) {
+                            return 'Password must have atleast one Uppercase, one Lowercase, one special character, and one numeric value';
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(height: verticalScale*18,),
                       Text('Enter New Password ',
                         style: TextStyle(
                             fontSize: 16,
@@ -222,8 +256,8 @@ class _ChangePasswordState extends State<ChangePassword> {
                             setState((){
                               newPassword=newpasswordController.text;
                             });
-                            changePassword(userprovider.userModel!.email);
-                            appprovider.changeIsLoading();
+                            changePassword(userprovider.userModel!.email,pass.text);
+                            //appprovider.changeIsLoading();
                           }
                         },
                       )
@@ -238,3 +272,12 @@ class _ChangePasswordState extends State<ChangePassword> {
     );
   }
 }
+
+// AuthCredential credential = EmailAuthProvider.credential(email: , password: currentuser.);
+// // Reauthenticate
+// await FirebaseAuth.instance.currentUser!.reauthenticateWithCredential(credential);
+// await currentuser!.updatePassword(newPassword);
+// logOut(context);
+// Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Onboardew()));
+// ScaffoldMessenger.of(context).showSnackBar(
+//     SnackBar(content: Text('Your Password has been changed..Login Again!')));
