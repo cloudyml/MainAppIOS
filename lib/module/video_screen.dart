@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:auto_orientation/auto_orientation.dart';
-import 'package:cloudyml_app2/models/video_details.dart';
 import 'package:cloudyml_app2/offline/db.dart';
 import 'package:cloudyml_app2/globals.dart';
 import 'package:cloudyml_app2/models/offline_model.dart';
@@ -13,7 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoScreen extends StatefulWidget {
@@ -343,465 +341,555 @@ class _VideoScreenState extends State<VideoScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
     var verticalScale = screenHeight / mockUpHeight;
     var horizontalScale = screenWidth / mockUpWidth;
-    List<VideoDetails> _video = Provider.of<List<VideoDetails>>(context);
     return Scaffold(
         body: SafeArea(
-      child: Container(
-        color: Colors.white,
-        child: OrientationBuilder(
-          builder: (BuildContext context, Orientation orientation) {
-            final isPortrait = orientation == Orientation.portrait;
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: InkWell(
-                    onTap: () {
-                      setState(() {
-                        enablePauseScreen = !enablePauseScreen;
-                      });
-                    },
-                    child: Container(
-                      color: Colors.black,
-                      child: FutureBuilder(
-                        future: playVideo,
-                        builder: (BuildContext context,
-                            AsyncSnapshot<dynamic> snapshot) {
-                          if (ConnectionState.done ==
-                              snapshot.connectionState) {
-                            return !showAssignSol
-                                ? Stack(
-                                    children: [
-                                      Center(
-                                        child: AspectRatio(
-                                          aspectRatio: 16 / 9,
-                                          child: VideoPlayer(_videoController!),
-                                        ),
+          child: Container(
+            color: Colors.white,
+            child: OrientationBuilder(
+              builder: (BuildContext context, Orientation orientation) {
+                final isPortrait = orientation == Orientation.portrait;
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: InkWell(
+                        onTap: () {
+                          setState(() {
+                            enablePauseScreen = !enablePauseScreen;
+                          });
+                        },
+                        child: Container(
+                          color: Colors.black,
+                          child: FutureBuilder(
+                            future: playVideo,
+                            builder: (BuildContext context,
+                                AsyncSnapshot<dynamic> snapshot) {
+                              if (ConnectionState.done ==
+                                  snapshot.connectionState) {
+                                return !showAssignSol
+                                    ? Stack(
+                                  children: [
+                                    Center(
+                                      child: AspectRatio(
+                                        aspectRatio: 16 / 9,
+                                        child: VideoPlayer(_videoController!),
                                       ),
-                                      _isBuffering
-                                          ? Stack(
-                                              children: [
-                                                Center(
-                                                  child: Container(
-                                                    color: Color.fromARGB(
-                                                        102, 0, 0, 0),
-                                                  ),
-                                                ),
-                                                Center(
-                                                  child: Container(
-                                                    width: 60,
-                                                    height: 60,
-                                                    child:
-                                                        CircularProgressIndicator(
-                                                      color: Color.fromARGB(
-                                                          114, 255, 255, 255),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            )
-                                          : Container(),
-                                      enablePauseScreen
-                                          ? Stack(
-                                              children: [
-                                                Center(
-                                                  child: Container(
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                            .size
-                                                            .width,
-                                                    color: Color.fromARGB(
-                                                        102, 0, 0, 0),
-                                                  ),
-                                                ),
-                                                Positioned(
-                                                  top: 0,
-                                                  bottom: 0,
-                                                  left: 0,
-                                                  right: 0,
-                                                  child: IconButton(
-                                                    onPressed: () {
-                                                      if (_isPlaying) {
-                                                        setState(() {
-                                                          _videoController!
-                                                              .pause();
-                                                        });
-                                                      } else {
-                                                        setState(() {
-                                                          enablePauseScreen =
-                                                              !enablePauseScreen;
-                                                          _videoController!
-                                                              .play();
-                                                        });
-                                                      }
-                                                    },
-                                                    icon: Icon(
-                                                      _isPlaying
-                                                          ? Icons.pause
-                                                          : Icons.play_arrow,
-                                                      color: Colors.white,
-                                                      size: 50,
-                                                    ),
-                                                  ),
-                                                ),
-                                                replay10(
-                                                    videoController:
-                                                        _videoController),
-                                                fastForward10(
-                                                    videoController:
-                                                        _videoController),
-                                                IconButton(
-                                                    onPressed: () {
-                                                      Navigator.pop(context);
-                                                    },
-                                                    icon: Icon(Icons
-                                                        .arrow_back_ios_new),
-                                                    color: Colors.white),
-                                                timeElapsedString(),
-                                                timeRemainingString(),
-                                                Positioned(
-                                                  bottom: 42.5 * verticalScale,
-                                                  left: 55 * horizontalScale,
-                                                  right: 100 * horizontalScale,
-                                                  child: VideoProgressIndicator(
-                                                    _videoController!,
-                                                    allowScrubbing: true,
-                                                    colors: VideoProgressColors(
-                                                      backgroundColor:
-                                                          Color.fromARGB(74,
-                                                              255, 255, 255),
-                                                      bufferedColor:
-                                                          Color(0xFFC0AAF5),
-                                                      playedColor:
-                                                          Color(0xFF7860DC),
-                                                    ),
-                                                  ),
-                                                ),
-                                                // progressIndicator(),
-                                                fullScreenIcon(
-                                                    isPortrait: isPortrait),
-                                                Positioned(
-                                                  top: 15,
-                                                  left: 40,
-                                                  child: Text(
-                                                    data!['name'],
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 15,
-                                                    ),
-                                                  ),
-                                                ),
-                                                Positioned(
-                                                  top: 10,
-                                                  right: 10,
-                                                  child: InkWell(
-                                                    onTap: () async {
-                                                      var directory =
-                                                          await getApplicationDocumentsDirectory();
-                                                      download(
-                                                        dio: Dio(),
-                                                        fileName: data!['name'],
-                                                        url: data!['url'],
-                                                        savePath:
-                                                            "${directory.path}/${data!['name'].replaceAll(' ', '')}.mp4",
-                                                        topicName:
-                                                            data!['name'],
-                                                      );
-                                                      print(directory.path);
-                                                    },
-                                                    child: downloading!
-                                                        ? Icon(
-                                                            Icons
-                                                                .downloading_outlined,
-                                                            color: Colors.white,
-                                                          )
-                                                        : Icon(
-                                                            !downloaded
-                                                                ? Icons
-                                                                    .download_for_offline
-                                                                : Icons
-                                                                    .download_done_rounded,
-                                                            color: Colors.white,
-                                                          ),
-                                                  ),
-                                                ),
-                                              ],
-                                            )
-                                          : Container(),
-                                    ],
-                                  )
-                                : Center(
-                                    child: AspectRatio(
-                                      aspectRatio: 16 / 9,
-                                      child: Container(
-                                        color: Colors.black,
-                                        child: Center(
+                                    ),
+                                    _isBuffering
+                                        ? Stack(
+                                      children: [
+                                        Center(
+                                          child: Container(
+                                            color: Color.fromARGB(
+                                                102, 0, 0, 0),
+                                          ),
+                                        ),
+                                        Center(
+                                          child: Container(
+                                            width: 60,
+                                            height: 60,
+                                            child:
+                                            CircularProgressIndicator(
+                                              color: Color.fromARGB(
+                                                  114, 255, 255, 255),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                        : Container(),
+                                    enablePauseScreen
+                                        ? Stack(
+                                      children: [
+                                        Center(
+                                          child: Container(
+                                            width:
+                                            MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            color: Color.fromARGB(
+                                                102, 0, 0, 0),
+                                          ),
+                                        ),
+                                        Positioned(
+                                          top: 0,
+                                          bottom: 0,
+                                          left: 0,
+                                          right: 0,
+                                          child: IconButton(
+                                            onPressed: () {
+                                              if (_isPlaying) {
+                                                setState(() {
+                                                  _videoController!
+                                                      .pause();
+                                                });
+                                              } else {
+                                                setState(() {
+                                                  enablePauseScreen =
+                                                  !enablePauseScreen;
+                                                  _videoController!
+                                                      .play();
+                                                });
+                                              }
+                                            },
+                                            icon: Icon(
+                                              _isPlaying
+                                                  ? Icons.pause
+                                                  : Icons.play_arrow,
+                                              color: Colors.white,
+                                              size: 50,
+                                            ),
+                                          ),
+                                        ),
+                                        replay10(
+                                            videoController:
+                                            _videoController),
+                                        fastForward10(
+                                            videoController:
+                                            _videoController),
+                                        IconButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            icon: Icon(Icons
+                                                .arrow_back_ios_new),
+                                            color: Colors.white),
+                                        timeElapsedString(),
+                                        timeRemainingString(),
+                                        Positioned(
+                                          bottom: 42.5 * verticalScale,
+                                          left: 55 * horizontalScale,
+                                          right: 100 * horizontalScale,
+                                          child: VideoProgressIndicator(
+                                            _videoController!,
+                                            allowScrubbing: true,
+                                            colors: VideoProgressColors(
+                                              backgroundColor:
+                                              Color.fromARGB(74,
+                                                  255, 255, 255),
+                                              bufferedColor:
+                                              Color(0xFFC0AAF5),
+                                              playedColor:
+                                              Color(0xFF7860DC),
+                                            ),
+                                          ),
+                                        ),
+                                        // progressIndicator(),
+                                        fullScreenIcon(
+                                            isPortrait: isPortrait),
+                                        Positioned(
+                                          top: 15,
+                                          left: 40,
                                           child: Text(
-                                            'Watch solution after submission',
+                                            data!['name'],
                                             style: TextStyle(
                                               color: Colors.white,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 18,
-                                              fontFamily: "Medium",
+                                              fontSize: 15,
                                             ),
+                                          ),
+                                        ),
+                                        Positioned(
+                                          top: 10,
+                                          right: 10,
+                                          child: InkWell(
+                                            onTap: () async {
+                                              var directory =
+                                              await getApplicationDocumentsDirectory();
+                                              download(
+                                                dio: Dio(),
+                                                fileName: data!['name'],
+                                                url: data!['url'],
+                                                savePath:
+                                                "${directory.path}/${data!['name'].replaceAll(' ', '')}.mp4",
+                                                topicName:
+                                                data!['name'],
+                                              );
+                                              print(directory.path);
+                                            },
+                                            child: downloading!
+                                                ? Icon(
+                                              Icons
+                                                  .downloading_outlined,
+                                              color: Colors.white,
+                                            )
+                                                : Icon(
+                                              !downloaded
+                                                  ? Icons
+                                                  .download_for_offline
+                                                  : Icons
+                                                  .download_done_rounded,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                        : Container(),
+                                  ],
+                                )
+                                    : Center(
+                                  child: AspectRatio(
+                                    aspectRatio: 16 / 9,
+                                    child: Container(
+                                      color: Colors.black,
+                                      child: Center(
+                                        child: Text(
+                                          'Watch solution after submission',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 18,
+                                            fontFamily: "Medium",
                                           ),
                                         ),
                                       ),
                                     ),
-                                  );
-                          } else {
-                            return Center(
-                              child: CircularProgressIndicator(
-                                color: Color(0xFF7860DC),
-                              ),
-                            );
-                          }
-                        },
+                                  ),
+                                );
+                              } else {
+                                return Center(
+                                  child: CircularProgressIndicator(
+                                    color: Color(0xFF7860DC),
+                                  ),
+                                );
+                              }
+                            },
+                          ),
+                          // },
+                          // ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-                isPortrait
-                    ? Column(
-                        children: [
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Container(
-                            width: MediaQuery.of(context).size.width,
-                            child: Row(
-                              children: [
-                                SizedBox(
-                                  width: 20,
+                    isPortrait
+                        ? Column(
+                      children: [
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          // color: Colors.white,
+                          child: Row(
+                            children: [
+                              SizedBox(
+                                width: 20,
+                              ),
+                              Text(
+                                widget.courseName!,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                  fontFamily: "Medium",
                                 ),
-                                Text(
-                                  widget.courseName!,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
-                                    fontFamily: "Medium",
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        // Divider(
+                        //   indent: 0,
+                        //   thickness: 4,
+                        //   color: Color(0xFFC0AAF5),
+                        // ),
+                        Container(
+                          height: 60,
+                          child: Center(
+                            child: Row(
+                              // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                SizedBox(width: 20),
+                                InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      switchTOAssignment = false;
+                                      showAssignSol = false;
+                                    });
+                                  },
+                                  child: Container(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Text(
+                                          'Lectures',
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        !switchTOAssignment
+                                            ? Container(
+                                          height: 3,
+                                          width: MediaQuery.of(context)
+                                              .size
+                                              .width *
+                                              0.2,
+                                          color: Color(0xFF7860DC),
+                                        )
+                                            : Container(),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 30),
+                                InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      switchTOAssignment = true;
+                                      showAssignSol = true;
+                                    });
+                                  },
+                                  child: Container(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Text(
+                                          'Assignments',
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        switchTOAssignment
+                                            ? Container(
+                                          height: 3,
+                                          width: MediaQuery.of(context)
+                                              .size
+                                              .width *
+                                              0.25,
+                                          color: Color(0xFF7860DC),
+                                        )
+                                            : Container(),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Container(
-                            height: 60,
-                            child: Center(
-                              child: Row(
-                                // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  SizedBox(width: 20),
-                                  InkWell(
-                                    onTap: () {
-                                      setState(() {
-                                        switchTOAssignment = false;
-                                        showAssignSol = false;
-                                      });
-                                    },
-                                    child: Container(
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          Text(
-                                            'Lectures',
-                                            style: TextStyle(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                          !switchTOAssignment
-                                              ? Container(
-                                                  height: 3,
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      0.2,
-                                                  color: Color(0xFF7860DC),
-                                                )
-                                              : Container(),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(width: 30),
-                                  InkWell(
-                                    onTap: () {
-                                      setState(() {
-                                        switchTOAssignment = true;
-                                        showAssignSol = true;
-                                      });
-                                    },
-                                    child: Container(
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          Text(
-                                            'Assignments',
-                                            style: TextStyle(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                          switchTOAssignment
-                                              ? Container(
-                                                  height: 3,
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      0.25,
-                                                  color: Color(0xFF7860DC),
-                                                )
-                                              : Container(),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      )
-                    : Container(),
-                isPortrait
-                    ? Expanded(
-                        flex: 2,
-                        child: !switchTOAssignment
-                            ? Container(
-                                // height: 500,
-                                child: ListView.builder(
-                                shrinkWrap: true,
-                                itemCount: _video.length,
-                                itemBuilder: (context, index) {
-                                  if (_video[index].type == 'video') {
-                                    return InkWell(
-                                      onTap: () {
-                                        setState(() {
-                                          serialNo =
-                                              int.parse(_video[index].serialNo);
-                                        });
-                                        if (_video[index].type == 'video') {
+                        ),
+                      ],
+                    )
+                        : Container(),
+                    isPortrait
+                        ? Expanded(
+                      flex: 2,
+                      child: !switchTOAssignment
+                          ? Container(
+                        // height: 500,
+                        child: StreamBuilder(
+                          stream: FirebaseFirestore.instance
+                              .collection('courses')
+                              .doc(courseId)
+                              .collection('Modules')
+                              .doc(moduleId)
+                              .collection('Topics')
+                              .orderBy('sr')
+                              .snapshots(),
+                          builder: (BuildContext context,
+                              AsyncSnapshot snapshot) {
+                            if (snapshot.data != null) {
+                              return ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: snapshot.data!.docs.length,
+                                  itemBuilder: (context, index) {
+                                    // VideoPlayerController? _videoController;
+                                    Map<String, dynamic> map = snapshot
+                                        .data!.docs[index]
+                                        .data();
+                                    // VideoScreen.urlString!.value = map['url'];
+                                    if (map['type'] == 'video') {
+                                      return InkWell(
+                                        onTap: () {
                                           setState(() {
-                                            showAssignment = false;
+                                            serialNo = map['sr'];
                                           });
-                                          intializeVidController(
-                                              _video[index].videoUrl);
-                                        } else if (_video[index].type ==
-                                            'assignment') {
+                                          if (map['type'] == 'video') {
+                                            setState(() {
+                                              showAssignment = false;
+                                            });
+                                            intializeVidController(
+                                                map['url']);
+                                          } else if (map['type'] ==
+                                              'assignment') {
+                                            setState(() {
+                                              showAssignment =
+                                              !showAssignment;
+                                              serialNo = map['sr'];
+                                              assignMentVideoUrl =
+                                              map['solution'];
+                                            });
+                                          }
                                           setState(() {
-                                            showAssignment = !showAssignment;
-                                            serialNo = int.parse(
-                                                _video[index].serialNo);
-                                            // assignMentVideoUrl =
-                                            //     map['solution'];
+                                            data = map;
+                                            downloading = false;
+                                            downloaded = false;
                                           });
-                                        }
-                                        setState(() {
-                                          data = _video[index]
-                                              as Map<String, dynamic>;
-                                          downloading = false;
-                                          downloaded = false;
-                                        });
-                                      },
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          color: serialNo ==
-                                                  int.parse(
-                                                      _video[index].serialNo)
-                                              ? Color(0xFFDDD2FB)
-                                                  .withOpacity(0.3)
-                                              : Colors.transparent,
-                                        ),
-                                        child: Column(
-                                          children: [
-                                            SizedBox(
-                                              height: 10,
-                                            ),
-                                            Row(
-                                              children: [
-                                                SizedBox(
-                                                  width: 30,
-                                                ),
-                                                Container(
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
-                                                    child: index < 9
-                                                        ? Text(
-                                                            '  ${index + 1}',
-                                                            style: TextStyle(
-                                                                // fontSize:
-                                                                //     18,
-                                                                ),
-                                                          )
-                                                        : Text(
-                                                            '${index + 1}',
-                                                            style: TextStyle(
-                                                                // fontSize:
-                                                                //     17,
-                                                                ),
-                                                          ),
+                                        },
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            color: serialNo == map['sr']
+                                                ? Color(0xFFDDD2FB)
+                                                .withOpacity(0.3)
+                                                : Colors.transparent,
+                                            // border: widget.sr == map['sr']
+                                            //     ? Border.all(
+                                            //         color: Color(0xFFaefb2a)
+                                            //             .withOpacity(0.8),
+                                            //         width: 2)
+                                            //     : Border.all(
+                                            //         color:
+                                            //             Colors.transparent)
+                                          ),
+                                          child: Column(
+                                            children: [
+                                              SizedBox(
+                                                height: 10,
+                                              ),
+                                              Row(
+                                                children: [
+                                                  SizedBox(
+                                                    width: 30,
                                                   ),
-                                                ),
-                                                SizedBox(
-                                                  width: 10,
-                                                ),
-                                                Icon(
-                                                    Icons
-                                                        .play_circle_fill_rounded,
-                                                    size: 15),
-                                                SizedBox(
-                                                  width: 10,
-                                                ),
-                                                Expanded(
-                                                  child: Text(
-                                                    _video[index].videoTitle,
-                                                    textScaleFactor: min(
-                                                        horizontalScale,
-                                                        verticalScale),
-                                                    style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      fontSize: 17,
-                                                      fontFamily: "Medium",
+                                                  Container(
+                                                    child: Padding(
+                                                      padding:
+                                                      const EdgeInsets
+                                                          .all(8.0),
+                                                      child: index < 9
+                                                          ? Text(
+                                                        '  ${index + 1}',
+                                                        style: TextStyle(
+                                                          // fontSize:
+                                                          //     18,
+                                                        ),
+                                                      )
+                                                          : Text(
+                                                        '${index + 1}',
+                                                        style: TextStyle(
+                                                          // fontSize:
+                                                          //     17,
+                                                        ),
+                                                      ),
                                                     ),
-                                                    maxLines: 2,
                                                   ),
-                                                ),
-                                              ],
-                                            ),
-                                            SizedBox(
-                                              height: 10,
-                                            ),
-                                          ],
+                                                  SizedBox(
+                                                    width: 10,
+                                                  ),
+                                                  Icon(
+                                                      Icons
+                                                          .play_circle_fill_rounded,
+                                                      size: 15),
+                                                  SizedBox(
+                                                    width: 10,
+                                                  ),
+                                                  Expanded(
+                                                    child: Text(
+                                                      map['name'],
+                                                      textScaleFactor: min(
+                                                          horizontalScale,
+                                                          verticalScale),
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                        FontWeight
+                                                            .w500,
+                                                        fontSize: 17,
+                                                        fontFamily:
+                                                        "Medium",
+                                                      ),
+                                                      maxLines: 2,
+                                                    ),
+                                                  ),
+                                                  // Expanded(
+                                                  //   flex: 1,
+                                                  //   child: InkWell(
+                                                  //     onTap: () async {
+                                                  //       var directory =
+                                                  //           await getApplicationDocumentsDirectory();
+                                                  //       download(
+                                                  //         dio: Dio(),
+                                                  //         fileName: map[
+                                                  //             'name'],
+                                                  //         url: map[
+                                                  //             'url'],
+                                                  //         savePath:
+                                                  //             "${directory.path}/${data!['name'].replaceAll(' ', '')}.mp4",
+                                                  //         topicName: map[
+                                                  //             'name'],
+                                                  //       );
+                                                  //       print(directory
+                                                  //           .path);
+                                                  //     },
+                                                  //     child: downloading!
+                                                  //         ? data!['name'] == map['name']
+                                                  //             ? Icon(
+                                                  //                 Icons
+                                                  //                     .downloading_sharp,
+                                                  //                 color:
+                                                  //                     Color(0xFFC0AAF5),
+                                                  //               )
+                                                  //             : Icon(
+                                                  //                 Icons
+                                                  //                     .download_for_offline,
+                                                  //               )
+                                                  //         : !downloaded
+                                                  //             ? Icon(
+                                                  //                 Icons
+                                                  //                     .download_for_offline,
+                                                  //               )
+                                                  //             : data!['name'] == map['name']
+                                                  //                 ? Icon(
+                                                  //                     Icons.download_done_sharp,
+                                                  //                     color: Color(0xFF7860DC),
+                                                  //                   )
+                                                  //                 : Icon(
+                                                  //                     Icons.download_for_offline,
+                                                  //                   ),
+                                                  //   ),
+                                                  // )
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                height: 10,
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                    );
-                                  } else {
-                                    return Container();
-                                  }
-                                },
-                              ))
-                            : AssignmentScreen(
-                                isdemo: false,
-                                sr: serialNo,
-                              ),
+                                      );
+                                    } else {
+                                      return Container();
+                                    }
+                                  });
+                            } else {
+                              return Container();
+                            }
+                          },
+                        ),
                       )
-                    : Container(),
-              ],
-            );
-          },
-        ),
-      ),
-    ));
+                          : AssignmentScreen(
+                        isdemo: false,
+                        sr: serialNo,
+                        // playSolVideo: () {
+                        //   setState(() {
+                        //     showAssignment = false;
+                        //     showAssignSol = false;
+                        //     // switchTOAssignment = false;
+                        //   });
+                        //   intializeVidController(assignVideoUrl!);
+                        // },
+                      ),
+                    )
+                        : Container(),
+                  ],
+                );
+              },
+            ),
+          ),
+        ));
   }
 }
 

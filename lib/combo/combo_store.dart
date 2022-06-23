@@ -75,56 +75,7 @@ class _ComboStoreState extends State<ComboStore> with CouponCodeMixin {
       });
     });
   }
-  // void _handlePaymentSuccess(PaymentSuccessResponse response) {
-  //   showToast("Payment successful");
-  //   addCoursetoUser(id!);
-  //   updateCouponDetailsToUser(
-  //     couponCodeText: couponCodeController.text,
-  //     courseBaughtId: id!,
-  //     NoCouponApplied: NoCouponApplied,
-  //   );
-  //   pushToHome();
-  //   print("Payment Done");
-  // }
 
-  // void pushToHome() {
-  //   // Navigator.push(
-  //   //   context,
-  //   //   PageTransition(
-  //   //       duration: Duration(milliseconds: 400),
-  //   //       curve: Curves.bounceInOut,
-  //   //       type: PageTransitionType.rightToLeft,
-  //   //       child: HomePage()),
-  //   // );
-  //   Navigator.pushAndRemoveUntil(
-  //       context,
-  //       PageTransition(
-  //         duration: Duration(milliseconds: 200),
-  //         curve: Curves.bounceInOut,
-  //         type: PageTransitionType.rightToLeft,
-  //         child: HomePage(),
-  //       ),
-  //       (route) => false);
-  //   print('pushedtohome');
-  // }
-
-  // void addCoursetoUser(String id) async {
-  //   await FirebaseFirestore.instance
-  //       .collection('Users')
-  //       .doc(FirebaseAuth.instance.currentUser!.uid)
-  //       .update({
-  //     'paidCourseNames': FieldValue.arrayUnion([id])
-  //   });
-  // }
-
-  // void _handlePaymentError(PaymentFailureResponse response) {
-  //   showToast("Payment failed");
-  //   print("Payment Fail");
-  // }
-
-  // void _handleExternalWallet(ExternalWalletResponse response) {
-  //   print("External wallet");
-  // }
 
   @override
   void initState() {
@@ -133,13 +84,6 @@ class _ComboStoreState extends State<ComboStore> with CouponCodeMixin {
     _scrollController.addListener(_scrollListener);
   }
 
-  // double closeBottomSheetAt() {
-  //   RenderBox box =
-  //       _positionKey.currentContext!.findRenderObject() as RenderBox;
-  //   Offset position = box.localToGlobal(Offset.zero); //this is global position
-  //   double pixels = position.dy;
-  //   return pixels;
-  // }
 
   void _scrollListener() {
     RenderBox? box =
@@ -184,10 +128,8 @@ class _ComboStoreState extends State<ComboStore> with CouponCodeMixin {
                 SizedBox(
                   height: 217,
                 ),
-                includes(context),
-                SizedBox(
-                  height: 20,
-                ),
+
+
                 Padding(
                   padding: const EdgeInsets.only(left: 10),
                   child: Align(
@@ -205,10 +147,6 @@ class _ComboStoreState extends State<ComboStore> with CouponCodeMixin {
                           height: 1),
                     ),
                   ),
-                ),
-                SizedBox(
-                  key: _positionKey,
-                  height: 20,
                 ),
                 Container(
                     width: screenWidth,
@@ -238,7 +176,7 @@ class _ComboStoreState extends State<ComboStore> with CouponCodeMixin {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) =>
-                                          const CatelogueScreen(),
+                                      const CatelogueScreen(),
                                     ),
                                   );
                                 },
@@ -269,7 +207,7 @@ class _ComboStoreState extends State<ComboStore> with CouponCodeMixin {
                                     //card on combopage
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.stretch,
+                                    CrossAxisAlignment.stretch,
                                     children: [
                                       SizedBox(width: 10),
                                       ClipRRect(
@@ -279,11 +217,11 @@ class _ComboStoreState extends State<ComboStore> with CouponCodeMixin {
                                           height: 111,
                                           decoration: BoxDecoration(
                                               borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(15),
-                                            topRight: Radius.circular(15),
-                                            bottomLeft: Radius.circular(15),
-                                            bottomRight: Radius.circular(15),
-                                          )),
+                                                topLeft: Radius.circular(15),
+                                                topRight: Radius.circular(15),
+                                                bottomLeft: Radius.circular(15),
+                                                bottomRight: Radius.circular(15),
+                                              )),
                                           child: Image.network(
                                               course[index].courseImageUrl),
                                         ),
@@ -291,9 +229,9 @@ class _ComboStoreState extends State<ComboStore> with CouponCodeMixin {
                                       SizedBox(width: 10),
                                       Column(
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                         mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
+                                        MainAxisAlignment.spaceEvenly,
                                         children: [
                                           // SizedBox(
                                           //   height: 10,
@@ -308,7 +246,7 @@ class _ComboStoreState extends State<ComboStore> with CouponCodeMixin {
                                                   verticalScale),
                                               style: TextStyle(
                                                 color:
-                                                    Color.fromRGBO(0, 0, 0, 1),
+                                                Color.fromRGBO(0, 0, 0, 1),
                                                 fontFamily: 'Poppins',
                                                 fontSize: 20,
                                                 letterSpacing: 0,
@@ -334,7 +272,7 @@ class _ComboStoreState extends State<ComboStore> with CouponCodeMixin {
                                                   fontFamily: 'Poppins',
                                                   fontSize: 10,
                                                   letterSpacing:
-                                                      0 /*percentages not used in flutter. defaulting to zero*/,
+                                                  0 /*percentages not used in flutter. defaulting to zero*/,
                                                   fontWeight: FontWeight.normal,
                                                   height: 1),
                                             ),
@@ -353,7 +291,7 @@ class _ComboStoreState extends State<ComboStore> with CouponCodeMixin {
                                                     fontFamily: 'Poppins',
                                                     fontSize: 20,
                                                     letterSpacing:
-                                                        0 /*percentages not used in flutter. defaulting to zero*/,
+                                                    0 /*percentages not used in flutter. defaulting to zero*/,
                                                     fontWeight: FontWeight.bold,
                                                     height: 1),
                                               ),
@@ -365,15 +303,15 @@ class _ComboStoreState extends State<ComboStore> with CouponCodeMixin {
                                                 height: 25 * verticalScale,
                                                 decoration: BoxDecoration(
                                                   borderRadius:
-                                                      BorderRadius.only(
+                                                  BorderRadius.only(
                                                     topLeft:
-                                                        Radius.circular(50),
+                                                    Radius.circular(50),
                                                     topRight:
-                                                        Radius.circular(50),
+                                                    Radius.circular(50),
                                                     bottomLeft:
-                                                        Radius.circular(50),
+                                                    Radius.circular(50),
                                                     bottomRight:
-                                                        Radius.circular(50),
+                                                    Radius.circular(50),
                                                   ),
                                                   boxShadow: [
                                                     BoxShadow(
@@ -401,9 +339,9 @@ class _ComboStoreState extends State<ComboStore> with CouponCodeMixin {
                                                         fontFamily: 'Poppins',
                                                         fontSize: 10,
                                                         letterSpacing:
-                                                            0 /*percentages not used in flutter. defaulting to zero*/,
+                                                        0 /*percentages not used in flutter. defaulting to zero*/,
                                                         fontWeight:
-                                                            FontWeight.normal,
+                                                        FontWeight.normal,
                                                         height: 1),
                                                   ),
                                                 ),
@@ -423,6 +361,15 @@ class _ComboStoreState extends State<ComboStore> with CouponCodeMixin {
                         },
                       ),
                     )),
+                SizedBox(
+                  height: 20,
+                ),
+                includes(context),
+                SizedBox(
+                  key: _positionKey,
+                  height: 20,
+                ),
+
                 // Container(
                 //   key: _positionKey,
                 // ),
