@@ -392,27 +392,27 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
                         ],
                       ),
-                      Padding(
-                        padding:  EdgeInsets.all(min(horizontalScale,verticalScale)*8.0),
-                        child: Divider(thickness: 2,),
-                      ),
-                      SizedBox(
-                        height: verticalScale*20,
-                      ),
-                      ElevatedButton(
-                          child: Text('CHANGE PASSWORD',
-                              textScaleFactor:min(horizontalScale,verticalScale) ,
-                              style: TextStyle(
-                                fontSize: 16
-                              ),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            primary: HexColor('7A62DE'),
-                          ),
-                        onPressed: (){
-                                Navigator.push(context,MaterialPageRoute(builder: (context) => ChangePassword()));
-                                },
-                      )
+                      // Padding(
+                      //   padding:  EdgeInsets.all(min(horizontalScale,verticalScale)*8.0),
+                      //   child: Divider(thickness: 2,),
+                      // ),
+                      // SizedBox(
+                      //   height: verticalScale*20,
+                      // ),
+                      // ElevatedButton(
+                      //     child: Text('CHANGE PASSWORD',
+                      //         textScaleFactor:min(horizontalScale,verticalScale) ,
+                      //         style: TextStyle(
+                      //           fontSize: 16
+                      //         ),
+                      //     ),
+                      //     style: ElevatedButton.styleFrom(
+                      //       primary: HexColor('7A62DE'),
+                      //     ),
+                      //   onPressed: (){
+                      //           Navigator.push(context,MaterialPageRoute(builder: (context) => ChangePassword()));
+                      //           },
+                      // )
                     ],
                   ),
                 )

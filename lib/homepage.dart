@@ -7,6 +7,7 @@ import 'package:cloudyml_app2/catalogue_screen.dart';
 import 'package:cloudyml_app2/combo/combo_store.dart';
 import 'package:cloudyml_app2/home.dart';
 import 'package:cloudyml_app2/models/course_details.dart';
+import 'package:cloudyml_app2/pages/notificationpage.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:cloudyml_app2/store.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +36,7 @@ class _HomeState extends State<Home> {
   List<Icon> list = [];
 
   late ScrollController _controller;
+
 
   @override
   void initState() {
@@ -121,6 +123,25 @@ class _HomeState extends State<Home> {
                           ],
                         ),
                       )),
+                  Positioned(
+                      top: 30 * verticalScale,
+                      right: 2 * horizontalScale,
+                      child: IconButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => NotificationPage()
+                            ),
+                          );
+                        },
+                        icon:Icon(Icons.notifications_active,
+                          size: 26,
+                          color: Colors.white,
+                        ),
+
+                      ),
+                  ),
                 ],
               ),
             ),
@@ -328,7 +349,7 @@ class _HomeState extends State<Home> {
               ),
             ),
             Container(
-              height: screenHeight * 0.9 * verticalScale,
+              height: screenHeight * 0.81 * verticalScale,
               width: screenWidth,
               padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
               child: FutureBuilder<List<FirebaseFile>>(
@@ -375,7 +396,7 @@ class _HomeState extends State<Home> {
                 },
               ),
             ),
-            SizedBox(height: 15,),
+            //SizedBox(height: 15,),
             Container(
               width: 414 * horizontalScale,
               height: 250 * verticalScale,
@@ -417,12 +438,8 @@ class _HomeState extends State<Home> {
             ),
             Padding(
               padding: EdgeInsets.only(left: 20, top: 10, bottom: 20),
-              child: Container(
-                width: 364,
-                height: 420,
-                child: Text(
-                  'I have 3\+ years experience in Machine Learning\. I have done 4 industrial IoT Machine Learning projects which includes data\-preprocessing\, data cleaning\, feature selection\, model building\, optimization and deployment to AWS Sagemaker\.  Now\, I even started my YouTube channel for sharing my ML and AWS knowledge Currently, I work with Tredence Inc. as a Data Scientist for the AI CoE (Center of Excellence) team. Here I work on challenging R&D projects and building various PoCs for winning new client projects for the company.When I had put papers in previous company, I practically had no offer. First 2 months were very difficult and disappointing as I couldn’t land any offer. But things suddenly started working out in the last month and I was able to bag 8 offers from various banks, analytical companies and some startups.I made this website to use all my interview experiences to help people land their dream job\.',
-                ),
+              child: Text(
+                'I have 3\+ years experience in Machine Learning\. I have done 4 industrial IoT Machine Learning projects which includes data\-preprocessing\, data cleaning\, feature selection\, model building\, optimization and deployment to AWS Sagemaker\.  Now\, I even started my YouTube channel for sharing my ML and AWS knowledge Currently, I work with Tredence Inc. as a Data Scientist for the AI CoE (Center of Excellence) team. Here I work on challenging R&D projects and building various PoCs for winning new client projects for the company.When I had put papers in previous company, I practically had no offer. First 2 months were very difficult and disappointing as I couldn’t land any offer. But things suddenly started working out in the last month and I was able to bag 8 offers from various banks, analytical companies and some startups.I made this website to use all my interview experiences to help people land their dream job\.',
               ),
             ),
             Padding(
@@ -474,6 +491,7 @@ class _HomeState extends State<Home> {
             ),
           ],
         ),
+
       ),
       
     );

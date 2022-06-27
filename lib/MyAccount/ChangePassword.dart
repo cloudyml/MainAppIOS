@@ -22,7 +22,9 @@ class ChangePassword extends StatefulWidget {
 class _ChangePasswordState extends State<ChangePassword> {
 
   final newpasswordController=TextEditingController();
+  final oldpasswordController=TextEditingController();
   var newPassword="";
+  var oldPassword="";
   final currentuser=FirebaseAuth.instance.currentUser;
   final _formkey=GlobalKey<FormState>();
   bool _isHidden = true;
@@ -69,6 +71,13 @@ class _ChangePasswordState extends State<ChangePassword> {
       appBar: AppBar(
         title: Text('Change Password'),
         backgroundColor: HexColor('7A62DE'),
+        leading: BackButton(
+          onPressed: () async{
+            FocusScope.of(context).requestFocus(new FocusNode());
+            await Future.delayed(Duration(milliseconds: 60));
+            Navigator.pop(context);
+          },
+      ),
       ),
       body: Form(
         key: _formkey,
@@ -147,7 +156,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                       ),
                       SizedBox(height: verticalScale*18,),
                       TextFormField(
-                        controller: pass,
+                        controller: oldpasswordController,
                         decoration: InputDecoration(
                             hintText: 'Enter old Password',
                             hintStyle: TextStyle(
@@ -256,7 +265,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                             setState((){
                               newPassword=newpasswordController.text;
                             });
-                            changePassword(userprovider.userModel!.email,pass.text);
+                            changePassword(userprovider.userModel!.email,oldpasswordController.text);
                             //appprovider.changeIsLoading();
                           }
                         },

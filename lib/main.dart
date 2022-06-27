@@ -1,15 +1,21 @@
 import 'dart:async';
 
+import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloudyml_app2/MyAccount/myaccount.dart';
 import 'package:cloudyml_app2/Providers/AppProvider.dart';
 import 'package:cloudyml_app2/Providers/UserProvider.dart';
 import 'package:cloudyml_app2/authentication/firebase_auth.dart';
 import 'package:cloudyml_app2/globals.dart';
 import 'package:cloudyml_app2/models/course_details.dart';
 import 'package:cloudyml_app2/models/video_details.dart';
+import 'package:cloudyml_app2/my_Courses.dart';
 import 'package:cloudyml_app2/offline/offline_videos.dart';
 import 'package:cloudyml_app2/screens/splash.dart';
 import 'package:cloudyml_app2/services/database_service.dart';
+import 'package:cloudyml_app2/services/local_notificationservice.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
@@ -18,9 +24,20 @@ import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 
+//Recieve message when app is in background ...solution for on message
+Future<void> backgroundHandler(RemoteMessage message) async{
+  print(message.data.toString());
+  print(message.notification!.title);
+}
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  AwesomeNotifications().initialize(null, [
+        NotificationChannel(channelKey: 'image', channelName: 'CloudyML', channelDescription: "CloudyML",enableLights: true)
+      ]
+  ) ;
+  LocalNotificationService.initialize();
   await Firebase.initializeApp();
+  FirebaseMessaging.onBackgroundMessage(backgroundHandler);
   runApp(MaterialApp(debugShowCheckedModeBanner: false, home: MyApp()));
   SystemChrome.setSystemUIOverlayStyle(
     SystemUiOverlayStyle(
@@ -199,6 +216,10 @@ class MyApp extends StatelessWidget {
               // textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme)
             ),
             home: splash(),
+            routes: {
+              "account":(_) =>MyAccountPage(),
+              "courses":(_) =>HomeScreen(),
+            },
           ),
         ),
       ),

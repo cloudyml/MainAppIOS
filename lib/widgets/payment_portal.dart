@@ -1,10 +1,13 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloudyml_app2/Providers/UserProvider.dart';
 import 'package:cloudyml_app2/globals.dart';
 import 'package:cloudyml_app2/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:provider/provider.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:upi_plugin/upi_plugin.dart';
 import 'package:cloudyml_app2/widgets/coupon_code.dart';
@@ -19,6 +22,7 @@ class PaymentButton extends StatefulWidget {
   final String buttonTextForCode;
   final String amountString;
   final String courseName;
+  final String courseImageUrl;
   final String courseDescription;
   // final Razorpay razorpay;
   final Function updateCourseIdToCouponDetails;
@@ -36,6 +40,7 @@ class PaymentButton extends StatefulWidget {
       required this.changeState,
       required this.NoCouponApplied,
       required this.buttonText,
+        required this.courseImageUrl,
       required this.buttonTextForCode,
       required this.amountString,
       required this.courseName,
@@ -187,7 +192,7 @@ class _PaymentButtonState extends State<PaymentButton> with CouponCodeMixin {
     print("External wallet");
   }
 
-  void _handlePaymentSuccess(PaymentSuccessResponse response) {
+  void _handlePaymentSuccess(PaymentSuccessResponse response) async{
     showToast("Payment successful");
     addCoursetoUser(widget.courseId);
     updateCouponDetailsToUser(
@@ -205,6 +210,25 @@ class _PaymentButtonState extends State<PaymentButton> with CouponCodeMixin {
     // disableMinAmtBtn();
     // enableoutStandingAmtBtn();
     print("Payment Done");
+    await AwesomeNotifications().createNotification(
+        content:NotificationContent(
+            id:  12345,
+            channelKey: 'image',
+            title: widget.courseName,
+            body: 'You bought ${widget.courseName}.Go to My courses.',
+            bigPicture: widget.courseImageUrl,
+            largeIcon: 'asset://assets/logo2.png',
+            notificationLayout: NotificationLayout.BigPicture,
+            displayOnForeground: true
+        )
+    );
+    await Provider.of<UserProvider>(context, listen: false).addToNotificationP(
+      title: widget.courseName,
+      body: 'You bought ${widget.courseName}.Go to My courses.',
+      notifyImage: widget.courseImageUrl,
+      //index:
+    );
+
   }
 
   // void disableMinAmtBtn() {
@@ -832,7 +856,7 @@ class _PaymentButtonState extends State<PaymentButton> with CouponCodeMixin {
                           'description': widget.courseDescription,
                           'timeout': 300, //in seconds
                           'prefill': {
-                            'contact': '8879369452', //original number and email
+                            'contact': '7447332096', //original number and email
                             'email': 'test@razorpay.com'
                           }
                         };
