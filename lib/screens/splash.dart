@@ -1,3 +1,8 @@
+import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloudyml_app2/services/local_notificationservice.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:page_transition/page_transition.dart';
@@ -6,6 +11,7 @@ import 'package:drop_shadow_image/drop_shadow_image.dart';
 import '../authentication/firebase_auth.dart';
 
 class splash extends StatefulWidget {
+
   const splash({Key? key}) : super(key: key);
 
   @override
@@ -13,6 +19,67 @@ class splash extends StatefulWidget {
 }
 
 class _splashState extends State<splash> {
+  @override
+  void initState(){
+    // TODO:implement initState
+    super.initState();
+    //listnerNotifications();
+    //gives you the message on which user taps and opens
+    //the app from terminated state
+    FirebaseMessaging.instance.getInitialMessage().then(
+          (message) {
+        print("FirebaseMessaging.instance.getInitialMessage");
+        if (message != null) {
+          print("New Notification");
+          // if (message.data['_id'] != null) {
+          //   Navigator.of(context).push(
+          //     MaterialPageRoute(
+          //       builder: (context) => DemoScreen(
+          //         id: message.data['_id'],
+          //       ),
+          //     ),
+          //   );
+          // }
+        }
+      },
+    );
+
+    ////foreground notification
+    FirebaseMessaging.onMessage.listen((message) {
+      if(message.notification!=null){
+        print(message.notification!.title);
+        print(message.notification!.body);
+      }
+      LocalNotificationService.createanddisplaynotification(message);
+    });
+
+    ////app is background but opened and user taps on the notification
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      // String imageUrl = message.notification!.android!.imageUrl??'';
+      // _firestore.collection('Notifications')
+      //     .add({
+      //   'title':message.notification!.title,
+      //   'description':message.notification!.body,
+      //   'icon':imageUrl
+      // });
+      final routeFromMessage=message.data["route"];
+      print(routeFromMessage);
+      Navigator.of(context).pushNamed(routeFromMessage);
+    });
+  }
+
+  // StreamSubscription<String?> listnerNotifications(){
+  //   return LocalNotificationService.onNotifications.stream.listen(onClickedNotification);
+  // }
+  // void onClickedNotification(String? payload) {
+  //   //dispose();
+  //   if(!mounted){
+  //     // setState((){
+  //       Navigator.of(context).pushNamed('account');
+  //     //});
+  //   }
+  // }
+
   void pushToHome() {
     Navigator.pushAndRemoveUntil(
         context,
@@ -25,6 +92,7 @@ class _splashState extends State<splash> {
         (route) => false);
     print('pushedtohome');
   }
+
 
   @override
   Widget build(BuildContext context) {

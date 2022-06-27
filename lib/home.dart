@@ -1,3 +1,4 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloudyml_app2/MyAccount/myaccount.dart';
 import 'package:cloudyml_app2/Providers/UserProvider.dart';
@@ -11,6 +12,7 @@ import 'package:cloudyml_app2/offline/offline_videos.dart';
 import 'package:cloudyml_app2/privacy_policy.dart';
 import 'package:cloudyml_app2/screens/groups_list.dart';
 import 'package:cloudyml_app2/services/database_service.dart';
+import 'package:cloudyml_app2/services/local_notificationservice.dart';
 import 'package:cloudyml_app2/store.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -277,6 +279,36 @@ class _HomePageState extends State<HomePage> {
                 logOut(context);
               },
             ),
+            // InkWell(
+            //   child: ListTile(
+            //     title: Text('Notification Local'),
+            //     leading: Icon(
+            //       Icons.book,
+            //       color: HexColor('6153D3'),
+            //     ),
+            //   ),
+            //   ),
+            //   onTap: () async {
+            //
+            //     await AwesomeNotifications().createNotification(
+            //         content:NotificationContent(
+            //             id:  1234,
+            //             channelKey: 'image',
+            //           title: 'Welcome to CloudyML',
+            //           body: 'It\'s great to have you on CloudyML',
+            //           bigPicture: 'asset://assets/HomeImage.png',
+            //           largeIcon: 'asset://assets/logo2.png',
+            //           notificationLayout: NotificationLayout.BigPicture,
+            //           displayOnForeground: true
+            //         )
+            //     );
+            //     // LocalNotificationService.showNotificationfromApp(
+            //     //   title: 'Welcome to CloudyML',
+            //     //   body: 'It\'s great to have you on CloudyML',
+            //     //   payload: 'account'
+            //     // );
+            //   },
+            // ),
           ],
         ),
       ),

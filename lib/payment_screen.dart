@@ -476,6 +476,7 @@ class _PaymentScreenState extends State<PaymentScreen> with CouponCodeMixin {
                             1000)
                         .toStringAsFixed(2),
                     courseId: widget.map!['id'],
+                    courseImageUrl: widget.map!['image_url'],
                     couponCodeText: couponCodeController.text,
                     isItComboCourse: widget.isItComboCourse,
                     whichCouponCode: couponCodeController.text,

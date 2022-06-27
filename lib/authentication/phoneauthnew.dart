@@ -1,7 +1,9 @@
 import 'dart:math';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloudyml_app2/Providers/UserProvider.dart';
 import 'package:cloudyml_app2/authentication/firebase_auth.dart';
 import 'package:cloudyml_app2/globals.dart';
 import 'package:cloudyml_app2/home.dart';
@@ -14,6 +16,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:lottie/lottie.dart';
 
 import 'package:page_transition/page_transition.dart';
+import 'package:provider/provider.dart';
 
 class PhoneAuthentication extends StatefulWidget {
   @override
@@ -449,6 +452,24 @@ class _PhoneAuthenticationState extends State<PhoneAuthentication> {
                                     type: PageTransitionType.rightToLeft,
                                     child: HomePage()),
                                 (route) => false);
+                            await AwesomeNotifications().createNotification(
+                                content:NotificationContent(
+                                    id:  1234,
+                                    channelKey: 'image',
+                                    title: 'Welcome to CloudyML',
+                                    body: 'It\'s great to have you on CloudyML',
+                                    bigPicture: 'asset://assets/HomeImage.png',
+                                    largeIcon: 'asset://assets/logo2.png',
+                                    notificationLayout: NotificationLayout.BigPicture,
+                                    displayOnForeground: true
+                                )
+                            );
+                            await Provider.of<UserProvider>(context, listen: false).addToNotificationP(
+                                title: 'Welcome to CloudyML',
+                                body: 'It\'s great to have you on CloudyML',
+                                notifyImage: 'https://firebasestorage.googleapis.com/v0/b/cloudyml-app.appspot.com/o/images%2Fhomeimage.png?alt=media&token=2f4abc37-413f-49c3-b43d-03c02696567e'
+                              //index:
+                            );
                           } else {
                             setState(() {
                               _verifyloading = false;

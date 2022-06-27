@@ -1,10 +1,13 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloudyml_app2/MyAccount/ChangePassword.dart';
 import 'package:cloudyml_app2/MyAccount/EditProfile.dart';
 import 'package:cloudyml_app2/Providers/UserProvider.dart';
 import 'package:cloudyml_app2/authentication/firebase_auth.dart';
 import 'package:cloudyml_app2/globals.dart';
+import 'package:cloudyml_app2/offline/offline_videos.dart';
+import 'package:cloudyml_app2/pages/notificationpage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -168,35 +171,6 @@ class _MyAccountPageState extends State<MyAccountPage> {
                         padding: EdgeInsets.fromLTRB(horizontalScale*30,verticalScale*0,horizontalScale*30,verticalScale*0),
                         child: Divider(height:1,thickness: 1,color: Colors.black,),
                       ),
-                      Padding(
-                          padding:EdgeInsets.fromLTRB(horizontalScale*29,verticalScale*25,horizontalScale*18,verticalScale*14),
-                          child: Row(
-                            children: [
-                              Container(
-                                  height:min(horizontalScale,verticalScale)*42,
-                                  width: min(horizontalScale,verticalScale)*42,
-                                  decoration:  BoxDecoration(
-                                    color: HexColor('EBE9FE'),
-                                    borderRadius: BorderRadius.all(Radius.circular(min(horizontalScale,verticalScale)*8)),
-                                  ),
-                                  child: Icon(Icons.school,color: HexColor('6153D3'),)
-                              ),
-                              SizedBox(width: horizontalScale*18,),
-                              Text(
-                                'My Certificates',
-                                textScaleFactor:min(horizontalScale,verticalScale) ,
-                                style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w600
-                                ),
-                              ),
-                            ],
-                          )
-                      ),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(horizontalScale*30,verticalScale*0,horizontalScale*30,verticalScale*0),
-                        child: Divider(height:1,thickness: 1,color: Colors.black,),
-                      ),
                       InkWell(
                         onTap: (){
                           showModalBottomSheet(
@@ -335,59 +309,105 @@ class _MyAccountPageState extends State<MyAccountPage> {
                         padding: EdgeInsets.fromLTRB(horizontalScale*30,verticalScale*0,horizontalScale*30,verticalScale*0),
                         child: Divider(height:1,thickness: 1,color: Colors.black,),
                       ),
-                      Padding(
-                          padding:  EdgeInsets.fromLTRB(horizontalScale*29,verticalScale*23,horizontalScale*18,verticalScale*14),
-                          child: Row(
-                            children: [
-                              Container(
-                                  height:min(horizontalScale,verticalScale)*42,
-                                  width: min(horizontalScale,verticalScale)*42,
-                                  decoration:  BoxDecoration(
-                                    color: HexColor('EBE9FE'),
-                                    borderRadius: BorderRadius.all(Radius.circular(min(horizontalScale,verticalScale)*8)),
-                                  ),
-                                  child: Icon(Icons.card_giftcard_sharp,color: HexColor('6153D3'),)
-                              ),
-                              SizedBox(width: horizontalScale*18,),
-                              Text(
-                                'Rewards',
-                                textScaleFactor:min(horizontalScale,verticalScale) ,
-                                style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w600
+                      InkWell(
+                        onTap: (){
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) => VideoScreenOffline()));
+                        },
+                        child: Padding(
+                            padding:  EdgeInsets.fromLTRB(horizontalScale*29,verticalScale*23,horizontalScale*18,verticalScale*14),
+                            child: Row(
+                              children: [
+                                Container(
+                                    height:min(horizontalScale,verticalScale)*42,
+                                    width: min(horizontalScale,verticalScale)*42,
+                                    decoration:  BoxDecoration(
+                                      color: HexColor('EBE9FE'),
+                                      borderRadius: BorderRadius.all(Radius.circular(min(horizontalScale,verticalScale)*8)),
+                                    ),
+                                    child: Icon(Icons.download,color: HexColor('6153D3'),)
                                 ),
-                              ),
-                            ],
-                          )
+                                SizedBox(width: horizontalScale*18,),
+                                Text(
+                                  'Downloads',
+                                  textScaleFactor:min(horizontalScale,verticalScale) ,
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600
+                                  ),
+                                ),
+                              ],
+                            )
+                        ),
                       ),
                       Padding(
                         padding: EdgeInsets.fromLTRB(horizontalScale*30,verticalScale*0,horizontalScale*30,verticalScale*0),
                         child: Divider(height:1,thickness: 1,color: Colors.black,),
                       ),
-                      Padding(
-                          padding:  EdgeInsets.fromLTRB(horizontalScale*29,verticalScale*22,horizontalScale*18,verticalScale*14),
-                          child: Row(
-                            children: [
-                              Container(
-                                  height:min(horizontalScale,verticalScale)*42,
-                                  width: min(horizontalScale,verticalScale)*42,
-                                  decoration:  BoxDecoration(
-                                    color: HexColor('EBE9FE'),
-                                    borderRadius: BorderRadius.all(Radius.circular(min(horizontalScale,verticalScale)*8)),
-                                  ),
-                                  child: Icon(Icons.notifications_active,color: HexColor('6153D3'),)
-                              ),
-                              SizedBox(width: horizontalScale*18,),
-                              Text(
-                                'Notifications',
-                                textScaleFactor:min(horizontalScale,verticalScale) ,
-                                style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w600
+                      InkWell(
+                        onTap: (){
+                              Navigator.push(context,
+                              MaterialPageRoute(builder: (context) => NotificationPage()));
+                        },
+                        child: Padding(
+                            padding:  EdgeInsets.fromLTRB(horizontalScale*29,verticalScale*22,horizontalScale*18,verticalScale*14),
+                            child: Row(
+                              children: [
+                                Container(
+                                    height:min(horizontalScale,verticalScale)*42,
+                                    width: min(horizontalScale,verticalScale)*42,
+                                    decoration:  BoxDecoration(
+                                      color: HexColor('EBE9FE'),
+                                      borderRadius: BorderRadius.all(Radius.circular(min(horizontalScale,verticalScale)*8)),
+                                    ),
+                                    child: Icon(Icons.notifications_active,color: HexColor('6153D3'),)
                                 ),
-                              ),
-                            ],
-                          )
+                                SizedBox(width: horizontalScale*18,),
+                                Text(
+                                  'Notifications',
+                                  textScaleFactor:min(horizontalScale,verticalScale) ,
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600
+                                  ),
+                                ),
+                              ],
+                            )
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(horizontalScale*30,verticalScale*0,horizontalScale*30,verticalScale*0),
+                        child: Divider(height:1,thickness: 1,color: Colors.black,),
+                      ),
+                      InkWell(
+                        onTap: (){
+                          Navigator.push(context,MaterialPageRoute(builder: (context) => ChangePassword()));
+                        },
+                        child: Padding(
+                            padding:EdgeInsets.fromLTRB(horizontalScale*29,verticalScale*25,horizontalScale*18,verticalScale*14),
+                            child: Row(
+                              children: [
+                                Container(
+                                    height:min(horizontalScale,verticalScale)*42,
+                                    width: min(horizontalScale,verticalScale)*42,
+                                    decoration:  BoxDecoration(
+                                      color: HexColor('EBE9FE'),
+                                      borderRadius: BorderRadius.all(Radius.circular(min(horizontalScale,verticalScale)*8)),
+                                    ),
+                                    child: Icon(Icons.key,color: HexColor('6153D3'),)
+                                ),
+                                SizedBox(width: horizontalScale*18,),
+                                Text(
+                                  'Change Password',
+                                  textScaleFactor:min(horizontalScale,verticalScale) ,
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600
+                                  ),
+                                ),
+                              ],
+                            )
+                        ),
                       ),
                       Padding(
                         padding: EdgeInsets.fromLTRB(horizontalScale*30,verticalScale*0,horizontalScale*30,verticalScale*0),
