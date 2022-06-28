@@ -1,7 +1,6 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloudyml_app2/Providers/UserProvider.dart';
-import 'package:cloudyml_app2/globals.dart';
 import 'package:cloudyml_app2/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +28,7 @@ class PaymentButton extends StatefulWidget {
   final String? whichCouponCode;
   final String outStandingAmountString;
   bool isItComboCourse;
-
+  
   String courseId;
   // String courseFetchedId;
 
@@ -849,15 +848,16 @@ class _PaymentButtonState extends State<PaymentButton> with CouponCodeMixin {
                             isOutStandingAmountCheckerPressed);
                         widget.updateCourseIdToCouponDetails();
                         var options = {
-                          'key': 'rzp_test_JeYtB3dCPKFsoP',
+                          'key': 'rzp_live_ESC1ad8QCKo9zb',
                           'amount':
                               amountStringForRp, //amount is paid in paises so pay in multiples of 100
                           'name': widget.courseName,
                           'description': widget.courseDescription,
                           'timeout': 300, //in seconds
                           'prefill': {
-                            'contact': '7447332096', //original number and email
-                            'email': 'test@razorpay.com'
+                            'contact': '7003482660', //original number and email
+                            'email': 'cloudyml.com@gmail.com'
+                            // 'test@razorpay.com'
                           }
                         };
                         _razorpay.open(options);

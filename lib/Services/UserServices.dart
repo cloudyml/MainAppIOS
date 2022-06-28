@@ -1,6 +1,5 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cloudyml_app2/models/UserNotificationModel.dart';
 import 'package:cloudyml_app2/models/UserModel.dart';
 
 class UserServices{

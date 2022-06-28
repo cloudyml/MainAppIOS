@@ -2,12 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloudyml_app2/globals.dart';
 import 'package:cloudyml_app2/module/assignment_screen.dart';
 import 'package:cloudyml_app2/module/video_screen.dart';
-import 'package:cloudyml_app2/screens/chat_group.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:razorpay_flutter/razorpay_flutter.dart';
+
 
 class Couse extends StatefulWidget {
   const Couse({Key? key}) : super(key: key);
