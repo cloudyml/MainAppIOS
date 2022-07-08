@@ -9,6 +9,8 @@ class UserModel{
   static const EMAIL='email';
   static const IMAGE='image';
   static const USERNOTIFICATIONS = "usernotification";
+  static const AUTHTYPE="authType";
+  static const PHONEVERIFIED="phoneVerified";
 
   //Question mark is for that the _id can be null also
   String? _id;
@@ -16,12 +18,16 @@ class UserModel{
   String? _email;
   String? _name;
   String? _image;
+  String? _authType;
+  bool? _phoneVerified;
 
   String? get id=> _id;
   String? get mobile=> _mobile;
   String? get email=> _email;
   String? get name=> _name;
   String? get image=> _image;
+  String? get authType=> _authType;
+  bool? get phoneVerified=> _phoneVerified;
 
   List<UserNotificationModel>? userNotificationList;
 
@@ -31,6 +37,8 @@ class UserModel{
     _email=(snapshot.data()![EMAIL]=='')?'Enter email':snapshot.data()![EMAIL];
     _mobile=(snapshot.data()![MOBILE]=='')?'__________':snapshot.data()![MOBILE];
     _id=snapshot.data()![ID];
+    _authType=snapshot.data()![AUTHTYPE];
+    _phoneVerified=snapshot.data()![PHONEVERIFIED];
     _image=(snapshot.data()![IMAGE]=='')?'https://stratosphere.co.in/img/user.jpg':snapshot.data()![IMAGE];
     userNotificationList=_convertNotificationItems(snapshot.data()?[USERNOTIFICATIONS]??[]);
   }

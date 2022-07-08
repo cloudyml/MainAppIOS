@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 
 import 'package:page_transition/page_transition.dart';
@@ -30,6 +31,7 @@ class _PhoneAuthenticationState extends State<PhoneAuthentication> {
   late final String? verifyid;
   bool _isloading = false;
   bool _verifyloading = false;
+  TextEditingController otp = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -440,6 +442,8 @@ class _PhoneAuthenticationState extends State<PhoneAuthentication> {
                                   name: '',
                                   image: '',
                                   mobilenumber: mobile.text,
+                                  authType: 'phoneAuth',
+                                  phoneVerified: true,
                                   email: '');
                               showToast('Account Created');
                             }
@@ -467,8 +471,8 @@ class _PhoneAuthenticationState extends State<PhoneAuthentication> {
                             await Provider.of<UserProvider>(context, listen: false).addToNotificationP(
                                 title: 'Welcome to CloudyML',
                                 body: 'It\'s great to have you on CloudyML',
-                                notifyImage: 'https://firebasestorage.googleapis.com/v0/b/cloudyml-app.appspot.com/o/images%2Fhomeimage.png?alt=media&token=2f4abc37-413f-49c3-b43d-03c02696567e'
-                              //index:
+                                notifyImage: 'https://firebasestorage.googleapis.com/v0/b/cloudyml-app.appspot.com/o/images%2Fhomeimage.png?alt=media&token=2f4abc37-413f-49c3-b43d-03c02696567e',
+                                NDate: DateFormat('dd-MM-yyyy | h:mm a').format(DateTime.now()),
                             );
                           } else {
                             setState(() {

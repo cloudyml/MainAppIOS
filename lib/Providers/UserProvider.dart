@@ -34,12 +34,13 @@ class UserProvider with ChangeNotifier{
       notifyListeners();
   }
 
-  Future<bool> addToNotificationP({String? title,String? body,String? notifyImage}) async{
+  Future<bool> addToNotificationP({String? title,String? body,String? notifyImage,String? NDate}) async{
     try{
       Map notificationItem={
         'title':title,
         'body':body,
         'notifyImage':notifyImage,
+        'NDate':NDate,
       };
 
       UserNotificationModel itemModel=UserNotificationModel.fromMap(notificationItem);
@@ -52,7 +53,7 @@ class UserProvider with ChangeNotifier{
     }
   }
   Future<bool> removeFromNotificationP({UserNotificationModel? userNotificationModel})async{
-    print("THE PRODUCT IS: ${userNotificationModel.toString()}");
+    print("THE Notification IS: ${userNotificationModel.toString()}");
     try{
       removeFromNotificationuserservice(userId: _user!.uid,userNotificationModel: userNotificationModel);
       return true;

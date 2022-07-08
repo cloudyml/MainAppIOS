@@ -364,7 +364,7 @@ class _OnboardewState extends State<Onboardew> {
                               Container(
                                 child: AnimatedSwitcher(
                                   duration: Duration(milliseconds: 200),
-                                  child: LoginForm(),
+                                  child: LoginForm(page: "OnBoard",),
                                 ),
                               )
                             ],

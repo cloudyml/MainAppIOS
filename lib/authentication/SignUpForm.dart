@@ -12,6 +12,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
@@ -52,7 +53,7 @@ class _SignUpformState extends State<SignUpform> {
       // });
       // print('Is verify ${isVerifyy}');
       userprofile(
-          name: username.text, mobilenumber: mobile.text, email: email.text,image: '');
+          name: username.text, mobilenumber: mobile.text, email: email.text,image: '',authType: "emailAuth",phoneVerified: false);
       AwesomeDialog(
         context: context,
         animType: AnimType.LEFTSLIDE,
@@ -96,8 +97,8 @@ class _SignUpformState extends State<SignUpform> {
       await Provider.of<UserProvider>(context, listen: false).addToNotificationP(
         title: 'Welcome to CloudyML',
         body: 'It\'s great to have you on CloudyML',
-        notifyImage: 'https://firebasestorage.googleapis.com/v0/b/cloudyml-app.appspot.com/o/images%2Fhomeimage.png?alt=media&token=2f4abc37-413f-49c3-b43d-03c02696567e'
-        //index:
+        notifyImage: 'https://firebasestorage.googleapis.com/v0/b/cloudyml-app.appspot.com/o/images%2Fhomeimage.png?alt=media&token=2f4abc37-413f-49c3-b43d-03c02696567e',
+        NDate: DateFormat('dd-MM-yyyy | h:mm a').format(DateTime.now()),
       );
       // LocalNotificationService.showNotificationfromApp(
       //     title: 'Welcome to CloudyML',

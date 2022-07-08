@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 
 TextEditingController email = TextEditingController();
-TextEditingController otp = TextEditingController();
+// TextEditingController otp = TextEditingController();
 TextEditingController pass = TextEditingController();
 TextEditingController mobile = TextEditingController();
 TextEditingController username = TextEditingController();
