@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:cloudyml_app2/fun.dart';
 import 'package:cloudyml_app2/screens/group_info.dart';
 import 'package:cloudyml_app2/widgets/audio_msg_tile.dart';
 import 'package:cloudyml_app2/widgets/bottom_sheet.dart';
@@ -411,8 +412,48 @@ class _ChatScreenState extends State<ChatScreen> {
                               ? const Center(
                                   child: CircularProgressIndicator(),
                                 )
-                              : const Center(
-                                  child: Text("Start a Conversation."),
+                              : Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
+                                    decoration: BoxDecoration(
+                                     color: Colors.transparent,
+                                        
+              //DecorationImage
+              // border: Border.all(
+              //   // color: Colors.green,
+              //   width: 8,
+              // ), //Border.all
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey,
+                  offset: const Offset(
+                    1.0,
+                    1.0,
+                  ), //Offset
+                  blurRadius: 2.0,
+                  spreadRadius: 2.0,
+                ), //BoxShadow
+                BoxShadow(
+                  color: Color.fromARGB(255, 255, 255, 255),
+                  offset: const Offset(0.0, 0.0),
+                  blurRadius: 0.0,
+                  spreadRadius: 0.0,
+                ), //BoxShadow
+              ],
+            ),
+                                      margin: EdgeInsets.fromLTRB(25, 0, 25, 0),
+                                        child:  chat()
+                                        //  Text(
+                                            // 'You can ask assignment related doubts here 6pm- midnight.(Indian standard time)\nour mentors:-\n6:00pm-7:30pm - Rahul\n7:30pm-midnight - Harsh'),
+                                            )
+                                    // Center(
+                                    //     child: Text("Start a Conversation."),
+                                    //   ),
+                                  ],
                                 );
                         } else {
                           if (snapshot.data != null) {

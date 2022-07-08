@@ -850,3 +850,116 @@ Drawer dr(BuildContext context) {
     ),
   );
 }
+
+Column chat(){
+  return Column(
+    children: [
+      Padding(
+          padding: const EdgeInsets.fromLTRB(10, 15, 15, 0),
+          child: Container(
+            width: 300,
+            alignment: Alignment.topLeft,
+            child: const Text.rich(TextSpan(
+                text: 'You can ask assignment related doubts here 6pm- midnight.',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.black,
+                  wordSpacing: 1,
+                ),
+                children: [
+                  TextSpan(
+                      text: '(Indian standard time)',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                        fontSize: 12,
+                        wordSpacing: 5,
+                      )),
+                  TextSpan(
+                    text:
+                        '\nOur mentors:-',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.black,
+                      wordSpacing: 5,
+                    ),
+                  ),
+                 
+                  TextSpan(
+                      text: '\n6:00pm-7:30pm - Rahul',
+                      style: TextStyle(
+                        fontSize: 12,
+                        height: 2,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                        wordSpacing: 5,
+                      )),
+                  TextSpan(
+                      text: '\n7:30pm-midnight - Harsh',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                        wordSpacing: 2,
+                      )),
+                  TextSpan(
+                    text: '\nPowerbi doubt - 11am-12 afternoon',
+                    style: TextStyle(
+                      color: Colors.black,
+                      height: 2,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      wordSpacing: 5,
+                    ),
+                  ),
+                  TextSpan(
+                      text: '\nHow can you learn better?\n -Its a good idea to google once about your doubt and see what stackoverflow suggest and how others solved the same kind of doubt by looking at documentation once.',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.black,
+                        wordSpacing: 5,
+                      )),
+                  TextSpan(
+                      text: '\nNote : ',
+                      style: TextStyle(
+                        fontSize: 12,
+                        height: 2,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        wordSpacing: 5,
+                      )),
+                  TextSpan(
+                      text: '\n1) If you see late response from mentor multiple times',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.black,
+                        wordSpacing: 4,
+                      )),
+                  TextSpan(
+                      text: 'during 6pm - midnight (more than 5 minutes or max more than 10 minutes )',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                        wordSpacing: 5,
+                      )),
+                      TextSpan(
+                      text: ' then tag me and raise the concern.',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.black,
+                        wordSpacing: 4,
+                      )),
+                      TextSpan(
+                      text: '\n2) Assignments are self evaluated. After submission, theres a solution link provided, go through it and self evaluate.',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.black,
+                        wordSpacing: 4,
+                      )),
+                ])),
+          ),
+        ),
+    ],
+  );
+}
