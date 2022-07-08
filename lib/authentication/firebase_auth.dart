@@ -8,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:intl/intl.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 
@@ -128,7 +129,7 @@ class GoogleSignInProvider extends ChangeNotifier {
           .doc(FirebaseAuth.instance.currentUser!.uid)
           .get();
       if (userDocs.data() == null) {
-        userprofile(name: _user?.displayName, email: _user?.email,mobilenumber: '',image:_user?.photoUrl);
+        userprofile(name: _user?.displayName, email: _user?.email,mobilenumber: '',image:_user?.photoUrl,authType: "googleAuth",phoneVerified: false);
         showToast('Account Created');
       }
       Navigator.pushAndRemoveUntil(
@@ -151,12 +152,15 @@ class GoogleSignInProvider extends ChangeNotifier {
               displayOnForeground: true
           )
       );
-      await Provider.of<UserProvider>(context, listen: false).addToNotificationP(
+      if (userDocs.data() == null) {
+        await Provider.of<UserProvider>(context, listen: false).addToNotificationP(
           title: 'Welcome to CloudyML',
           body: 'It\'s great to have you on CloudyML',
-          notifyImage: 'https://firebasestorage.googleapis.com/v0/b/cloudyml-app.appspot.com/o/images%2Fhomeimage.png?alt=media&token=2f4abc37-413f-49c3-b43d-03c02696567e'
-        //index:
-      );
+          notifyImage: 'https://firebasestorage.googleapis.com/v0/b/cloudyml-app.appspot.com/o/images%2Fhomeimage.png?alt=media&token=2f4abc37-413f-49c3-b43d-03c02696567e',
+          NDate: DateFormat('dd-MM-yyyy | h:mm a').format(DateTime.now()),
+        );
+      }
+
 
       // showToast('Account Created');
 
@@ -187,7 +191,7 @@ class GoogleSignInProvider extends ChangeNotifier {
   }
 }
 
-void userprofile({String? name, var mobilenumber, var email,var image}) async {
+void userprofile({String? name, var mobilenumber, var email,var image,String? authType,bool? phoneVerified}) async {
   await FirebaseFirestore.instance
       .collection("Users")
       .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -196,6 +200,8 @@ void userprofile({String? name, var mobilenumber, var email,var image}) async {
     "mobilenumber": mobilenumber,
     "email": email,
     "paidCourseNames": [],
+    "authType":authType,
+    "phoneVerified":phoneVerified,
     "courseBuyID": "0", //course id will be displayed
     "paid": "False",
     "id": _auth.currentUser!.uid,

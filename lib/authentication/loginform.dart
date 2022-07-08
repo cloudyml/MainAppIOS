@@ -13,7 +13,9 @@ import 'package:page_transition/page_transition.dart';
 
 
 class LoginForm extends StatefulWidget {
-  const LoginForm({Key? key}) : super(key: key);
+  final String page;
+
+  const LoginForm({Key? key, required this.page}) : super(key: key);
 
   @override
   State<LoginForm> createState() => _LoginFormState();

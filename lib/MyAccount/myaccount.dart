@@ -67,7 +67,7 @@ class _MyAccountPageState extends State<MyAccountPage> {
                   width: horizontalScale*106,
                   child: CircleAvatar(
                     radius: min(horizontalScale,verticalScale)*30.0,
-                    backgroundImage: NetworkImage('https://stratosphere.co.in/img/user.jpg'),
+                    backgroundImage: AssetImage('assets/user.jpg'),
                     foregroundImage: NetworkImage(userprovider.userModel?.image??''),
                     backgroundColor: Colors.transparent,
                   ),

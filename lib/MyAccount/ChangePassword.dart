@@ -115,7 +115,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                       SizedBox(height: verticalScale*10,),
                       Align(
                         alignment: Alignment.topLeft,
-                        child: Text(userprovider.userModel!.email??'',
+                        child: Text(userprovider.userModel?.email.toString()??'',
                           style: TextStyle(
                             fontSize: 16,
                           ),
@@ -137,7 +137,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                       SizedBox(height: verticalScale*10,),
                       Align(
                         alignment: Alignment.topLeft,
-                        child: Text(userprovider.userModel!.name??'',
+                        child: Text(userprovider.userModel?.name.toString()??'',
                           style: TextStyle(
                             fontSize: 16,
                             //fontWeight: FontWeight.w600
@@ -147,7 +147,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                       ),
                       Divider(thickness: 2,),
                       SizedBox(height: verticalScale*10,),
-                      Text('Enter Old Password ',
+                      Text('Enter Current Password ',
                         style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600
@@ -158,7 +158,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                       TextFormField(
                         controller: oldpasswordController,
                         decoration: InputDecoration(
-                            hintText: 'Enter old Password',
+                            hintText: 'Enter current Password',
                             hintStyle: TextStyle(
                               fontSize: 20 * min(horizontalScale, verticalScale),
                             ),

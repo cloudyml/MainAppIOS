@@ -5,6 +5,7 @@ import 'package:cloudyml_app2/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
+import 'package:intl/intl.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
@@ -261,6 +262,7 @@ class _PaymentButtonState extends State<PaymentButton> with CouponCodeMixin {
       title: widget.courseName,
       body: 'You bought ${widget.courseName}.Go to My courses.',
       notifyImage: widget.courseImageUrl,
+      NDate: DateFormat('dd-MM-yyyy | h:mm a').format(DateTime.now()),
       //index:
     );
   }
