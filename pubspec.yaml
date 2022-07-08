@@ -86,6 +86,7 @@ dependencies:
   external_app_launcher: ^2.0.2
   dotted_line: ^3.1.0
   
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter

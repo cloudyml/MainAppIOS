@@ -149,6 +149,7 @@ class _PaymentScreenState extends State<PaymentScreen> with CouponCodeMixin {
                             width: 194,
                             child: Text(
                               widget.map!['description'],
+                              overflow: TextOverflow.ellipsis,
                               textScaleFactor:
                                   min(horizontalScale, verticalScale),
                               textAlign: TextAlign.left,
