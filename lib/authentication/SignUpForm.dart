@@ -397,6 +397,7 @@ class _SignUpformState extends State<SignUpform> {
                                         ),
                                       );
                                     });
+
                                 await user.sendEmailVerification();
                                 timer = Timer.periodic(Duration(seconds: 3),
                                     (_) => checkEmailVerified(user));

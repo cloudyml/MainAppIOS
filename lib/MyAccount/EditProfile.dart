@@ -255,7 +255,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                               padding:  EdgeInsets.fromLTRB(horizontalScale*24,verticalScale*0,horizontalScale*24,verticalScale*10),
                               child: TextFormField(
                                 initialValue: _mobile,
-                                readOnly: (userprovider.userModel?.authType=='phoneAuth')?true:false,
+                                //(userprovider.userModel?.authType=='emailAuth' && userprovider.userModel?.phoneVerified==true)?
+                                readOnly: ((userprovider.userModel?.authType=='emailAuth' && userprovider.userModel?.phoneVerified==true)||userprovider.userModel?.authType=='phoneAuth')?true:false,
                                 decoration: InputDecoration(
                                     counterText: '',
                                     hintText: 'Update Your Number',
@@ -366,6 +367,18 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         height: verticalScale * 4,
                       ),
                       (userprovider.userModel?.authType=='emailAuth' && userprovider.userModel?.phoneVerified==true)?
+                      Padding(
+                        padding:  EdgeInsets.fromLTRB(horizontalScale*24,verticalScale*0,horizontalScale*24,verticalScale*0),
+                        child: Text('Note: To change the phone number you have to unlink the phone from the account.',
+                          textScaleFactor: min(horizontalScale,verticalScale),
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color:  HexColor('#d91f2a'),
+                              fontWeight: FontWeight.w500
+                          ),
+                        ),
+                      ):Container(),
+                      (userprovider.userModel?.authType=='emailAuth' && userprovider.userModel?.phoneVerified==true)?
                       ElevatedButton(
                         onPressed: () async{
                           FocusScope.of(context).requestFocus(new FocusNode());
@@ -435,13 +448,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                               _firestore.collection('Users')
                                                   .doc(userprovider.userModel!.id)
                                                   .update({
-                                                //'name':_username,
-                                                //'mobilenumber':_editmobile,
                                                 'phoneVerified':false
                                               });
-                                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Phone Unlinked')));
                                               userprovider.reloadUserModel();
-                                              Navigator.pop(context);
+                                               Navigator.pop(context);
+                                               //Navigator.pop(context);
+                                              //ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Phone Unlinked')));
                                             },
                                             child: Padding(
                                               padding:  EdgeInsets.all(min(horizontalScale,verticalScale)*11),

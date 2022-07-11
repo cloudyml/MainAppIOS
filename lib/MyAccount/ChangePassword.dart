@@ -81,7 +81,18 @@ class _ChangePasswordState extends State<ChangePassword> {
       ),
       body: Form(
         key: _formkey,
-        child: ListView(
+        child: (userprovider.userModel?.authType=='googleAuth' || userprovider.userModel?.authType=='phoneAuth')?
+        Center(
+          child: Text('You cannot change the password for your account.',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600
+            ),
+            textScaleFactor:min(horizontalScale,verticalScale) ,
+          ),
+        ):
+        ListView(
           children:[
             Padding(
               padding: const EdgeInsets.all(14.0),
