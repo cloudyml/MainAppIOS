@@ -126,6 +126,7 @@ class _GroupsListState extends State<GroupsList> {
             // height: MediaQuery.of(context).size.height*.1 ,
                   padding: const EdgeInsets.only(left: 0),
                   child: Column(
+                    
                     children: [
                       SizedBox(height: MediaQuery.of(context).size.height*.08),
                       Row(
@@ -143,13 +144,24 @@ class _GroupsListState extends State<GroupsList> {
                           SizedBox(
                             width: MediaQuery.of(context).size.width * 0.1,
                           ),
-                          Text(
-                            'Chat',
-                            style: TextStyle(
-                                fontSize: 25,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white),
-                          )
+                          Row(
+                            children: [
+                              Text(
+                                'Chat',
+                                style: TextStyle(
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white),
+                              ),
+                            ],
+                          ),
+                          SizedBox(width: 5,),
+                           Text(userData!["role"] == "student" ? "Groups For You" : "Groups For Mentors",
+                           style: TextStyle(
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white),
+                              ),
                         ],
                       ),
                       SizedBox(height: MediaQuery.of(context).size.height*.05),
@@ -160,8 +172,13 @@ class _GroupsListState extends State<GroupsList> {
               ? Center(child: CircularProgressIndicator())
               : groupsList == null || groupsList!.isEmpty
                   ? Center(
-                      child: Text("No Groups Found!"),
-                    )
+                    heightFactor: 15,
+                    child: Text(userData!["role"] == "student" ? "No Groups To Show!\n(Buy Course To Get Mentor's Support)!":"No Groups To Show!",
+                     style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.grey)),
+                  )
                   : Expanded(
                     child: MediaQuery.removePadding(
                       context: context,

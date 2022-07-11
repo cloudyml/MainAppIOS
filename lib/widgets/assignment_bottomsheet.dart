@@ -19,21 +19,33 @@ Future<dynamic> showAssignmentBottomSheet(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
         ),
-        height: 150,
+        height: 250,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              'For Assignment and Assignment related certificates follow the Link below',
+              'As assignments cant open on mobile please open below link on Laptop browser to get Assignment and Course certificates.',
               textAlign: TextAlign.center,
               textScaleFactor: min(horizontalScale, verticalScale),
               style: TextStyle(
                 fontFamily: 'Poppins',
-                fontSize: 20,
+                fontSize: 16,
                 fontWeight: FontWeight.w500,
               ),
             ),
+            SelectableText('https://courses.cloudyml.com/s/store',
+            style: TextStyle(
+                fontFamily: 'Poppins',
+                fontSize: 16,
+                fontWeight: FontWeight.w900,
+              ),),
+              Text('To Open LMS On Mobile Please Click Below',
+              style: TextStyle(
+                fontFamily: 'Poppins',
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),),
             ElevatedButton(
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(

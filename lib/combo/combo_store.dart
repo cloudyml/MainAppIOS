@@ -128,11 +128,11 @@ class _ComboStoreState extends State<ComboStore> with CouponCodeMixin {
                 ),
 
                 Padding(
-                  padding: const EdgeInsets.only(left: 10),
+                  padding: const EdgeInsets.fromLTRB(10, 20, 10, 20),
                   child: Align(
                     alignment: Alignment.topLeft,
                     child: Text(
-                      'Courses you get',
+                      'Courses you get(Scroll Down To See More)',
                       textAlign: TextAlign.left,
                       style: TextStyle(
                           color: Color.fromRGBO(48, 48, 49, 1),
@@ -147,13 +147,14 @@ class _ComboStoreState extends State<ComboStore> with CouponCodeMixin {
                 ),
                 Container(
                   width: screenWidth,
-                  height: 300 * verticalScale,
+                  height: 330 * verticalScale,
                   child: MediaQuery.removePadding(
                     context: context,
                     removeTop: true,
                     child: ListView.builder(
                       // controller: _scrollController,
-                      physics: NeverScrollableScrollPhysics(),
+                      scrollDirection: Axis.vertical,
+                      // physics: NeverScrollableScrollPhysics(),
                       itemCount: course.length,
                       itemBuilder: (BuildContext context, index) {
                         if (course[index].courseName == "null") {

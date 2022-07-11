@@ -1,8 +1,5 @@
 import 'dart:io';
 import 'dart:math';
-import 'dart:ui';
-
-import 'package:auto_orientation/auto_orientation.dart';
 import 'package:cloudyml_app2/models/course_details.dart';
 import 'package:cloudyml_app2/offline/db.dart';
 import 'package:cloudyml_app2/globals.dart';

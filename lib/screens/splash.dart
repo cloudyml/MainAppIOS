@@ -5,11 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:drop_shadow_image/drop_shadow_image.dart';
-
+import 'package:lottie/lottie.dart';
 import '../authentication/firebase_auth.dart';
 
 class splash extends StatefulWidget {
-
   const splash({Key? key}) : super(key: key);
 
   @override
@@ -18,14 +17,14 @@ class splash extends StatefulWidget {
 
 class _splashState extends State<splash> {
   @override
-  void initState(){
+  void initState() {
     // TODO:implement initState
     super.initState();
     //listnerNotifications();
     //gives you the message on which user taps and opens
     //the app from terminated state
     FirebaseMessaging.instance.getInitialMessage().then(
-          (message) {
+      (message) {
         print("FirebaseMessaging.instance.getInitialMessage");
         if (message != null) {
           print("New Notification");
@@ -44,7 +43,7 @@ class _splashState extends State<splash> {
 
     ////foreground notification
     FirebaseMessaging.onMessage.listen((message) {
-      if(message.notification!=null){
+      if (message.notification != null) {
         print(message.notification!.title);
         print(message.notification!.body);
       }
@@ -60,7 +59,7 @@ class _splashState extends State<splash> {
       //   'description':message.notification!.body,
       //   'icon':imageUrl
       // });
-      final routeFromMessage=message.data["route"];
+      final routeFromMessage = message.data["route"];
       print(routeFromMessage);
       Navigator.of(context).pushNamed(routeFromMessage);
     });
@@ -91,7 +90,6 @@ class _splashState extends State<splash> {
     print('pushedtohome');
   }
 
-
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -104,33 +102,42 @@ class _splashState extends State<splash> {
                 begin: Alignment.bottomLeft,
                 end: Alignment.topRight,
                 colors: [
+              Color(0xFF7860DC),
+              // Color(0xFFC0AAF5),
+              // Color(0xFFDDD2FB),
               Color.fromARGB(255, 158, 2, 148),
-              Color.fromARGB(255, 5, 2, 180),
+              // Color.fromARGB(255, 5, 2, 180),
               // Color.fromARGB(255, 3, 193, 218)
             ])),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            DropShadowImage(
-              image: Image.asset(
-                'assets/DP_png.png',
-                width: width * .45,
-                height: height * .2,
-              ),
-              offset: const Offset(3, 8),
-              scale: .9,
-              blurRadius: 10,
-              borderRadius: 0,
+            Lottie.asset(
+              'assets/splash.json',
+              width: width * .5,
+              height: height * .3,
             ),
-            // SizedBox(height: 1),
+            // DropShadowImage(
+            //   image: Image.asset(
+            //     'assets/DP_png.png',
+            //     width: width * .45,
+            //     height: height * .2,
+            //   ),
+            //   offset: const Offset(3, 8),
+            //   scale: .9,
+            //   blurRadius: 10,
+            //   borderRadius: 0,
+            // ),
+            SizedBox(height: 10),
             DefaultTextStyle(
               style: TextStyle(
-                fontSize: 30,
+                fontSize: 70,
+                fontWeight: FontWeight.lerp(FontWeight.w900, FontWeight.w900, 10.5),
                 color: Colors.white,
                 shadows: [
                   Shadow(
-                    blurRadius: 1.5,
+                    blurRadius: 0.5,
                     color: Colors.black,
                     offset: Offset(0, 8),
                   ),
@@ -151,9 +158,9 @@ class _splashState extends State<splash> {
                       Colors.teal,
                       // Colors.red,
                     ],
-                    textStyle: TextStyle(fontSize: 35),
+                    textStyle: TextStyle(fontSize: 50),
                     speed: Duration(milliseconds: 500),
-                    // scalingFactor: 2.0
+                  
                   ),
                 ],
                 pause: Duration(milliseconds: 1500),
@@ -165,12 +172,13 @@ class _splashState extends State<splash> {
             DefaultTextStyle(
               style: TextStyle(
                 fontSize: 30,
+                fontWeight: FontWeight.bold,
                 color: Colors.white,
                 shadows: [
                   Shadow(
-                    blurRadius: 2.0,
+                    blurRadius: .5,
                     color: Colors.black,
-                    offset: Offset(0, 8),
+                    offset: Offset(0, 7),
                   ),
                 ],
               ),
@@ -179,7 +187,7 @@ class _splashState extends State<splash> {
                   animatedTexts: [
                     TyperAnimatedText('#LearnByDoing',
                         textAlign: TextAlign.center,
-                        speed: Duration(milliseconds: 200),
+                        speed: Duration(milliseconds: 300),
                         curve: Curves.bounceInOut),
                   ],
                   totalRepeatCount: 1,
