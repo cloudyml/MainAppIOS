@@ -855,7 +855,7 @@ Column chat(){
   return Column(
     children: [
       Padding(
-          padding: const EdgeInsets.fromLTRB(10, 15, 15, 0),
+          padding: const EdgeInsets.fromLTRB(10, 15, 15, 10),
           child: Container(
             width: 300,
             alignment: Alignment.topLeft,
@@ -919,44 +919,44 @@ Column chat(){
                         color: Colors.black,
                         wordSpacing: 5,
                       )),
-                  TextSpan(
-                      text: '\nNote : ',
-                      style: TextStyle(
-                        fontSize: 12,
-                        height: 2,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        wordSpacing: 5,
-                      )),
-                  TextSpan(
-                      text: '\n1) If you see late response from mentor multiple times',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.black,
-                        wordSpacing: 4,
-                      )),
-                  TextSpan(
-                      text: 'during 6pm - midnight (more than 5 minutes or max more than 10 minutes )',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                        wordSpacing: 5,
-                      )),
-                      TextSpan(
-                      text: ' then tag me and raise the concern.',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.black,
-                        wordSpacing: 4,
-                      )),
-                      TextSpan(
-                      text: '\n2) Assignments are self evaluated. After submission, theres a solution link provided, go through it and self evaluate.',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.black,
-                        wordSpacing: 4,
-                      )),
+                  // TextSpan(
+                  //     text: '\nNote : ',
+                  //     style: TextStyle(
+                  //       fontSize: 12,
+                  //       height: 2,
+                  //       color: Colors.black,
+                  //       fontWeight: FontWeight.bold,
+                  //       wordSpacing: 5,
+                  //     )),
+                  // TextSpan(
+                  //     text: '\n1) If you see late response from mentor multiple times',
+                  //     style: TextStyle(
+                  //       fontSize: 12,
+                  //       color: Colors.black,
+                  //       wordSpacing: 4,
+                  //     )),
+                  // TextSpan(
+                  //     text: 'during 6pm - midnight (more than 5 minutes or max more than 10 minutes )',
+                  //     style: TextStyle(
+                  //       fontSize: 12,
+                  //       fontWeight: FontWeight.bold,
+                  //       color: Colors.black,
+                  //       wordSpacing: 5,
+                  //     )),
+                  //     TextSpan(
+                  //     text: ' then tag me and raise the concern.',
+                  //     style: TextStyle(
+                  //       fontSize: 12,
+                  //       color: Colors.black,
+                  //       wordSpacing: 4,
+                  //     )),
+                  //     TextSpan(
+                  //     text: '\n2) Assignments are self evaluated. After submission, theres a solution link provided, go through it and self evaluate.',
+                  //     style: TextStyle(
+                  //       fontSize: 12,
+                  //       color: Colors.black,
+                  //       wordSpacing: 4,
+                  //     )),
                 ])),
           ),
         ),
