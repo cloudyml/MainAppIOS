@@ -365,10 +365,6 @@ class _phoneVerifyState extends State<phoneVerify> {
                 enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: HexColor('7B62DF'), width: 2),
                 ),
-                // suffixIcon: Icon(
-                //   Icons.lock,
-                //   color: HexColor('6153D3'),
-                // )
               ),
               keyboardType: TextInputType.phone,
               maxLength: 6,
@@ -446,7 +442,7 @@ class _phoneVerifyState extends State<phoneVerify> {
                       showCloseIcon: true,
                       title: 'Verified!',
                       desc:
-                      'Your Mobile Number\n ${_editmobile} \nhas been successfully verified!\n Please wait you will be redirected to the HomePage.',
+                      'Your Mobile Number\n ${_editmobile} \nhas been successfully verified!\n Please wait you will be redirected.',
                       btnOkOnPress: () {
                         debugPrint('OnClcik');
                       },
