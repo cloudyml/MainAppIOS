@@ -8,7 +8,7 @@ import 'package:cloudyml_app2/authentication/firebase_auth.dart';
 import 'package:cloudyml_app2/globals.dart';
 import 'package:cloudyml_app2/home.dart';
 import 'package:cloudyml_app2/homepage.dart';
-import 'package:cloudyml_app2/pages/Enternamephoneauth.dart';
+import 'package:cloudyml_app2/pages/newentername.dart';
 import 'package:cloudyml_app2/widgets/loading.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -469,14 +469,14 @@ class _PhoneAuthenticationState extends State<PhoneAuthentication> {
                             }
                             if(user.displayName==null){
                               print('2222222222222');
-                              Navigator.pushAndRemoveUntil(
+                              Navigator.push(
                                   context,
                                   PageTransition(
                                       duration: Duration(milliseconds: 200),
                                       curve: Curves.bounceInOut,
                                       type: PageTransitionType.rightToLeft,
-                                      child: EnterNamePhoneAuth()),
-                                      (route) => false);
+                                      child: newEnterName()),
+                                      );
                             }
 
                             await AwesomeNotifications().createNotification(
