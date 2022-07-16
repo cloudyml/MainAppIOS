@@ -7,6 +7,8 @@ import 'package:cloudyml_app2/Providers/UserProvider.dart';
 import 'package:cloudyml_app2/authentication/firebase_auth.dart';
 import 'package:cloudyml_app2/globals.dart';
 import 'package:cloudyml_app2/home.dart';
+import 'package:cloudyml_app2/homepage.dart';
+import 'package:cloudyml_app2/pages/newentername.dart';
 import 'package:cloudyml_app2/widgets/loading.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -32,9 +34,10 @@ class _PhoneAuthenticationState extends State<PhoneAuthentication> {
   bool _isloading = false;
   bool _verifyloading = false;
   TextEditingController otp = TextEditingController();
-
+  final currentUsern=FirebaseAuth.instance.currentUser;
   @override
   Widget build(BuildContext context) {
+    final userprovider=Provider.of<UserProvider>(context);
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     var verticalScale = height / mockUpHeight;
@@ -448,14 +451,34 @@ class _PhoneAuthenticationState extends State<PhoneAuthentication> {
                               showToast('Account Created');
                             }
                             await Future.delayed(Duration(seconds: 4));
-                            Navigator.pushAndRemoveUntil(
-                                context,
-                                PageTransition(
-                                    duration: Duration(milliseconds: 200),
-                                    curve: Curves.bounceInOut,
-                                    type: PageTransitionType.topToBottom,
-                                    child: HomePage()),
-                                (route) => false);
+                            await userprovider.reloadUserModel();
+                            await currentUsern?.reload();
+                            print(user.displayName.toString());
+                            print(currentUsern?.displayName.toString());
+                            print(currentUsern?.displayName.toString());
+                            if(user.displayName!=null){
+                              print('11111111111111');
+                              Navigator.pushAndRemoveUntil(
+                                  context,
+                                  PageTransition(
+                                      duration: Duration(milliseconds: 200),
+                                      curve: Curves.bounceInOut,
+                                      type: PageTransitionType.rightToLeft,
+                                      child: HomePage()),
+                                      (route) => false);
+                            }
+                            if(user.displayName==null){
+                              print('2222222222222');
+                              Navigator.push(
+                                  context,
+                                  PageTransition(
+                                      duration: Duration(milliseconds: 200),
+                                      curve: Curves.bounceInOut,
+                                      type: PageTransitionType.rightToLeft,
+                                      child: newEnterName()),
+                                      );
+                            }
+
                             await AwesomeNotifications().createNotification(
                                 content:NotificationContent(
                                     id:  1234,
