@@ -297,7 +297,6 @@ class _NotificationPageState extends State<NotificationPage> {
                             if (snapshot.data != null) {
                               if (snapshot.data!.docs.length != 0) {
                                 return ListView.builder(
-                                    shrinkWrap: true,
                                     itemCount: snapshot.data!.docs.length,
                                     itemBuilder: (context, index) {
                                       Map<String, dynamic> map =
