@@ -1,24 +1,16 @@
 import 'dart:math';
-
-import 'package:cloudyml_app2/MyAccount/EditProfile.dart';
 import 'package:cloudyml_app2/Providers/AppProvider.dart';
 import 'package:cloudyml_app2/globals.dart';
 import 'package:flutter/material.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloudyml_app2/Providers/UserProvider.dart';
-import 'package:cloudyml_app2/authentication/firebase_auth.dart';
-import 'package:cloudyml_app2/home.dart';
 import 'package:cloudyml_app2/widgets/loading.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
-
-import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 
 class phoneVerify extends StatefulWidget {

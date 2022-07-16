@@ -205,8 +205,8 @@ class _ComboCourseState extends State<ComboCourse> {
                                             borderRadius:
                                                 BorderRadius.circular(25),
                                             child: Container(
-                                              width: 145,
-                                              height: 111,
+                                              width: 130,
+                                              height: 95,
                                               decoration: BoxDecoration(
                                                   borderRadius:
                                                       BorderRadius.only(
@@ -221,7 +221,7 @@ class _ComboCourseState extends State<ComboCourse> {
                                               ),
                                             ),
                                           ),
-                                          SizedBox(width: 10),
+                                          SizedBox(width: 8),
                                           Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
@@ -248,7 +248,7 @@ class _ComboCourseState extends State<ComboCourse> {
                                                 ),
                                               ),
                                               Container(
-                                                width: 184 * horizontalScale,
+                                                width: 182 * horizontalScale,
                                                 child: Text(
                                                   course[index]
                                                       .courseDescription,
@@ -308,7 +308,7 @@ class _ComboCourseState extends State<ComboCourse> {
                     //                   PageTransition(
                     //                     duration: Duration(milliseconds: 100),
                     //                     curve: Curves.bounceInOut,
-                    //                     type: PageTransitionType.rightToLeft,
+                    //                     type: PageTransitionType.topToBottom,
                     //                     child: VideoScreen(
                     //                       isdemo: null, courseName: '', sr: null,
                     //                     ),
@@ -321,7 +321,7 @@ class _ComboCourseState extends State<ComboCourse> {
                     //                 PageTransition(
                     //                   duration: Duration(milliseconds: 100),
                     //                   curve: Curves.bounceInOut,
-                    //                   type: PageTransitionType.rightToLeft,
+                    //                   type: PageTransitionType.topToBottom,
                     //                   child: VideoScreen(
                     //                     isdemo: null, courseName: '', sr: null,
                     //                   ),

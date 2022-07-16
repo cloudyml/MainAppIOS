@@ -13,6 +13,7 @@ import 'package:upi_plugin/upi_plugin.dart';
 import 'package:cloudyml_app2/widgets/coupon_code.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:cloudyml_app2/globals.dart';
 
 class PaymentButton extends StatefulWidget {
   final ScrollController scrollController;
@@ -95,45 +96,65 @@ class _PaymentButtonState extends State<PaymentButton> with CouponCodeMixin {
   FirebaseAuth _auth = FirebaseAuth.instance;
   String? id;
 
+  
   void loadCourses() async {
-    setState(() {
-      isLoading = true;
+    await _firestore.collection("courses").doc(courseId).get().then((value) {
+      print(_auth.currentUser!.displayName);
+      Map<String, dynamic> groupData = {
+        "name": value.data()!['name'],
+        "icon": value.data()!["image_url"],
+        "mentors": value.data()!["mentors"],
+        "student_id": _auth.currentUser!.uid,
+        "student_name": _auth.currentUser!.displayName,
+      };
+      _firestore.collection("groups").add(groupData);
     });
-    await _firestore
-        .collection("courses")
-        .where('id', isEqualTo: widget.courseId)
-        .get()
-        .then((value) {
-      print(value.docs);
-      final courses = value.docs
-          .map((doc) => {
-                "id": doc.id,
-                "data": doc.data(),
-              })
-          .toList();
-      setState(() {
-        courseList = courses;
-      });
-      print('the list is---$courseList');
-    });
-    setState(() {
-      isLoading = false;
-    });
-
-    Map<String, dynamic> groupData = {
-      "name": courseList![0]["data"]["name"],
-      "icon": courseList![0]["data"]["image_url"],
-      "mentors": courseList![0]["data"]["mentors"],
-      "student_id": _auth.currentUser!.uid,
-      "student_name": _auth.currentUser!.displayName,
-    };
-
-    // Fluttertoast.showToast(msg: "Creating group...");
-
-    await _firestore.collection("groups").add(groupData);
-
-    // Fluttertoast.showToast(msg: "Group Created");
   }
+  
+  
+  
+  
+  
+  // void loadCourses() async {
+  //   setState(() {
+  //     isLoading = true;
+  //   });
+  //   await _firestore
+  //       .collection("courses")
+  //       .where('id', isEqualTo: widget.courseId)
+  //       .get()
+  //       .then((value) {
+  //     print(value.docs);
+  //     final courses = value.docs
+  //         .map((doc) => {
+  //               "id": doc.id,
+  //               "data": doc.data(),
+  //             })
+  //         .toList();
+  //     setState(() {
+  //       courseList = courses;
+  //     });
+  //     print('the list is---$courseList');
+  //   });
+  //   setState(() {
+  //     isLoading = false;
+  //   });
+
+  //   Map<String, dynamic> groupData = {
+  //     "name": courseList![0]["data"]["name"],
+  //     "icon": courseList![0]["data"]["image_url"],
+  //     "mentors": courseList![0]["data"]["mentors"],
+  //     "student_id": _auth.currentUser!.uid,
+  //     "student_name": _auth.currentUser!.displayName,
+  //   };
+
+  //   // Fluttertoast.showToast(msg: "Creating group...");
+
+  //   await _firestore.collection("groups").add(groupData);
+  //   print('group data=$groupData');
+
+  //   // Fluttertoast.showToast(msg: "Group Created");
+  // }
 
   void updateAmoutStringForUPI(bool isPayInPartsPressed,
       bool isMinAmountCheckerPressed, bool isOutStandingAmountCheckerPressed) {
@@ -231,7 +252,7 @@ class _PaymentButtonState extends State<PaymentButton> with CouponCodeMixin {
   void _handlePaymentSuccess(PaymentSuccessResponse response) async {
     showToast("Payment successful");
     addCoursetoUser(widget.courseId);
-
+    loadCourses();
     updateCouponDetailsToUser(
       couponCodeText: widget.couponCodeText,
       courseBaughtId: widget.courseId,
@@ -242,7 +263,7 @@ class _PaymentButtonState extends State<PaymentButton> with CouponCodeMixin {
       isMinAmountCheckerPressed,
       isOutStandingAmountCheckerPressed,
     );
-    loadCourses();
+    
     pushToHome();
 
     // disableMinAmtBtn();
@@ -299,7 +320,7 @@ class _PaymentButtonState extends State<PaymentButton> with CouponCodeMixin {
     //   PageTransition(
     //     duration: Duration(milliseconds: 400),
     //     curve: Curves.bounceInOut,
-    //     type: PageTransitionType.rightToLeft,
+    //     type: PageTransitionType.topToBottom,
     //     child: HomePage(),
     //   ),
     // );
@@ -308,7 +329,7 @@ class _PaymentButtonState extends State<PaymentButton> with CouponCodeMixin {
         PageTransition(
           duration: Duration(milliseconds: 200),
           curve: Curves.bounceInOut,
-          type: PageTransitionType.rightToLeft,
+          type: PageTransitionType.topToBottom,
           child: HomePage(),
         ),
         (route) => false);
@@ -886,14 +907,14 @@ class _PaymentButtonState extends State<PaymentButton> with CouponCodeMixin {
                             isMinAmountCheckerPressed,
                             isOutStandingAmountCheckerPressed);
                         widget.updateCourseIdToCouponDetails();
-                        order_id= await generateOrderId('rzp_live_ESC1ad8QCKo9zb',
-                            'D5fscRQB6i7dwCQlZybecQND', amountStringForRp!);
+                        order_id= await generateOrderId('rzp_test_b1Dt1350qiF6cr',
+                            '4HwrQR9o2OSlzzF0MzJmaDdq', amountStringForRp!);
 
                         print('order id is out--$order_id');
                         // Future.delayed(const Duration(milliseconds: 300), () {
                           print('order id is --$order_id');
                           var options = {
-                            'key': 'rzp_live_ESC1ad8QCKo9zb',
+                            'key': 'rzp_test_b1Dt1350qiF6cr',
                             'amount':
                                 amountStringForRp, //amount is paid in paises so pay in multiples of 100
 
@@ -904,9 +925,15 @@ class _PaymentButtonState extends State<PaymentButton> with CouponCodeMixin {
                             'prefill': {
                               'contact': userprovider.userModel!.mobile,
                               // '7003482660', //original number and email
-                              'email': userprovider.userModel!.email
+                              'email': userprovider.userModel!.email,
                               // 'cloudyml.com@gmail.com'
                               // 'test@razorpay.com'
+                              'name':userprovider.userModel!.name
+                            },
+                            'notes':{
+                              'contact': userprovider.userModel!.mobile,
+                              'email': userprovider.userModel!.email,
+                              'name':userprovider.userModel!.name
                             }
                           };
                           _razorpay.open(options);
@@ -920,9 +947,20 @@ class _PaymentButtonState extends State<PaymentButton> with CouponCodeMixin {
                           color: Colors.white,
                         ),
                         child: Center(
-                          child: Text(
-                            'Razorpay',
-                            style: TextStyle(fontSize: 18),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                      'assets/razorpay1.jpg',
+                                      width: 45,
+                                      height: 45,
+                                    ),
+                              Text(
+                                'Razorpay',
+                                style: TextStyle(fontSize: 18),
+                              ),
+                            ],
                           ),
                         ),
                       ),

@@ -39,7 +39,7 @@ Widget MessageTile(size, map, displayName) {
         //       Colors.purple,
         //       Colors.blue,
         //     ]),
-        color: map!["sendBy"] == displayName ? Colors.blue : Color.fromARGB(255, 195, 195, 195),
+        color: map!["sendBy"] == displayName ? Color(0xFF7860DC): Color.fromARGB(255, 142, 141, 141),
       ),
       constraints: BoxConstraints(
         maxWidth: size.width * 0.7,
@@ -52,14 +52,14 @@ Widget MessageTile(size, map, displayName) {
             child: Text(
               (map['sendBy']),
               style: TextStyle(
-                color: Colors.amber[900],
+                color: Color.fromARGB(255, 43, 184, 139),
                 fontWeight: FontWeight.bold,
               ),
               textAlign: TextAlign.start,
             ),
           ),
           SizedBox(
-            height: 2,
+            height: 4,
           ),
           Align(
             alignment: Alignment.topLeft,

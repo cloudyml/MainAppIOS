@@ -93,7 +93,7 @@
 //                                   PageTransition(
 //                                     duration: Duration(milliseconds: 400),
 //                                     curve: Curves.bounceInOut,
-//                                     type: PageTransitionType.rightToLeft,
+                                    // type: PageTransitionType.topToBottom,
 //                                     child: VideoScreen(
 //                                       isdemo: false,
 //                                       sr: 1,
@@ -107,7 +107,7 @@
 //                                   PageTransition(
 //                                     duration: Duration(milliseconds: 400),
 //                                     curve: Curves.bounceInOut,
-//                                     type: PageTransitionType.rightToLeft,
+//                                     type: PageTransitionType.topToBottom,
 //                                     child: AssignmentScreen(
 //                                       isdemo: false,
 //                                       sr: 1,
@@ -121,7 +121,7 @@
 //                               //     PageTransition(
 //                               //         duration: Duration(milliseconds: 400),
 //                               //         curve: Curves.bounceInOut,
-//                               //         type: PageTransitionType.rightToLeft,
+//                               //         type: PageTransitionType.topToBottom,
 //                               //         child: QuizPage()),
 //                               //   );
 //                               // }

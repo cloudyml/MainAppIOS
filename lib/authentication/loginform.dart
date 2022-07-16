@@ -275,7 +275,7 @@ class _LoginFormState extends State<LoginForm> {
                                   PageTransition(
                                       duration: Duration(milliseconds: 200),
                                       curve: Curves.bounceInOut,
-                                      type: PageTransitionType.rightToLeft,
+                                      type: PageTransitionType.topToBottom,
                                       child: HomePage()),
                                   (route) => false);
                               setState(() {

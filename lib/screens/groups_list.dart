@@ -64,15 +64,16 @@ class _GroupsListState extends State<GroupsList> {
                 "data": doc.data(),
               })
           .toList();
-
+print('group data is the--{$groups}');
       setState(() {
         groupsList = groups;
+      
       });
     });
     setState(() {
       isLoading = false;
     });
-    print(groupsList);
+    print('This is mentor group list$groupsList');
   }
 
   loadUserData() async {

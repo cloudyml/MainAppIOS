@@ -685,7 +685,7 @@ class _ChangeEmailState extends State<ChangeEmail> {
 //     //     PageTransition(
 //     //         duration: Duration(milliseconds: 200),
 //     //         curve: Curves.bounceInOut,
-//     //         type: PageTransitionType.rightToLeft,
+//     //         type: PageTransitionType.topToBottom,
 //     //         child: HomePage()),
 //     //         (route) => false);
 //     // await AwesomeNotifications().createNotification(

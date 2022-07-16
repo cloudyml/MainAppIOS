@@ -207,7 +207,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   PageTransition(
                                     duration: Duration(milliseconds: 400),
                                     curve: Curves.bounceInOut,
-                                    type: PageTransitionType.rightToLeft,
+                                    type: PageTransitionType.topToBottom,
                                     child: VideoScreen(
                                       isdemo: true,
                                       courseName: course[index].courseName,
@@ -221,7 +221,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   PageTransition(
                                     duration: Duration(milliseconds: 100),
                                     curve: Curves.bounceInOut,
-                                    type: PageTransitionType.rightToLeft,
+                                    type: PageTransitionType.topToBottom,
                                     child: ComboStore(
                                       courses: course[index].courses,
                                     ),
@@ -235,7 +235,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   PageTransition(
                                     duration: Duration(milliseconds: 400),
                                     curve: Curves.bounceInOut,
-                                    type: PageTransitionType.rightToLeft,
+                                    type: PageTransitionType.topToBottom,
                                     child: VideoScreen(
                                       isdemo: true,
                                       courseName: course[index].courseName,
@@ -251,7 +251,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   PageTransition(
                                     duration: Duration(milliseconds: 400),
                                     curve: Curves.bounceInOut,
-                                    type: PageTransitionType.rightToLeft,
+                                    type: PageTransitionType.topToBottom,
                                     child: ComboCourse(
                                       courses: course[index].courses,
                                     ),

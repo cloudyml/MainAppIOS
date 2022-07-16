@@ -1,33 +1,25 @@
 import 'dart:io';
 import 'dart:math';
-import 'package:cloudyml_app2/models/course_details.dart';
+
+import 'package:auto_orientation/auto_orientation.dart';
 import 'package:cloudyml_app2/offline/db.dart';
 import 'package:cloudyml_app2/globals.dart';
 import 'package:cloudyml_app2/models/offline_model.dart';
 import 'package:cloudyml_app2/module/assignment_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cloudyml_app2/utils/utils.dart';
 import 'package:cloudyml_app2/widgets/assignment_bottomsheet.dart';
-import 'package:cloudyml_app2/widgets/video_player_widgets/fastforward10.dart';
-import 'package:cloudyml_app2/widgets/video_player_widgets/fullscreen_icon.dart';
-import 'package:cloudyml_app2/widgets/video_player_widgets/replay10.dart';
-import 'package:cloudyml_app2/widgets/video_player_widgets/time_elapsed.dart';
-import 'package:cloudyml_app2/widgets/video_player_widgets/time_remaining.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoScreen extends StatefulWidget {
   final int? sr;
   final bool? isdemo;
   final String? courseName;
-  const VideoScreen(
-      {required this.isdemo, required this.sr, required this.courseName});
+  const VideoScreen({required this.isdemo, this.sr, this.courseName});
 
   @override
   _VideoScreenState createState() => _VideoScreenState();
@@ -51,8 +43,6 @@ class _VideoScreenState extends State<VideoScreen> {
   Duration? _position;
   bool switchTOAssignment = false;
   bool showAssignSol = false;
-  bool showMore = false;
-  int videoNumOfSection = 0;
 
   var _delayToInvokeonControlUpdate = 0;
   var _progress = 0.0;
@@ -100,6 +90,107 @@ class _VideoScreenState extends State<VideoScreen> {
         .then((value) {
       moduleId = value.docs[0].id;
     });
+  }
+
+  String convertToTwoDigits(int value) {
+    return value < 10 ? "0$value" : "$value";
+  }
+
+  Widget timeRemainingString() {
+    var timeRemaining = _duration?.toString().substring(2, 7);
+    final duration = _duration?.inSeconds ?? 0;
+    final currentPosition = _position?.inSeconds ?? 0;
+    final timeRemained = max(0, duration - currentPosition);
+    final mins = convertToTwoDigits(timeRemained ~/ 60);
+    final seconds = convertToTwoDigits(timeRemained % 60);
+    timeRemaining = '$mins:$seconds';
+
+    return Positioned(
+      bottom: 33,
+      right: 55,
+      child: Text(
+        timeRemaining,
+        style: TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+
+  Widget timeElapsedString() {
+    var timeElapsedString = "00.00";
+    final currentPosition = _position?.inSeconds ?? 0;
+    final mins = convertToTwoDigits(currentPosition ~/ 60);
+    final seconds = convertToTwoDigits(currentPosition % 60);
+    timeElapsedString = '$mins:$seconds';
+    return Positioned(
+      bottom: 33,
+      left: 10,
+      right: 0,
+      child: Text(
+        timeElapsedString,
+        style: TextStyle(
+            color: Colors.white,
+            // fontSize: 12,
+            fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+
+  Widget progressIndicator() {
+    return Positioned(
+      bottom: 27,
+      left: 0,
+      right: 0,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 50, right: 95),
+        child: SliderTheme(
+          data: SliderTheme.of(context).copyWith(
+            activeTrackColor: Color(0xFFC0AAF5),
+            inactiveTrackColor: Color.fromARGB(135, 221, 210, 251),
+            trackShape: RoundedRectSliderTrackShape(),
+            trackHeight: 3,
+            thumbShape: RoundSliderThumbShape(
+              enabledThumbRadius: 10,
+              elevation: 1,
+            ),
+            thumbColor: Colors.white,
+            overlayColor: Color.fromARGB(80, 255, 255, 255),
+            overlayShape: RoundSliderOverlayShape(
+              overlayRadius: 14,
+            ),
+            tickMarkShape: RoundSliderTickMarkShape(),
+            activeTickMarkColor: Color(0xFFC0AAF5),
+            inactiveTickMarkColor: Color(0xFFDDD2FB),
+          ),
+          child: Slider(
+            value: max(0, min(_progress * 100, 100)),
+            min: 0,
+            max: 100,
+            divisions: 100,
+            // label: _position?.toString().split(".")[0],
+            onChanged: (value) {
+              setState(() {
+                _progress = value * 0.01;
+              });
+            },
+            onChangeStart: (value) {
+              _videoController?.pause();
+            },
+            onChangeEnd: (value) {
+              final duration = _videoController?.value.duration;
+              if (duration != null) {
+                var newValue = max(0, min(value, 99)) * 0.01;
+                var millis = (duration.inMilliseconds * newValue).toInt();
+                _videoController?.seekTo(Duration(milliseconds: millis));
+                _videoController?.play();
+              }
+            },
+          ),
+        ),
+      ),
+    );
   }
 
   void _onVideoControllerUpdate() {
@@ -251,9 +342,6 @@ class _VideoScreenState extends State<VideoScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
     var verticalScale = screenHeight / mockUpHeight;
     var horizontalScale = screenWidth / mockUpWidth;
-    List<CourseDetails> course = Provider.of<List<CourseDetails>>(context);
-    CourseDetails currentCourse =
-        course.firstWhere((element) => element.courseDocumentId == courseId);
     return Scaffold(
         body: SafeArea(
       child: Container(
@@ -325,180 +413,115 @@ class _VideoScreenState extends State<VideoScreen> {
                                                         102, 0, 0, 0),
                                                   ),
                                                 ),
-                                                Padding(
-                                                  padding: const EdgeInsets
-                                                          .symmetric(
-                                                      horizontal: 10.0),
-                                                  child: Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      Expanded(
-                                                        child: Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
-                                                          children: [
-                                                            IconButton(
-                                                              onPressed: () {
-                                                                Navigator.pop(
-                                                                    context);
-                                                              },
-                                                              icon: Icon(Icons
-                                                                  .arrow_back_ios_new),
-                                                              color:
-                                                                  Colors.white,
-                                                            ),
-                                                            Text(
-                                                              data!['name'],
-                                                              style: TextStyle(
-                                                                color: Colors
-                                                                    .white,
-                                                                fontSize: 15,
-                                                              ),
-                                                            ),
-                                                            InkWell(
-                                                              onTap: () async {
-                                                                var directory =
-                                                                    await getApplicationDocumentsDirectory();
-                                                                download(
-                                                                  dio: Dio(),
-                                                                  fileName: data![
-                                                                      'name'],
-                                                                  url: data![
-                                                                      'url'],
-                                                                  savePath:
-                                                                      "${directory.path}/${data!['name'].replaceAll(' ', '')}.mp4",
-                                                                  topicName:
-                                                                      data![
-                                                                          'name'],
-                                                                );
-                                                                print(directory
-                                                                    .path);
-                                                              },
-                                                              child:
-                                                                  downloading!
-                                                                      ? Icon(
-                                                                          Icons
-                                                                              .downloading_outlined,
-                                                                          color:
-                                                                              Colors.white,
-                                                                        )
-                                                                      : Icon(
-                                                                          !downloaded
-                                                                              ? Icons.download_for_offline
-                                                                              : Icons.download_done_rounded,
-                                                                          color:
-                                                                              Colors.white,
-                                                                        ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        flex: 3,
-                                                        child: Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceAround,
-                                                          children: [
-                                                            replay10(
-                                                              videoController:
-                                                                  _videoController,
-                                                            ),
-                                                            InkWell(
-                                                              onTap: () {
-                                                                if (_isPlaying) {
-                                                                  setState(() {
-                                                                    _videoController!
-                                                                        .pause();
-                                                                  });
-                                                                } else {
-                                                                  setState(() {
-                                                                    enablePauseScreen =
-                                                                        !enablePauseScreen;
-                                                                    _videoController!
-                                                                        .play();
-                                                                  });
-                                                                }
-                                                              },
-                                                              child: Icon(
-                                                                _isPlaying
-                                                                    ? Icons
-                                                                        .pause
-                                                                    : Icons
-                                                                        .play_arrow,
-                                                                color: Colors
-                                                                    .white,
-                                                                size: 40,
-                                                              ),
-                                                            ),
-                                                            fastForward10(
-                                                              videoController:
-                                                                  _videoController,
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      VideoProgressIndicator(
-                                                        _videoController!,
-                                                        allowScrubbing: true,
-                                                        colors:
-                                                            VideoProgressColors(
-                                                          backgroundColor:
-                                                              Color.fromARGB(
-                                                                  74,
-                                                                  255,
-                                                                  255,
-                                                                  255),
-                                                          bufferedColor:
-                                                              Color(0xFFC0AAF5),
-                                                          playedColor:
-                                                              Color(0xFF7860DC),
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
-                                                          children: [
-                                                            Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .all(8.0),
-                                                              child: Row(
-                                                                children: [
-                                                                  timeElapsedString(
-                                                                    position:
-                                                                        _position!,
-                                                                  ),
-                                                                  Text(
-                                                                    '/',
-                                                                    style:
-                                                                        TextStyle(
-                                                                      color: Colors
-                                                                          .white,
-                                                                    ),
-                                                                  ),
-                                                                  timeRemainingString(
-                                                                    duration:
-                                                                        _duration!,
-                                                                    position:
-                                                                        _position!,
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                            fullScreenIcon(
-                                                              isPortrait:
-                                                                  isPortrait,
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ],
+                                                Positioned(
+                                                  top: 0,
+                                                  bottom: 0,
+                                                  left: 0,
+                                                  right: 0,
+                                                  child: IconButton(
+                                                    onPressed: () {
+                                                      if (_isPlaying) {
+                                                        setState(() {
+                                                          _videoController!
+                                                              .pause();
+                                                        });
+                                                      } else {
+                                                        setState(() {
+                                                          enablePauseScreen =
+                                                              !enablePauseScreen;
+                                                          _videoController!
+                                                              .play();
+                                                        });
+                                                      }
+                                                    },
+                                                    icon: Icon(
+                                                      _isPlaying
+                                                          ? Icons.pause
+                                                          : Icons.play_arrow,
+                                                      color: Colors.white,
+                                                      size: 50,
+                                                    ),
+                                                  ),
+                                                ),
+                                                replay10(
+                                                    videoController:
+                                                        _videoController),
+                                                fastForward10(
+                                                    videoController:
+                                                        _videoController),
+                                                IconButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    icon: Icon(Icons
+                                                        .arrow_back_ios_new),
+                                                    color: Colors.white),
+                                                timeElapsedString(),
+                                                timeRemainingString(),
+                                                Positioned(
+                                                  bottom: 42.5 * verticalScale,
+                                                  left: 55 * horizontalScale,
+                                                  right: 100 * horizontalScale,
+                                                  child: VideoProgressIndicator(
+                                                    _videoController!,
+                                                    allowScrubbing: true,
+                                                    colors: VideoProgressColors(
+                                                      backgroundColor:
+                                                          Color.fromARGB(74,
+                                                              255, 255, 255),
+                                                      bufferedColor:
+                                                          Color(0xFFC0AAF5),
+                                                      playedColor:
+                                                          Color(0xFF7860DC),
+                                                    ),
+                                                  ),
+                                                ),
+                                                // progressIndicator(),
+                                                fullScreenIcon(
+                                                    isPortrait: isPortrait),
+                                                Positioned(
+                                                  top: 15,
+                                                  left: 40,
+                                                  child: Text(
+                                                    data!['name'],
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 15,
+                                                    ),
+                                                  ),
+                                                ),
+                                                Positioned(
+                                                  top: 10,
+                                                  right: 10,
+                                                  child: InkWell(
+                                                    onTap: () async {
+                                                      var directory =
+                                                          await getApplicationDocumentsDirectory();
+                                                      download(
+                                                        dio: Dio(),
+                                                        fileName: data!['name'],
+                                                        url: data!['url'],
+                                                        savePath:
+                                                            "${directory.path}/${data!['name'].replaceAll(' ', '')}.mp4",
+                                                        topicName:
+                                                            data!['name'],
+                                                      );
+                                                      print(directory.path);
+                                                    },
+                                                    child: downloading!
+                                                        ? Icon(
+                                                            Icons
+                                                                .downloading_outlined,
+                                                            color: Colors.white,
+                                                          )
+                                                        : Icon(
+                                                            !downloaded
+                                                                ? Icons
+                                                                    .download_for_offline
+                                                                : Icons
+                                                                    .download_done_rounded,
+                                                            color: Colors.white,
+                                                          ),
                                                   ),
                                                 ),
                                               ],
@@ -567,6 +590,11 @@ class _VideoScreenState extends State<VideoScreen> {
                           SizedBox(
                             height: 10,
                           ),
+                          // Divider(
+                          //   indent: 0,
+                          //   thickness: 4,
+                          //   color: Color(0xFFC0AAF5),
+                          // ),
                           Container(
                             height: 60,
                             child: Center(
@@ -657,206 +685,207 @@ class _VideoScreenState extends State<VideoScreen> {
                         flex: 2,
                         child: !switchTOAssignment
                             ? Container(
-                                child: MediaQuery.removePadding(
-                                  context: context,
-                                  removeBottom: true,
-                                  removeTop: true,
-                                  child: ListView.builder(
-                                    itemCount: currentCourse
-                                        .curriculum['sectionsName'].length,
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      print(currentCourse);
-                                      return Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 8.0),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            ListTile(
-                                              title: Text(
-                                                currentCourse.curriculum[
-                                                    'sectionsName'][index],
-                                                textScaleFactor: min(
-                                                  horizontalScale,
-                                                  verticalScale,
-                                                ),
-                                                style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.w600,
-                                                ),
-                                              ),
-                                              tileColor: Color(0xFFC0AAF5),
-                                            ),
-                                            StreamBuilder(
-                                              stream: FirebaseFirestore.instance
-                                                  .collection('courses')
-                                                  .doc(courseId)
-                                                  .collection('Modules')
-                                                  .doc(moduleId)
-                                                  .collection('Topics')
-                                                  .orderBy('sr')
-                                                  .snapshots(),
-                                              builder: (BuildContext context,
-                                                  AsyncSnapshot snapshot) {
-                                                if (snapshot.data != null) {
-                                                  return Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
+                                // height: 500,
+                                child: StreamBuilder(
+                                  stream: FirebaseFirestore.instance
+                                      .collection('courses')
+                                      .doc(courseId)
+                                      .collection('Modules')
+                                      .doc(moduleId)
+                                      .collection('Topics')
+                                      .orderBy('sr')
+                                      .snapshots(),
+                                  builder: (BuildContext context,
+                                      AsyncSnapshot snapshot) {
+                                    if (snapshot.data != null) {
+                                      return ListView.builder(
+                                          shrinkWrap: true,
+                                          itemCount: snapshot.data!.docs.length,
+                                          itemBuilder: (context, index) {
+                                            // VideoPlayerController? _videoController;
+                                            Map<String, dynamic> map = snapshot
+                                                .data!.docs[index]
+                                                .data();
+                                            // VideoScreen.urlString!.value = map['url'];
+                                            if (map['type'] == 'video') {
+                                              return InkWell(
+                                                onTap: () {
+                                                  setState(() {
+                                                    serialNo = map['sr'];
+                                                  });
+                                                  if (map['type'] == 'video') {
+                                                    setState(() {
+                                                      showAssignment = false;
+                                                    });
+                                                    intializeVidController(
+                                                        map['url']);
+                                                  } else if (map['type'] ==
+                                                      'assignment') {
+                                                    setState(() {
+                                                      showAssignment =
+                                                          !showAssignment;
+                                                      serialNo = map['sr'];
+                                                      assignMentVideoUrl =
+                                                          map['solution'];
+                                                    });
+                                                  }
+                                                  setState(() {
+                                                    data = map;
+                                                    downloading = false;
+                                                    downloaded = false;
+                                                  });
+                                                },
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    color: serialNo == map['sr']
+                                                        ? Color(0xFFDDD2FB)
+                                                            .withOpacity(0.3)
+                                                        : Colors.transparent,
+                                                    // border: widget.sr == map['sr']
+                                                    //     ? Border.all(
+                                                    //         color: Color(0xFFaefb2a)
+                                                    //             .withOpacity(0.8),
+                                                    //         width: 2)
+                                                    //     : Border.all(
+                                                    //         color:
+                                                    //             Colors.transparent)
+                                                  ),
+                                                  child: Column(
                                                     children: [
-                                                      Container(
-                                                        height: showMore
-                                                            ? null
-                                                            : 130,
-                                                        child: MediaQuery
-                                                            .removePadding(
-                                                          context: context,
-                                                          removeBottom: true,
-                                                          removeTop: true,
-                                                          child:
-                                                              ListView.builder(
-                                                                  physics:
-                                                                      NeverScrollableScrollPhysics(),
-                                                                  shrinkWrap:
-                                                                      true,
-                                                                  itemCount:
-                                                                      snapshot
-                                                                          .data!
-                                                                          .docs
-                                                                          .length,
-                                                                  itemBuilder:
-                                                                      (context,
-                                                                          index1) {
-                                                                    Map<String,
-                                                                            dynamic>
-                                                                        map =
-                                                                        snapshot
-                                                                            .data!
-                                                                            .docs[index1]
-                                                                            .data();
-                                                                    if (currentCourse.curriculum['sectionsName']
-                                                                            [
-                                                                            index] ==
-                                                                        map['section_name']) {
-                                                                      if (map['type'] ==
-                                                                          'video') {
-                                                                        return InkWell(
-                                                                          onTap:
-                                                                              () {
-                                                                            setState(() {
-                                                                              serialNo = map['sr'];
-                                                                            });
-                                                                            if (map['type'] ==
-                                                                                'video') {
-                                                                              setState(() {
-                                                                                showAssignment = false;
-                                                                              });
-                                                                              intializeVidController(map['url']);
-                                                                            } else if (map['type'] ==
-                                                                                'assignment') {
-                                                                              setState(() {
-                                                                                showAssignment = !showAssignment;
-                                                                                serialNo = map['sr'];
-                                                                                assignMentVideoUrl = map['solution'];
-                                                                              });
-                                                                            }
-                                                                            setState(() {
-                                                                              data = map;
-                                                                              downloading = false;
-                                                                              downloaded = false;
-                                                                            });
-                                                                          },
-                                                                          child:
-                                                                              Container(
-                                                                            decoration:
-                                                                                BoxDecoration(
-                                                                              color: serialNo == map['sr'] ? Color(0xFFDDD2FB).withOpacity(0.3) : Colors.transparent,
-                                                                            ),
-                                                                            child:
-                                                                                Column(
-                                                                              children: [
-                                                                                SizedBox(
-                                                                                  height: 10,
-                                                                                ),
-                                                                                Row(
-                                                                                  children: [
-                                                                                    SizedBox(
-                                                                                      width: 30,
-                                                                                    ),
-                                                                                    SizedBox(
-                                                                                      width: 10,
-                                                                                    ),
-                                                                                    Icon(Icons.play_circle_fill_rounded, size: 15),
-                                                                                    SizedBox(
-                                                                                      width: 10,
-                                                                                    ),
-                                                                                    Expanded(
-                                                                                      child: Text(
-                                                                                        map['name'],
-                                                                                        textScaleFactor: min(horizontalScale, verticalScale),
-                                                                                        style: TextStyle(
-                                                                                          fontWeight: FontWeight.w500,
-                                                                                          fontSize: 17,
-                                                                                          fontFamily: "Medium",
-                                                                                        ),
-                                                                                        maxLines: 2,
-                                                                                      ),
-                                                                                    ),
-                                                                                  ],
-                                                                                ),
-                                                                                SizedBox(
-                                                                                  height: 10,
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                          ),
-                                                                        );
-                                                                      } else {
-                                                                        return Container();
-                                                                      }
-                                                                    } else {
-                                                                      return Container();
-                                                                    }
-                                                                  }),
-                                                        ),
+                                                      SizedBox(
+                                                        height: 10,
                                                       ),
-                                                      TextButton(
-                                                        onPressed: () {
-                                                          setState(() {
-                                                            showMore =
-                                                                !showMore;
-                                                          });
-                                                        },
-                                                        child: Text(
-                                                          showMore
-                                                              ? 'Show less'
-                                                              : 'Show more',
-                                                          style: TextStyle(
-                                                            color: Color(
-                                                              0xFF7860DC,
+                                                      Row(
+                                                        children: [
+                                                          SizedBox(
+                                                            width: 30,
+                                                          ),
+                                                          Container(
+                                                            child: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(8.0),
+                                                              child: index < 9
+                                                                  ? Text(
+                                                                      '  ${index + 1}',
+                                                                      style: TextStyle(
+                                                                          // fontSize:
+                                                                          //     18,
+                                                                          ),
+                                                                    )
+                                                                  : Text(
+                                                                      '${index + 1}',
+                                                                      style: TextStyle(
+                                                                          // fontSize:
+                                                                          //     17,
+                                                                          ),
+                                                                    ),
                                                             ),
                                                           ),
-                                                        ),
-                                                      )
+                                                          SizedBox(
+                                                            width: 10,
+                                                          ),
+                                                          Icon(
+                                                              Icons
+                                                                  .play_circle_fill_rounded,
+                                                              size: 15),
+                                                          SizedBox(
+                                                            width: 10,
+                                                          ),
+                                                          Expanded(
+                                                            child: Text(
+                                                              map['name'],
+                                                              textScaleFactor: min(
+                                                                  horizontalScale,
+                                                                  verticalScale),
+                                                              style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                fontSize: 17,
+                                                                fontFamily:
+                                                                    "Medium",
+                                                              ),
+                                                              maxLines: 2,
+                                                            ),
+                                                          ),
+                                                          // Expanded(
+                                                          //   flex: 1,
+                                                          //   child: InkWell(
+                                                          //     onTap: () async {
+                                                          //       var directory =
+                                                          //           await getApplicationDocumentsDirectory();
+                                                          //       download(
+                                                          //         dio: Dio(),
+                                                          //         fileName: map[
+                                                          //             'name'],
+                                                          //         url: map[
+                                                          //             'url'],
+                                                          //         savePath:
+                                                          //             "${directory.path}/${data!['name'].replaceAll(' ', '')}.mp4",
+                                                          //         topicName: map[
+                                                          //             'name'],
+                                                          //       );
+                                                          //       print(directory
+                                                          //           .path);
+                                                          //     },
+                                                          //     child: downloading!
+                                                          //         ? data!['name'] == map['name']
+                                                          //             ? Icon(
+                                                          //                 Icons
+                                                          //                     .downloading_sharp,
+                                                          //                 color:
+                                                          //                     Color(0xFFC0AAF5),
+                                                          //               )
+                                                          //             : Icon(
+                                                          //                 Icons
+                                                          //                     .download_for_offline,
+                                                          //               )
+                                                          //         : !downloaded
+                                                          //             ? Icon(
+                                                          //                 Icons
+                                                          //                     .download_for_offline,
+                                                          //               )
+                                                          //             : data!['name'] == map['name']
+                                                          //                 ? Icon(
+                                                          //                     Icons.download_done_sharp,
+                                                          //                     color: Color(0xFF7860DC),
+                                                          //                   )
+                                                          //                 : Icon(
+                                                          //                     Icons.download_for_offline,
+                                                          //                   ),
+                                                          //   ),
+                                                          // )
+                                                        ],
+                                                      ),
+                                                      SizedBox(
+                                                        height: 10,
+                                                      ),
                                                     ],
-                                                  );
-                                                } else {
-                                                  return Container();
-                                                }
-                                              },
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    },
-                                  ),
+                                                  ),
+                                                ),
+                                              );
+                                            } else {
+                                              return Container();
+                                            }
+                                          });
+                                    } else {
+                                      return Container();
+                                    }
+                                  },
                                 ),
                               )
                             : AssignmentScreen(
                                 isdemo: false,
                                 sr: serialNo,
+                                // playSolVideo: () {
+                                //   setState(() {
+                                //     showAssignment = false;
+                                //     showAssignSol = false;
+                                //     // switchTOAssignment = false;
+                                //   });
+                                //   intializeVidController(assignVideoUrl!);
+                                // },
                               ),
                       )
                     : Container(),
@@ -866,5 +895,110 @@ class _VideoScreenState extends State<VideoScreen> {
         ),
       ),
     ));
+  }
+}
+
+class replay10 extends StatelessWidget {
+  const replay10({
+    Key? key,
+    required VideoPlayerController? videoController,
+  })  : _videoController = videoController,
+        super(key: key);
+
+  final VideoPlayerController? _videoController;
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      left: 0,
+      top: 0,
+      bottom: 0,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 100),
+        child: IconButton(
+          onPressed: (() async {
+            final currentPosition = await _videoController!.position;
+            final newPosition = currentPosition! - Duration(seconds: 10);
+            _videoController!.seekTo(newPosition);
+          }),
+          icon: Icon(
+            Icons.replay_10,
+            size: 40,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class fastForward10 extends StatelessWidget {
+  const fastForward10({
+    Key? key,
+    required VideoPlayerController? videoController,
+  })  : _videoController = videoController,
+        super(key: key);
+
+  final VideoPlayerController? _videoController;
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      // left:0,
+      right: 0,
+      top: 0,
+      bottom: 0,
+      child: Padding(
+        padding: const EdgeInsets.only(right: 100),
+        child: InkWell(
+          onTap: (() async {
+            final currentPosition = await _videoController!.position;
+            final newPosition = currentPosition! + Duration(seconds: 10);
+            _videoController!.seekTo(newPosition);
+          }),
+          child: Icon(
+            Icons.forward_10,
+            size: 40,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class fullScreenIcon extends StatelessWidget {
+  const fullScreenIcon({
+    Key? key,
+    required this.isPortrait,
+  }) : super(key: key);
+
+  final bool isPortrait;
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      bottom: 17,
+      // left: 0,
+      right: 7,
+      child: SafeArea(
+        child: IconButton(
+          onPressed: () {
+            if (isPortrait) {
+              AutoOrientation.landscapeRightMode();
+            } else {
+              AutoOrientation.portraitUpMode();
+            }
+          },
+          icon: Icon(
+            isPortrait
+                ? Icons.fullscreen_rounded
+                : Icons.fullscreen_exit_rounded,
+            color: Colors.white,
+            size: 30,
+          ),
+        ),
+      ),
+    );
   }
 }

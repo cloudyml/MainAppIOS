@@ -358,33 +358,33 @@ class _ChatScreenState extends State<ChatScreen> {
             ],
           ),
         ),
-        actions: [
-          PopupMenuButton(
-            itemBuilder: (context) {
-              return [
-                PopupMenuItem<int>(
-                  value: 0,
-                  child: Container(
-                    width: width * 0.5,
-                    child: const Text("Group Info"),
-                  ),
-                ),
-              ];
-            },
-            onSelected: (value) {
-              if (value == 0) {
-                print(widget.groupData);
-                Navigator.push(
-                  context,
-                  CupertinoPageRoute(
-                    builder: (_) =>
-                        GroupInfoScreen(groupData: widget.groupData!),
-                  ),
-                );
-              }
-            },
-          )
-        ],
+        // actions: [
+        //   PopupMenuButton(
+        //     itemBuilder: (context) {
+        //       return [
+        //         PopupMenuItem<int>(
+        //           value: 0,
+        //           child: Container(
+        //             width: width * 0.5,
+        //             child: const Text("Group Info"),
+        //           ),
+        //         ),
+        //       ];
+        //     },
+        //     onSelected: (value) {
+        //       if (value == 0) {
+        //         print(widget.groupData);
+        //         Navigator.push(
+        //           context,
+        //           CupertinoPageRoute(
+        //             builder: (_) =>
+        //                 GroupInfoScreen(groupData: widget.groupData!),
+        //           ),
+        //         );
+        //       }
+        //     },
+        //   )
+        // ],
       ),
       body: appStorage == null
           ? const Center(child: CircularProgressIndicator())

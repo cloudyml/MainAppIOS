@@ -15,14 +15,8 @@ import 'package:cloudyml_app2/fun.dart';
 import 'package:cloudyml_app2/models/firebase_file.dart';
 import 'package:provider/provider.dart';
 // import 'package:ribbon/ribbon.dart';
-import 'package:ribbon_widget/ribbon_widget.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloudyml_app2/globals.dart';
-import 'package:cloudyml_app2/aboutus.dart';
-import 'package:cloudyml_app2/payments_history.dart';
-import 'package:cloudyml_app2/my_Courses.dart';
-import 'package:cloudyml_app2/privacy_policy.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);

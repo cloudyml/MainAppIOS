@@ -42,6 +42,18 @@ class _GroupInfoScreenState extends State<GroupInfoScreen> {
                 ),
               ),
             ),
+            //  Container(
+            //   alignment: Alignment.center,
+            //   padding: const EdgeInsets.symmetric(horizontal: 10),
+            //   child: Text(
+            //     widget.groupData!["data"]["mentors"],
+            //     textAlign: TextAlign.center,
+            //     style: const TextStyle(
+            //       fontSize: 30,
+            //       fontWeight: FontWeight.bold,
+            //     ),
+            //   ),
+            // ),
           ],
         ),
       ),

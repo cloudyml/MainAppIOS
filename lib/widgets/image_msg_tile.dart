@@ -48,14 +48,15 @@ class _ImageMsgTileState extends State<ImageMsgTile> {
           width: size.width * 0.5,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(25),
-            gradient: const RadialGradient(
-                center: Alignment.topRight,
-                // near the top right
-                radius: 6,
-                colors: [
-                  Colors.purple,
-                  Colors.blue,
-                ]),
+            color: Color(0xFF7860DC),
+            // gradient: const RadialGradient(
+            //     center: Alignment.topRight,
+            //     // near the top right
+            //     radius: 6,
+            //     colors: [
+            //       Colors.purple,
+            //       Colors.blue,
+            //     ]),
           ),
           alignment: Alignment.center,
           child: widget.map!['link'] != ""
@@ -68,7 +69,7 @@ class _ImageMsgTileState extends State<ImageMsgTile> {
                       child: Text(
                         widget.map!["sendBy"],
                         style: TextStyle(
-                            color: Colors.amber[900],
+                            color: Color.fromARGB(255, 84, 215, 184),
                             fontWeight: FontWeight.bold),
                       ),
                     ),
