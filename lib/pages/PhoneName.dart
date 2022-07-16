@@ -119,7 +119,7 @@ class _PhoneNameState extends State<PhoneName> {
               child: Padding(
                 padding:  EdgeInsets.all(min(horizontalScale,verticalScale)*11),
                 child: Text(
-                  'Save Changes',
+                  'Continue',
                   textScaleFactor: min(horizontalScale,verticalScale),
                   style: TextStyle(
                       fontSize: 14,

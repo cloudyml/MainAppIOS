@@ -86,7 +86,7 @@ class _newEnterNameState extends State<newEnterName> {
                                             width * 0.06)),
                                   ),
                                   child: Text(
-                                    'Enter Details',
+                                    'Enter Your Name',
                                     textScaleFactor:
                                     min(horizontalScale, verticalScale),
                                     style: TextStyle(

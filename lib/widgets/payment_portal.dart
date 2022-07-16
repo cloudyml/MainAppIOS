@@ -110,11 +110,7 @@ class _PaymentButtonState extends State<PaymentButton> with CouponCodeMixin {
       _firestore.collection("groups").add(groupData);
     });
   }
-  
-  
-  
-  
-  
+
   // void loadCourses() async {
   //   setState(() {
   //     isLoading = true;

@@ -1,4 +1,3 @@
-
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -45,7 +44,6 @@ class _NotificationPageState extends State<NotificationPage> {
     // print(datas);
   }
 
-
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -53,267 +51,342 @@ class _NotificationPageState extends State<NotificationPage> {
     var verticalScale = height / mockUpHeight;
     var horizontalScale = width / mockUpWidth;
 
-    final userProvider=Provider.of<UserProvider>(context);
+    final userProvider = Provider.of<UserProvider>(context);
     return Scaffold(
-      // appBar: AppBar(
-      //   backgroundColor: Color(0xFF7860DC),
-      //   title: Text('Notification Page'),
-      // ),
-      backgroundColor: HexColor('7A62DE'),
-      body: Stack(
-        children: [
-        Column(
-          children: [
-            SizedBox(
-              height: verticalScale*150,
-            ),
-            Container(
-            height: height-verticalScale*150,
-            width: width,
-            decoration:  BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                topLeft:  Radius.circular(min(horizontalScale,verticalScale)*25),
-                topRight:  Radius.circular(min(horizontalScale,verticalScale)*25),
+        backgroundColor: HexColor('7A62DE'),
+        body: Stack(children: [
+          Column(
+            children: [
+              SizedBox(
+                height: verticalScale * 150,
               ),
-            ),
-      ),
-          ],
-        ),
-      Positioned(
-        top: 46*verticalScale,
-        left: 28*horizontalScale,
-        child: IconButton(
-          icon: Icon(Icons.arrow_back,color: Colors.white,size: 36,),
-          onPressed: (){
-            Navigator.pop(context);
-          },
-        ),
-      ),
-          Positioned(
-            top: 59*verticalScale,
-            left: 126*horizontalScale,
-            right: 130*horizontalScale,
-            child: Text('Notifications',
-                textScaleFactor: min(horizontalScale,verticalScale),
-              style: TextStyle(
-                  fontSize: 25,
+              Container(
+                height: height - verticalScale * 150,
+                width: width,
+                decoration: BoxDecoration(
                   color: Colors.white,
-                  fontWeight: FontWeight.bold
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(
+                        min(horizontalScale, verticalScale) * 25),
+                    topRight: Radius.circular(
+                        min(horizontalScale, verticalScale) * 25),
+                  ),
+                ),
               ),
-            )
+            ],
           ),
-      Column(
-        children: [
-          SizedBox(
-            height: verticalScale*126,
-          ),
-          AnimatedSwitcher(
-            duration: Duration(milliseconds: 200),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        _formIndex=1;
-                      });
-                    },
-                    style: ElevatedButton.styleFrom(
-                      primary:_formIndex==1?  HexColor('6153D3'):Colors.white,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(min(horizontalScale, verticalScale) * 5)),
-                    ),
-                    child: Text(
-                      'Users Notifications',
-                      textScaleFactor:
-                      min(horizontalScale, verticalScale),
-                      style: TextStyle(
-                        color: _formIndex==1?Colors.white:HexColor('6153D3'),
-                        fontSize: 18,
-                      ),
-                    )),
-                ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        _formIndex=2;
-
-                      });
-                    },
-                    style: ElevatedButton.styleFrom(
-                      primary: _formIndex==2?HexColor('6153D3'):Colors.white,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(min(horizontalScale, verticalScale) * 5)),
-                    ),
-                    child: Text(
-                      'App Notification',
-                      textScaleFactor:
-                      min(horizontalScale, verticalScale),
-                      style: TextStyle(
-                        color: _formIndex==2?Colors.white:HexColor('6153D3'),
-                        fontSize: 18,
-                      ),
-                    )),
-              ],
+          Positioned(
+            top: 46 * verticalScale,
+            left: 28 * horizontalScale,
+            child: IconButton(
+              icon: Icon(
+                Icons.arrow_back,
+                color: Colors.white,
+                size: 36,
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
             ),
           ),
-          AnimatedSwitcher(
-              duration: Duration(milliseconds: 200),
-            child: (_formIndex==1)?
-            (userProvider.userModel?.userNotificationList!.length==0)?
-               Column(
-                 mainAxisSize: MainAxisSize.max,
-                 children: [
-                   SizedBox(
-                     height: 220*verticalScale,
-                   ),
-                   Icon(Icons.notifications_none,size: 100,),
-                   Text('No Notifications yet',
-                        textScaleFactor: min(horizontalScale, verticalScale),
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold
-                        ),
-                   ),
-                   Text('When you get notifications,they will show up here',
-                     textAlign: TextAlign.center,
-                     textScaleFactor: min(horizontalScale, verticalScale),
-                     style: TextStyle(
-                         fontSize: 20,
-                     ),
-                   )
-                 ],
-               )
-                :
-                    ListView.builder(
-                          shrinkWrap: true,
-                          reverse: true,
-                          itemCount: userProvider.userModel?.userNotificationList!.length,
-                            itemBuilder: (_,index){
-                                return Column(
-                                    children: [
-                                      SizedBox(height: 10*verticalScale,),
-                                      ListTile(
-                                        title: Text(userProvider.userModel?.userNotificationList![index].title??'',
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold
+          Positioned(
+              top: 59 * verticalScale,
+              left: 126 * horizontalScale,
+              right: 130 * horizontalScale,
+              child: Text(
+                'Notifications',
+                textScaleFactor: min(horizontalScale, verticalScale),
+                style: TextStyle(
+                    fontSize: 25,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold),
+              )),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: verticalScale * 126,
+              ),
+              Expanded(
+                child: AnimatedSwitcher(
+                  duration: Duration(milliseconds: 200),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              _formIndex = 1;
+                            });
+                          },
+                          style: ElevatedButton.styleFrom(
+                            primary: _formIndex == 1
+                                ? HexColor('6153D3')
+                                : Colors.white,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                    min(horizontalScale, verticalScale) * 5)),
+                          ),
+                          child: Text(
+                            'Users Notifications',
+                            textScaleFactor:
+                                min(horizontalScale, verticalScale),
+                            style: TextStyle(
+                              color: _formIndex == 1
+                                  ? Colors.white
+                                  : HexColor('6153D3'),
+                              fontSize: 18,
+                            ),
+                          )),
+                      ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              _formIndex = 2;
+                            });
+                          },
+                          style: ElevatedButton.styleFrom(
+                            primary: _formIndex == 2
+                                ? HexColor('6153D3')
+                                : Colors.white,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                    min(horizontalScale, verticalScale) * 5)),
+                          ),
+                          child: Text(
+                            'App Notification',
+                            textScaleFactor:
+                                min(horizontalScale, verticalScale),
+                            style: TextStyle(
+                              color: _formIndex == 2
+                                  ? Colors.white
+                                  : HexColor('6153D3'),
+                              fontSize: 18,
+                            ),
+                          )),
+                    ],
+                  ),
+                ),
+              ),
+              Expanded(
+                flex: 5,
+                child: AnimatedSwitcher(
+                  duration: Duration(milliseconds: 200),
+                  child: (_formIndex == 1)
+                      ? (userProvider.userModel?.userNotificationList!.length ==
+                              0)
+                          ? Column(
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                SizedBox(
+                                  height: 220 * verticalScale,
+                                ),
+                                Icon(
+                                  Icons.notifications_none,
+                                  size: 100,
+                                ),
+                                Text(
+                                  'No Notifications yet',
+                                  textScaleFactor:
+                                      min(horizontalScale, verticalScale),
+                                  style: TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  'When you get notifications,they will show up here',
+                                  textAlign: TextAlign.center,
+                                  textScaleFactor:
+                                      min(horizontalScale, verticalScale),
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                  ),
+                                )
+                              ],
+                            )
+                          : MediaQuery.removePadding(
+                              context: context,
+                              removeBottom: true,
+                              removeLeft: true,
+                              removeRight: true,
+                              removeTop: true,
+                              child: ListView.builder(
+                                  itemCount: userProvider
+                                      .userModel?.userNotificationList!.length,
+                                  itemBuilder: (_, index) {
+                                    return Column(
+                                      children: [
+                                        SizedBox(
+                                          height: 10 * verticalScale,
+                                        ),
+                                        ListTile(
+                                          title: Text(
+                                            userProvider
+                                                    .userModel
+                                                    ?.userNotificationList![
+                                                        index]
+                                                    .title ??
+                                                '',
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          subtitle: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                userProvider
+                                                        .userModel
+                                                        ?.userNotificationList![
+                                                            index]
+                                                        .body ??
+                                                    '',
+                                                style: TextStyle(
+                                                    color: HexColor('464646')),
+                                              ),
+                                              Text(
+                                                userProvider
+                                                        .userModel
+                                                        ?.userNotificationList![
+                                                            index]
+                                                        .NDate ??
+                                                    '',
+                                                textScaleFactor: min(
+                                                    horizontalScale,
+                                                    verticalScale),
+                                                style: TextStyle(
+                                                    color: HexColor('A9A9A9'),
+                                                    fontSize: 12),
+                                              ),
+                                            ],
+                                          ),
+                                          leading: Image.network(userProvider
+                                                  .userModel
+                                                  ?.userNotificationList![index]
+                                                  .notifyImage ??
+                                              ''),
+                                          trailing: IconButton(
+                                            icon: Icon(
+                                              Icons.delete,
+                                              color: HexColor('#F13758'),
+                                            ),
+                                            onPressed: () {
+                                              userProvider.removeFromNotificationP(
+                                                  userNotificationModel:
+                                                      userProvider.userModel
+                                                              ?.userNotificationList![
+                                                          index]);
+                                              userProvider.reloadUserModel();
+                                            },
                                           ),
                                         ),
-                                        subtitle: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(userProvider.userModel?.userNotificationList![index].body??'',
+                                        Divider(
+                                          thickness: 2,
+                                        )
+                                      ],
+                                    );
+                                  }),
+                            )
+                      : StreamBuilder(
+                          stream: FirebaseFirestore.instance
+                              .collection("Notifications")
+                              .orderBy("index", descending: true)
+                              .snapshots(),
+                          builder:
+                              (BuildContext context, AsyncSnapshot snapshot) {
+                            if (snapshot.data != null) {
+                              if (snapshot.data!.docs.length != 0) {
+                                return ListView.builder(
+                                    shrinkWrap: true,
+                                    itemCount: snapshot.data!.docs.length,
+                                    itemBuilder: (context, index) {
+                                      Map<String, dynamic> map =
+                                          snapshot.data!.docs[index].data();
+                                      return Column(
+                                        children: [
+                                          SizedBox(
+                                            height: 4 * verticalScale,
+                                          ),
+                                          ListTile(
+                                            title: Text(
+                                              map['title'] ?? '',
+                                              textScaleFactor: min(
+                                                  horizontalScale,
+                                                  verticalScale),
                                               style: TextStyle(
-                                                color: HexColor('464646')
-                                              ),
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.bold),
                                             ),
-                                            Text(userProvider.userModel?.userNotificationList![index].NDate??'',
-                                              textScaleFactor: min(horizontalScale, verticalScale),
-                                              style: TextStyle(
-                                                  color: HexColor('A9A9A9'),
-                                                  fontSize: 12
-                                              ),
+                                            subtitle: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  map['description'] ?? '',
+                                                  style: TextStyle(
+                                                    color: HexColor('464646'),
+                                                  ),
+                                                ),
+                                                Text(
+                                                  map['Ndate'] ?? '',
+                                                  textScaleFactor: min(
+                                                      horizontalScale,
+                                                      verticalScale),
+                                                  style: TextStyle(
+                                                      color: HexColor('A9A9A9'),
+                                                      fontSize: 12),
+                                                )
+                                              ],
                                             ),
-                                          ],
-                                        ),
-                                        leading: Image.network(userProvider.userModel?.userNotificationList![index].notifyImage??''),
-                                        trailing: IconButton(
-                                          icon: Icon(Icons.delete,color: HexColor('#F13758'),),
-                                          onPressed: (){
-                                                userProvider.removeFromNotificationP(userNotificationModel: userProvider.userModel?.userNotificationList![index]);
-                                                userProvider.reloadUserModel();
-                                          },
-                                        ),
-                                      ),
-                                      Divider(thickness: 2,)
-                                    ],
-                                  );
-                            }
-                        )
-            :StreamBuilder(
-                stream: FirebaseFirestore.instance.collection("Notifications").orderBy("index", descending: true).snapshots(),
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  if (snapshot.data != null) {
-                    if(snapshot.data!.docs.length!=0){
-                      return ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: snapshot.data!.docs.length,
-                          itemBuilder: (context, index) {
-                            Map<String, dynamic> map = snapshot.data!.docs[index].data();
-                            return Column(
-                              children: [
-                                SizedBox(height: 4*verticalScale,),
-                                ListTile(
-                                  title: Text(map['title']??'',
-                                    textScaleFactor: min(horizontalScale, verticalScale),
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold
+                                            leading: Image.network(
+                                                map['icon'] ?? ''),
+                                          ),
+                                          Divider(
+                                            thickness: 2,
+                                          )
+                                        ],
+                                      );
+                                    });
+                              } else {
+                                return Column(
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    SizedBox(
+                                      height: 220 * verticalScale,
                                     ),
-                                  ),
-                                  subtitle: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(map['description']??'',
-                                        style: TextStyle(
-                                            color: HexColor('464646'),
-                                        ),
+                                    Icon(
+                                      Icons.notifications_none,
+                                      size: 100,
+                                    ),
+                                    Text(
+                                      'No Notifications yet',
+                                      textScaleFactor:
+                                          min(horizontalScale, verticalScale),
+                                      style: TextStyle(
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(
+                                      'When you get notifications,they will show up here',
+                                      textAlign: TextAlign.center,
+                                      textScaleFactor:
+                                          min(horizontalScale, verticalScale),
+                                      style: TextStyle(
+                                        fontSize: 20,
                                       ),
-                                      Text(map['Ndate']??'',
-                                        textScaleFactor: min(horizontalScale, verticalScale),
-                                        style: TextStyle(
-                                            color: HexColor('A9A9A9'),
-                                            fontSize: 12
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                  leading: Image.network(map['icon']??''),
-                                ),
-                                Divider(thickness: 2,)
-                              ],
-                            );
-                          }
-                      );
-                    }else{
-                      return Column(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          SizedBox(
-                            height: 220*verticalScale,
-                          ),
-                          Icon(Icons.notifications_none,size: 100,),
-                          Text('No Notifications yet',
-                            textScaleFactor: min(horizontalScale, verticalScale),
-                            style: TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold
-                            ),
-                          ),
-                          Text('When you get notifications,they will show up here',
-                            textAlign: TextAlign.center,
-                            textScaleFactor: min(horizontalScale, verticalScale),
-                            style: TextStyle(
-                              fontSize: 20,
-                            ),
-                          )
-                        ],
-                      );
-                    }
-
-                  }else {
-                    return Container();
-                  }
-                }
-            ),
-          )
-        ],
-      ),
-      ]
-      )
-
-    );
+                                    )
+                                  ],
+                                );
+                              }
+                            } else {
+                              return Container();
+                            }
+                          }),
+                ),
+              )
+            ],
+          ),
+        ]));
   }
 }
 
