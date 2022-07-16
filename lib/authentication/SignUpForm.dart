@@ -79,7 +79,7 @@ class _SignUpformState extends State<SignUpform> {
           PageTransition(
               duration: Duration(milliseconds: 200),
               curve: Curves.bounceInOut,
-              type: PageTransitionType.topToBottom,
+              type: PageTransitionType.rightToLeftWithFade,
               child: HomePage()),
           (route) => false);
       await AwesomeNotifications().createNotification(

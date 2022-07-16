@@ -463,7 +463,7 @@ class _PhoneAuthenticationState extends State<PhoneAuthentication> {
                                   PageTransition(
                                       duration: Duration(milliseconds: 200),
                                       curve: Curves.bounceInOut,
-                                      type: PageTransitionType.topToBottom,
+                                      type: PageTransitionType.rightToLeftWithFade,
                                       child: HomePage()),
                                       (route) => false);
                             }

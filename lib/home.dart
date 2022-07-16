@@ -64,48 +64,52 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-
-
   @override
   Widget build(BuildContext context) {
-    final userprovider=Provider.of<UserProvider>(context);
+    final userprovider = Provider.of<UserProvider>(context);
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     return Scaffold(
       key: _scaffoldKey,
-      body: PageView.builder(itemBuilder: (ctx, index) {
-        if (openPaymentHistory) {
-          return PaymentHistory();
-        } else {
-          return screens[_selectedIndex!];
-        }
-      }),
+      body: PageView.builder(
+          physics: NeverScrollableScrollPhysics(),
+          itemBuilder: (ctx, index) {
+            if (openPaymentHistory) {
+              return PaymentHistory();
+            } else {
+              return screens[_selectedIndex!];
+            }
+          }),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.only(top: 0),
           children: [
             UserAccountsDrawerHeader(
-                accountName: Text(userprovider.userModel?.name.toString()??'Enter name'),
-                accountEmail: Text((userprovider.userModel?.email=='Enter email')
-                     ?userprovider.userModel?.mobile.toString()??''
-                     :userprovider.userModel?.email.toString()??'Enter email'
-                    ),
-                currentAccountPicture: GestureDetector(
-                  onTap: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>MyAccountPage()));
-                  },
-                  child: CircleAvatar(
-                    foregroundColor: Colors.black,
-                    //foregroundImage: NetworkImage('https://stratosphere.co.in/img/user.jpg'),
-                    foregroundImage: NetworkImage(userprovider.userModel?.image??''),
-                    backgroundColor: Colors.transparent,
-                    backgroundImage: NetworkImage('https://stratosphere.co.in/img/user.jpg'),
-                  ),
-                ),
-                decoration: BoxDecoration(
-                  color: HexColor('7B62DF'),
+              accountName:
+                  Text(userprovider.userModel?.name.toString() ?? 'Enter name'),
+              accountEmail: Text((userprovider.userModel?.email ==
+                      'Enter email')
+                  ? userprovider.userModel?.mobile.toString() ?? ''
+                  : userprovider.userModel?.email.toString() ?? 'Enter email'),
+              currentAccountPicture: GestureDetector(
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => MyAccountPage()));
+                },
+                child: CircleAvatar(
+                  foregroundColor: Colors.black,
+                  //foregroundImage: NetworkImage('https://stratosphere.co.in/img/user.jpg'),
+                  foregroundImage:
+                      NetworkImage(userprovider.userModel?.image ?? ''),
+                  backgroundColor: Colors.transparent,
+                  backgroundImage:
+                      NetworkImage('https://stratosphere.co.in/img/user.jpg'),
                 ),
               ),
+              decoration: BoxDecoration(
+                color: HexColor('7B62DF'),
+              ),
+            ),
             // Container(
             //     height: height * 0.27,
             //     //decoration: BoxDecoration(gradient: gradient),
@@ -314,64 +318,61 @@ class _HomePageState extends State<HomePage> {
       ),
       bottomNavigationBar: SizedBox(
         height: 70,
-        child: AnimatedContainer(
-          duration: Duration(microseconds: 300),
-          child: BottomNavigationBar(
-            iconSize: 24,
-            backgroundColor: Colors.grey.shade50,
-            elevation: 0,
-            selectedItemColor: Colors.black,
-            showSelectedLabels: false,
-            showUnselectedLabels: false,
-            onTap: (int index) {
-              setState(() {
-                _selectedIndex = index;
-                openPaymentHistory = false;
-              });
-            },
-            currentIndex: _selectedIndex!,
-            items: [
-              BottomNavigationBarItem(
-                icon: new Icon(
-                  Icons.home_outlined,
-                  color: Colors.black.withOpacity(0.5),
-                ),
-                activeIcon: Icon(
-                  Icons.home,
-                  color: Colors.black,
-                ),
-                label: ' ',
+        child: BottomNavigationBar(
+          iconSize: 24,
+          backgroundColor: Colors.grey.shade50,
+          elevation: 0,
+          selectedItemColor: Colors.black,
+          showSelectedLabels: false,
+          showUnselectedLabels: false,
+          onTap: (int index) {
+            setState(() {
+              _selectedIndex = index;
+              openPaymentHistory = false;
+            });
+          },
+          currentIndex: _selectedIndex!,
+          items: [
+            BottomNavigationBarItem(
+              icon: new Icon(
+                Icons.home_outlined,
+                color: Colors.black.withOpacity(0.5),
               ),
-              BottomNavigationBarItem(
-                icon: new Icon(Icons.store_outlined,
-                    color: Colors.black.withOpacity(0.5)),
-                activeIcon: Icon(
-                  Icons.store,
-                  color: Colors.black,
-                ),
-                label: '   ',
+              activeIcon: Icon(
+                Icons.home,
+                color: Colors.black,
               ),
-              BottomNavigationBarItem(
-                icon: new Icon(Icons.download_for_offline_outlined,
-                    color: Colors.black.withOpacity(0.5)),
-                activeIcon: Icon(
-                  Icons.download_for_offline,
-                  color: Colors.black,
-                ),
-                label: '   ',
+              label: ' ',
+            ),
+            BottomNavigationBarItem(
+              icon: new Icon(Icons.store_outlined,
+                  color: Colors.black.withOpacity(0.5)),
+              activeIcon: Icon(
+                Icons.store,
+                color: Colors.black,
               ),
-              BottomNavigationBarItem(
-                icon: new Icon(Icons.chat_bubble_outline_sharp,
-                    color: Colors.black.withOpacity(0.5)),
-                activeIcon: Icon(
-                  Icons.chat_bubble_outline_sharp,
-                  color: Colors.black,
-                ),
-                label: '   ',
+              label: '   ',
+            ),
+            BottomNavigationBarItem(
+              icon: new Icon(Icons.download_for_offline_outlined,
+                  color: Colors.black.withOpacity(0.5)),
+              activeIcon: Icon(
+                Icons.download_for_offline,
+                color: Colors.black,
               ),
-            ],
-            type: BottomNavigationBarType.fixed,
-          ),
+              label: '   ',
+            ),
+            BottomNavigationBarItem(
+              icon: new Icon(Icons.chat_bubble_outline_sharp,
+                  color: Colors.black.withOpacity(0.5)),
+              activeIcon: Icon(
+                Icons.chat_bubble_outline_sharp,
+                color: Colors.black,
+              ),
+              label: '   ',
+            ),
+          ],
+          type: BottomNavigationBarType.fixed,
         ),
       ),
     );

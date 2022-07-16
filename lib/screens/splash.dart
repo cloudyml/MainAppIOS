@@ -78,16 +78,12 @@ class _splashState extends State<splash> {
   // }
 
   void pushToHome() {
-    Navigator.pushAndRemoveUntil(
-        context,
-        PageTransition(
-          duration: Duration(milliseconds: 200),
-          curve: Curves.bounceInOut,
-          type: PageTransitionType.fade,
-          child: Authenticate(),
-        ),
-        (route) => false);
-    print('pushedtohome');
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Authenticate(),
+      ),
+    );
   }
 
   @override
@@ -133,7 +129,8 @@ class _splashState extends State<splash> {
             DefaultTextStyle(
               style: TextStyle(
                 fontSize: 70,
-                fontWeight: FontWeight.lerp(FontWeight.w900, FontWeight.w900, 10.5),
+                fontWeight:
+                    FontWeight.lerp(FontWeight.w900, FontWeight.w900, 10.5),
                 color: Colors.white,
                 shadows: [
                   Shadow(
@@ -160,7 +157,6 @@ class _splashState extends State<splash> {
                     ],
                     textStyle: TextStyle(fontSize: 50),
                     speed: Duration(milliseconds: 500),
-                  
                   ),
                 ],
                 pause: Duration(milliseconds: 1500),

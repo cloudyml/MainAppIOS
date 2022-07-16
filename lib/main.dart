@@ -23,16 +23,20 @@ import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 
 //Recieve message when app is in background ...solution for on message
-Future<void> backgroundHandler(RemoteMessage message) async{
+Future<void> backgroundHandler(RemoteMessage message) async {
   print(message.data.toString());
   print(message.notification!.title);
 }
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   AwesomeNotifications().initialize(null, [
-        NotificationChannel(channelKey: 'image', channelName: 'CloudyML', channelDescription: "CloudyML",enableLights: true)
-      ]
-  ) ;
+    NotificationChannel(
+        channelKey: 'image',
+        channelName: 'CloudyML',
+        channelDescription: "CloudyML",
+        enableLights: true)
+  ]);
   LocalNotificationService.initialize();
   await Firebase.initializeApp();
   FirebaseMessaging.onBackgroundMessage(backgroundHandler);
@@ -101,14 +105,19 @@ class MyApp extends StatelessWidget {
                           ),
                           InkWell(
                             onTap: () {
-                              Navigator.pushAndRemoveUntil(
-                                  context,
-                                  PageTransition(
-                                      duration: Duration(milliseconds: 200),
-                                      curve: Curves.bounceInOut,
-                                      type: PageTransitionType.fade,
-                                      child: VideoScreenOffline()),
-                                  (route) => false);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => VideoScreenOffline()),
+                              );
+                              // Navigator.pushAndRemoveUntil(
+                              //     context,
+                              //     PageTransition(
+                              //         duration: Duration(milliseconds: 200),
+                              //         curve: Curves.bounceInOut,
+                              //         type: PageTransitionType.fade,
+                              //         child: VideoScreenOffline()),
+                              //     (route) => false);
                             },
                             child: Container(
                               decoration: BoxDecoration(
@@ -215,8 +224,8 @@ class MyApp extends StatelessWidget {
             ),
             home: splash(),
             routes: {
-              "account":(_) =>MyAccountPage(),
-              "courses":(_) =>HomeScreen(),
+              "account": (_) => MyAccountPage(),
+              "courses": (_) => HomeScreen(),
             },
           ),
         ),
