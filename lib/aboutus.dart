@@ -158,7 +158,7 @@ class AboutUs extends StatelessWidget {
                 Container(
                     //alignment: Alignment.center,
                     width: double.infinity,
-                    height: 200,
+                    height: 100,
                     // decoration: const BoxDecoration(
                     //     gradient: LinearGradient(colors: [
                     //   Color.fromARGB(255, 39, 7, 218),
@@ -179,7 +179,7 @@ class AboutUs extends StatelessWidget {
                 Container(
                     //alignment: Alignment.center,
                     width: double.infinity,
-                    height: 200,
+                    height: 100,
                     // decoration: const BoxDecoration(
                     //     gradient: LinearGradient(colors: [
                     //   Color.fromARGB(255, 39, 7, 218),
@@ -199,7 +199,7 @@ class AboutUs extends StatelessWidget {
                 Container(
                     //alignment: Alignment.center,
                     width: double.infinity,
-                    height: 200,
+                    height: 135,
                     // decoration: const BoxDecoration(
                     //     gradient: LinearGradient(colors: [
                     //   Color.fromARGB(255, 39, 7, 218),
@@ -219,7 +219,7 @@ class AboutUs extends StatelessWidget {
                 Container(
                     //alignment: Alignment.center,
                     width: double.infinity,
-                    height: 180,
+                    height: 80,
                     // decoration: const BoxDecoration(
                     //     gradient: LinearGradient(colors: [
                     //   Color.fromARGB(255, 39, 7, 218),
@@ -236,9 +236,9 @@ class AboutUs extends StatelessWidget {
                             color: Colors.black),
                       ),
                     )),
-                const SizedBox(
-                  height: 20,
-                ),
+                // const SizedBox(
+                //   height: 20,
+                // ),
                 Container(
                   child: ShaderMask(
                     shaderCallback: (Rect rect) {

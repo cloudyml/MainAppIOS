@@ -903,14 +903,14 @@ class _PaymentButtonState extends State<PaymentButton> with CouponCodeMixin {
                             isMinAmountCheckerPressed,
                             isOutStandingAmountCheckerPressed);
                         widget.updateCourseIdToCouponDetails();
-                        order_id= await generateOrderId('rzp_test_b1Dt1350qiF6cr',
-                            '4HwrQR9o2OSlzzF0MzJmaDdq', amountStringForRp!);
+                        order_id= await generateOrderId('rzp_live_ESC1ad8QCKo9zb',
+                            'D5fscRQB6i7dwCQlZybecQND', amountStringForRp!);
 
                         print('order id is out--$order_id');
                         // Future.delayed(const Duration(milliseconds: 300), () {
                           print('order id is --$order_id');
                           var options = {
-                            'key': 'rzp_test_b1Dt1350qiF6cr',
+                            'key': 'rzp_live_ESC1ad8QCKo9zb',
                             'amount':
                                 amountStringForRp, //amount is paid in paises so pay in multiples of 100
 

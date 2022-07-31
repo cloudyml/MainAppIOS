@@ -104,6 +104,11 @@ class _ComboCourseState extends State<ComboCourse> {
     var horizontalScale = screenWidth / mockUpWidth;
     return Scaffold(
       appBar: AppBar(
+        title: Text('Courses You Have!',
+        style: TextStyle(color: Colors.black,
+        fontFamily: 'bold',
+        fontWeight: FontWeight.bold),
+      ),
         backgroundColor: Colors.white,
         elevation: 0,
         leading: InkWell(
@@ -111,7 +116,7 @@ class _ComboCourseState extends State<ComboCourse> {
             Navigator.pop(context);
           },
           child: Padding(
-            padding: EdgeInsets.only(left: 15.0, bottom: 20),
+            padding: EdgeInsets.only(left: 15.0, bottom: 5),
             child: Icon(
               Icons.arrow_back,
               color: Colors.black,
@@ -139,7 +144,7 @@ class _ComboCourseState extends State<ComboCourse> {
                           context: context,
                           removeTop: true,
                           child: ListView.builder(
-                            physics: NeverScrollableScrollPhysics(),
+                            // physics: NeverScrollableScrollPhysics(),
                             itemCount: course.length,
                             itemBuilder: (BuildContext context, index) {
                               if (course[index].courseName == "null") {
@@ -149,8 +154,8 @@ class _ComboCourseState extends State<ComboCourse> {
                                   .contains(course[index].courseId)) {
                                 return Padding(
                                   padding: const EdgeInsets.only(
-                                      bottom: 8.0,
-                                      top: 8,
+                                      bottom: 10.0,
+                                      top: 10,
                                       left: 20.0,
                                       right: 20.0),
                                   child: InkWell(

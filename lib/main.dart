@@ -19,7 +19,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 
 //Recieve message when app is in background ...solution for on message

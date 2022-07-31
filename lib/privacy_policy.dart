@@ -9,8 +9,8 @@ class PrivacyPolicy extends StatelessWidget {
       appBar: AppBar(
         title: Text('Privacy Policy'),
         // backgroundColor: C,
-        shadowColor: Color(0xFFaefb2a),
-        backgroundColor: Color(0xFFaefb2a),
+        shadowColor: Color.fromARGB(255, 129, 31, 194),
+        backgroundColor: Color.fromARGB(255, 129, 31, 194),
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),

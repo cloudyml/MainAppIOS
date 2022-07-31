@@ -26,7 +26,7 @@ class UserProvider with ChangeNotifier{
   Future<void> _onStateChangedme(User? user) async{
     if(user!=null){
       _user=user;
-      _userModel=await _userServices.getUserById(user!.uid);
+      _userModel=await _userServices.getUserById(user.uid);
       // splash();
     }else{
       // splash();

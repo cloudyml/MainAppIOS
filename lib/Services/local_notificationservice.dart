@@ -10,7 +10,7 @@ class LocalNotificationService{
   static void initialize(){
     // initializationSettings  for Android
     const InitializationSettings initializationSettings =
-    InitializationSettings(android: AndroidInitializationSettings("assets/logo2.png"),);
+    InitializationSettings(android: AndroidInitializationSettings("@mipmap/ic_launcher"),);
     _notificationsPlugin.initialize(initializationSettings,onSelectNotification: (payload) async{
       onNotifications.add(payload);
     });

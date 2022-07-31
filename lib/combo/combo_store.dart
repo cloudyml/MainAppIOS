@@ -210,14 +210,14 @@ class _ComboStoreState extends State<ComboStore> with CouponCodeMixin {
                                     ClipRRect(
                                       borderRadius: BorderRadius.circular(25),
                                       child: Container(
-                                        width: 145,
+                                        width: 130,
                                         height: 111,
                                         decoration: BoxDecoration(
                                             borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(15),
-                                          topRight: Radius.circular(15),
-                                          bottomLeft: Radius.circular(15),
-                                          bottomRight: Radius.circular(15),
+                                          topLeft: Radius.circular(20),
+                                          topRight: Radius.circular(20),
+                                          bottomLeft: Radius.circular(20),
+                                          bottomRight: Radius.circular(20),
                                         )),
                                         child: Image.network(
                                             course[index].courseImageUrl),
@@ -238,6 +238,7 @@ class _ComboStoreState extends State<ComboStore> with CouponCodeMixin {
                                           // height: 42,
                                           child: Text(
                                             course[index].courseName,
+                                            overflow: TextOverflow.ellipsis,
                                             textScaleFactor: min(
                                                 horizontalScale, verticalScale),
                                             style: TextStyle(
@@ -258,6 +259,7 @@ class _ComboStoreState extends State<ComboStore> with CouponCodeMixin {
                                           // height: 24.000001907348633,
                                           child: Text(
                                             course[index].courseDescription,
+                                            // overflow: TextOverflow.ellipsis,
                                             textScaleFactor: min(
                                                 horizontalScale, verticalScale),
                                             style: TextStyle(

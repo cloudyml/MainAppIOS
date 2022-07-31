@@ -36,8 +36,8 @@ class _VideoScreenOfflineState extends State<VideoScreenOffline> {
   }
 
   void getData() async {
-    //--/data/user/0/com.cloudyml.cloudymlcourseapp/app_flutter/file.mp4
-    //--/data/user/0/com.cloudyml.cloudymlcourseapp/app_flutter/LogicalOperators.mp4
+    //--/data/user/0/com.cloudyml.cloudymlapp/app_flutter/file.mp4
+    //--/data/user/0/com.cloudyml.cloudymlapp/app_flutter/LogicalOperators.mp4
     File videoFile = File(videos[0].path!);
 
     try {
@@ -309,8 +309,8 @@ class _VideoScreenOfflineState extends State<VideoScreenOffline> {
 //   VideoPlayerController? _videoController;
 //   bool? loading = true;
 //   void getData() async {
-//     //--/data/user/0/com.cloudyml.cloudymlcourseapp/app_flutter/file.mp4
-//     //--/data/user/0/com.cloudyml.cloudymlcourseapp/app_flutter/LogicalOperators.mp4
+//     //--/data/user/0/com.cloudyml.cloudymlapp/app_flutter/file.mp4
+//     //--/data/user/0/com.cloudyml.cloudymlapp/app_flutter/LogicalOperators.mp4
 
 //     File videoFile = File(widget.path!);
 
