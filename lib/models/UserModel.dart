@@ -20,6 +20,7 @@ class UserModel{
   String? _image;
   String? _authType;
   bool? _phoneVerified;
+  String? _role;
 
   String? get id=> _id;
   String? get mobile=> _mobile;
@@ -28,6 +29,7 @@ class UserModel{
   String? get image=> _image;
   String? get authType=> _authType;
   bool? get phoneVerified=> _phoneVerified;
+  String? get role=>_role;
 
   List<UserNotificationModel>? userNotificationList;
 
@@ -38,6 +40,7 @@ class UserModel{
     _mobile=(snapshot.data()![MOBILE]=='')?'__________':snapshot.data()![MOBILE];
     _id=snapshot.data()![ID];
     _authType=snapshot.data()![AUTHTYPE];
+    _role=snapshot.data()!['role'];
     _phoneVerified=snapshot.data()![PHONEVERIFIED];
     _image=(snapshot.data()![IMAGE]=='')?'https://stratosphere.co.in/img/user.jpg':snapshot.data()![IMAGE];
     userNotificationList=_convertNotificationItems(snapshot.data()?[USERNOTIFICATIONS]??[]);
