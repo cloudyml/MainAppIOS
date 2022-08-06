@@ -182,7 +182,8 @@ class _ChatScreenState extends State<ChatScreen> {
         "message": _message.text,
         "sendBy": widget.userData["name"],
         "type": "text",
-        "time": FieldValue.serverTimestamp()
+        "time": FieldValue.serverTimestamp(),
+        'role':widget.userData["role"]
       };
 
       await _firestore

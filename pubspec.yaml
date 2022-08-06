@@ -87,6 +87,7 @@ dependencies:
   dotted_line: ^3.1.0
   firebase_analytics: ^9.2.1
   badges: ^2.0.3
+  flutter_pdfview: ^1.2.1
   
   
 dev_dependencies:

@@ -235,7 +235,7 @@ class _CatelogueScreenState extends State<CatelogueScreen>
                           includes(context),
                           Container(
                             child: Curriculam(
-                              map: course[index].curriculum,
+                              courseDetail: course[index], 
                             ),
                           ),
                           Container(

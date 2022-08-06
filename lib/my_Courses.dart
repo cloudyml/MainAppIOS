@@ -12,6 +12,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 
 import 'catalogue_screen.dart';
+import 'module/pdf_course.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -207,7 +208,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   PageTransition(
                                     duration: Duration(milliseconds: 400),
                                     curve: Curves.bounceInOut,
-                                    type: PageTransitionType.rightToLeftWithFade,
+                                    type:
+                                        PageTransitionType.rightToLeftWithFade,
                                     child: VideoScreen(
                                       isdemo: true,
                                       courseName: course[index].courseName,
@@ -221,7 +223,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   PageTransition(
                                     duration: Duration(milliseconds: 100),
                                     curve: Curves.bounceInOut,
-                                    type: PageTransitionType.rightToLeftWithFade,
+                                    type:
+                                        PageTransitionType.rightToLeftWithFade,
                                     child: ComboStore(
                                       courses: course[index].courses,
                                     ),
@@ -230,19 +233,35 @@ class _HomeScreenState extends State<HomeScreen> {
                               }
                             } else {
                               if (!course[index].isItComboCourse) {
-                                Navigator.push(
-                                  context,
-                                  PageTransition(
-                                    duration: Duration(milliseconds: 400),
-                                    curve: Curves.bounceInOut,
-                                    type: PageTransitionType.rightToLeftWithFade,
-                                    child: VideoScreen(
-                                      isdemo: true,
-                                      courseName: course[index].courseName,
-                                      sr: 1,
+                                if (course[index].courseContent == 'pdf') {
+                                  Navigator.push(
+                                    context,
+                                    PageTransition(
+                                      duration: Duration(milliseconds: 400),
+                                      curve: Curves.bounceInOut,
+                                      type: PageTransitionType
+                                          .rightToLeftWithFade,
+                                      child: PdfCourseScreen(
+                                        curriculum: course[index].curriculum as Map<String,dynamic>,
+                                      ),
                                     ),
-                                  ),
-                                );
+                                  );
+                                } else {
+                                  Navigator.push(
+                                    context,
+                                    PageTransition(
+                                      duration: Duration(milliseconds: 400),
+                                      curve: Curves.bounceInOut,
+                                      type: PageTransitionType
+                                          .rightToLeftWithFade,
+                                      child: VideoScreen(
+                                        isdemo: true,
+                                        courseName: course[index].courseName,
+                                        sr: 1,
+                                      ),
+                                    ),
+                                  );
+                                }
                               } else {
                                 ComboCourse.comboId.value =
                                     course[index].courseId;
@@ -251,7 +270,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   PageTransition(
                                     duration: Duration(milliseconds: 400),
                                     curve: Curves.bounceInOut,
-                                    type: PageTransitionType.rightToLeftWithFade,
+                                    type:
+                                        PageTransitionType.rightToLeftWithFade,
                                     child: ComboCourse(
                                       courses: course[index].courses,
                                     ),
@@ -313,7 +333,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                             height: 200 * verticalScale / 2,
                                             decoration: BoxDecoration(
                                               borderRadius: BorderRadius.only(
-                                              
                                                 bottomLeft: Radius.circular(25),
                                                 bottomRight:
                                                     Radius.circular(25),
@@ -629,7 +648,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                   BoxShadow(
                                       color: Color.fromRGBO(29, 28, 30, 0.3),
                                       offset: Offset(2, 2),
-                                      
                                       blurStyle: BlurStyle.outer,
                                       blurRadius: 35)
                                 ],

@@ -1,16 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloudyml_app2/helpers/file_handler.dart';
 import 'package:cloudyml_app2/widgets/demo_video.dart';
 import 'package:cloudyml_app2/globals.dart';
 import 'package:flutter/material.dart';
 
-class Curriculam extends StatefulWidget {
+import '../models/course_details.dart';
+import '../utils/utils.dart';
 
-  final map;
+class Curriculam extends StatefulWidget {
+  final CourseDetails courseDetail;
 
   const Curriculam({
     Key? key,
-    required this.map,
-    
+    required this.courseDetail,
   }) : super(key: key);
 
   @override
@@ -19,26 +21,60 @@ class Curriculam extends StatefulWidget {
 
 class _CurriculamState extends State<Curriculam> {
   bool showMore = false;
+  Map<String, dynamic>? topicDetails;
 
   String? modId;
 
-  void getModuleId() async {
-    var dt = await FirebaseFirestore.instance
+  get name => null;
+
+  void openDemoVideos({
+    required int index,
+    required BuildContext context,
+  }) async {
+    Map<String, dynamic> topicDetails;
+    await FirebaseFirestore.instance
         .collection('courses')
         .doc(courseId)
         .collection('Modules')
+        .doc(modId)
+        .collection('Topics')
+        .where('sr', isEqualTo: index + 1)
+        .get()
+        .then((value) {
+      if (value.docs.isNotEmpty) {
+        topicDetails = value.docs[0].data();
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => VideoPlayerCustom(
+              url: topicDetails['url'],
+            ),
+          ),
+        );
+      }
+    });
+  }
+
+  void getModuleId() async {
+    await FirebaseFirestore.instance
+        .collection('courses')
+        .doc(courseId)
+        .collection('Modules')
+        .where('firstType', isEqualTo: 'video')
         .get()
         .then((value) {
       setState(() {
-        modId = value.docs[0].id;
+        if (value.docs.isNotEmpty) {
+          modId = value.docs[0].id;
+        }
       });
     });
-    print(dt);
   }
 
   @override
   void initState() {
     super.initState();
+    print(widget.courseDetail.curriculum);
     getModuleId();
   }
 
@@ -62,12 +98,12 @@ class _CurriculamState extends State<Curriculam> {
               ),
             ),
             SizedBox(height: 10),
-            
             Container(
               child: ListView.builder(
                 physics: BouncingScrollPhysics(),
                 shrinkWrap: true,
-                itemCount: widget.map['sectionsName'].length,
+                itemCount:
+                    widget.courseDetail.curriculum['sectionsName'].length,
                 itemBuilder: (context, index1) {
                   return Column(
                     children: [
@@ -77,7 +113,8 @@ class _CurriculamState extends State<Curriculam> {
                         child: Row(
                           children: [
                             Text(
-                              widget.map['sectionsName'][index1],
+                              widget.courseDetail.curriculum['sectionsName']
+                                  [index1],
                               style: TextStyle(
                                 fontSize: 15,
                                 fontFamily: 'Medium',
@@ -95,8 +132,9 @@ class _CurriculamState extends State<Curriculam> {
                               physics: NeverScrollableScrollPhysics(),
                               shrinkWrap: true,
                               itemCount: widget
-                                  .map[
-                                      '${widget.map['sectionsName'][index1]}']
+                                  .courseDetail
+                                  .curriculum[
+                                      '${widget.courseDetail.curriculum['sectionsName'][index1]}']
                                   .length,
                               itemBuilder: ((context, index) {
                                 return Column(
@@ -111,7 +149,6 @@ class _CurriculamState extends State<Curriculam> {
                                         color: Colors.white,
                                       ),
                                       child: Row(
-                                      
                                         children: [
                                           SizedBox(
                                             width: 20,
@@ -123,8 +160,8 @@ class _CurriculamState extends State<Curriculam> {
                                           Expanded(
                                             flex: 10,
                                             child: Text(
-                                              widget.map[
-                                                      '${widget.map!['sectionsName'][index1]}']
+                                              widget.courseDetail.curriculum[
+                                                      '${widget.courseDetail.curriculum['sectionsName'][index1]}']
                                                   [index],
                                               style: TextStyle(
                                                 fontSize: 14,
@@ -136,53 +173,33 @@ class _CurriculamState extends State<Curriculam> {
                                             flex: 1,
                                             child: InkWell(
                                               onTap: () async {
-                                                // print(modId);
-                                                String? modId;
-                                                var dt = await FirebaseFirestore
-                                                    .instance
-                                                    .collection('courses')
-                                                    .doc(courseId)
-                                                    .collection('Modules')
-                                                    .where('firstType',
-                                                        isEqualTo: 'video')
-                                                    .get()
-                                                    .then((value) {
-                                                  modId = value.docs[0].id;
-                                                });
-                                                print(modId);
-                                                Map<String, dynamic>?
-                                                    topicDetails;
-                                                await FirebaseFirestore.instance
-                                                    .collection('courses')
-                                                    .doc(courseId)
-                                                    .collection('Modules')
-                                                    .doc(modId)
-                                                    .collection('Topics')
-                                                    .where('sr',
-                                                        isEqualTo: index + 1)
-                                                    .get()
-                                                    .then((value) {
-                                                  
-                                                  topicDetails =
-                                                      value.docs[0].data();
-                                                  print(topicDetails!['url']);
-                                                 
-                                                });
                                                 if (index < 3 && index1 == 0) {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          VideoPlayerCustom(
-                                                              url:
-                                                                  topicDetails![
-                                                                      'url']),
-                                                    ),
-                                                  );
+                                                  if (widget.courseDetail
+                                                          .courseContent ==
+                                                      'pdf') {
+                                                    Utils.downloadPdf(
+                                                      context: context,
+                                                      pdfName: widget
+                                                                  .courseDetail
+                                                                  .curriculum[
+                                                              'Company Names']
+                                                          [index],
+                                                    );
+                                                  } else {
+                                                    openDemoVideos(
+                                                      index: index,
+                                                      context: context,
+                                                    );
+                                                  }
                                                 }
                                               },
                                               child: Icon(
-                                                Icons.play_circle_fill_outlined,
+                                                !(widget.courseDetail
+                                                            .courseContent ==
+                                                        'pdf')
+                                                    ? Icons
+                                                        .play_circle_fill_outlined
+                                                    : Icons.assignment_sharp,
                                                 color: index <= 2 && index1 == 0
                                                     ? Color(0xFF7860DC)
                                                     : null,
@@ -198,8 +215,9 @@ class _CurriculamState extends State<Curriculam> {
                             ),
                           ),
                           widget
-                                      .map![
-                                          '${widget.map['sectionsName'][index1]}']
+                                      .courseDetail
+                                      .curriculum![
+                                          '${widget.courseDetail.curriculum['sectionsName'][index1]}']
                                       .length >
                                   4
                               ? TextButton(
@@ -217,7 +235,6 @@ class _CurriculamState extends State<Curriculam> {
                               : Container()
                         ],
                       )
-
                     ],
                   );
                 },

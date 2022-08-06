@@ -32,7 +32,7 @@ class _GroupsListState extends State<GroupsList> {
   dynamic groupData;
   // dynamic userData;
   String? groupId;
-  int? newchatcount;
+  List<int> newchatcount = [];
   bool isLoading = false;
   int? count;
   List? groupsList = [];
@@ -54,7 +54,9 @@ class _GroupsListState extends State<GroupsList> {
                 "data": doc.data(),
               })
           .toList();
-
+      value.docs.forEach(
+        (element) {},
+      );
       setState(() {
         groupsList = groups;
       });
@@ -113,19 +115,22 @@ class _GroupsListState extends State<GroupsList> {
   }
 
   void getchatcount() async {
-    return await _firestore
-        .collection("groups")
-        .doc(groupdocid)
-        .collection("chats")
-        .where('role',
-            isEqualTo: userData!["role"] == "student" ? "mentor" : "student")
-        .get()
-        .then((value) {
-      print('The value is----------${value.docs.length}');
-      setState(() {
-        newchatcount = value.docs.length;
+    for (var group in groupsList!) {
+      await _firestore
+          .collection("groups")
+          .doc(group['id'])
+          .collection("chats")
+          .where('role',
+              isEqualTo: userData!["role"] == "student" ? "mentor" : "student")
+          .get()
+          .then((value) {
+        print('The value is----------${value.docs.length}');
+        // setState(() {
+        newchatcount.add(value.docs.length);
+        print(newchatcount);
+        // });
       });
-    });
+    }
   }
 
   // Future<int> getcount() async {
@@ -157,35 +162,43 @@ class _GroupsListState extends State<GroupsList> {
   //   // );
   // }
 
-  void updatecount() async {
-    // count =
-    await _firestore.collection("groups").doc(groupdocid).get().then((value) {
-      setState(() {
-        count = value.data()!['count'];
-      });
-    });
-    print('identifier------------------');
-    print(count.toString());
-    print('identifier------------------');
-  }
-
+  // void updatecount() async {
+  //   // count =
+  //   await _firestore.collection("groups").doc(groupdocid).get().then((value) {
+  //     setState(() {
+  //       count = value.data()!['count'];
+  //     });
+  //   });
+  //   print('identifier------------------');
+  //   print(count.toString());
+  //   print('identifier------------------');
+  // }
 
   String? groupdocid;
-  void getusersgroupdocid() async {
-    await FirebaseFirestore.instance
-        .collection('groups')
-        .where('student_id', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
-        .get()
-        .then((value) {
-      setState(() {
-        groupdocid = value.docs.first.id;
-      });
-    });
+  // void getusersgroupdocid() async {
+  //   await FirebaseFirestore.instance
+  //       .collection('groups')
+  //       .where('student_id', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+  //       .get()
+  //       .then((value) {
+  //     setState(() {
+  //       groupdocid = value.docs.first.id;
+  //     });
+  //   });
+  //   await FirebaseFirestore.instance
+  //       .collection('groups')
+  //       .where('mentors', arrayContains: FirebaseAuth.instance.currentUser!.uid)
+  //       .get()
+  //       .then((value) {
+  //     setState(() {
+  //       groupdocid = value.docs.first.id;
+  //     });
+  //   });
 
-    print('-------------------');
-    print(groupdocid);
-    print('-------------------');
-  }
+  //   print('-------------------');
+  //   print(groupdocid);
+  //   print('-------------------');
+  // }
 
   // void updatenewchatcount(int newchatcount) {
   //   newchatcount = newchatcount;
@@ -194,12 +207,8 @@ class _GroupsListState extends State<GroupsList> {
   @override
   void initState() {
     loadUserData();
-    getusersgroupdocid();
     print(userData!["role"]);
-
     Future.delayed(Duration(milliseconds: 500), () {
-      updatecount();
-      
       getchatcount();
     });
 
@@ -297,16 +306,26 @@ class _GroupsListState extends State<GroupsList> {
                         context: context,
                         removeTop: true,
                         child: ListView.builder(
-                          shrinkWrap: true,
-                          reverse: false,
+                            shrinkWrap: true,
+                            reverse: false,
                             itemCount: groupsList!.length,
                             itemBuilder: (context, index) {
                               return InkWell(
                                 onTap: () async {
-                                  await _firestore
-                                      .collection("groups")
-                                      .doc(groupdocid)
-                                      .update({'count': newchatcount});
+                                  userprovider.userModel!.role == 'student'
+                                      ? await _firestore
+                                          .collection("groups")
+                                          .doc(groupsList![index]['id'])
+                                          .update({
+                                          'studentCount': newchatcount[index]
+                                        })
+                                      : await _firestore
+                                          .collection("groups")
+                                          .doc(groupsList![index]['id'])
+                                          .update({
+                                          _auth.currentUser!.uid:
+                                              newchatcount[index]
+                                        });
                                   Navigator.push(
                                     context,
                                     CupertinoPageRoute(
@@ -321,23 +340,21 @@ class _GroupsListState extends State<GroupsList> {
                                 child: StreamBuilder(
                                     stream: FirebaseFirestore.instance
                                         .collection("groups")
-                                        .doc(groupdocid)
+                                        .doc(groupsList![index]['id'])
                                         .snapshots(),
                                     builder: (BuildContext context,
                                         AsyncSnapshot<DocumentSnapshot>
                                             documentSnapshot) {
-                                      print((documentSnapshot.data!.data()
-                                              as Map<String, dynamic>)[
-                                          'count']);
+                                      // print((documentSnapshot.data!.data()
+                                      //     as Map<String, dynamic>)['count']);
                                       return StreamBuilder(
                                         stream: FirebaseFirestore.instance
                                             .collection("groups")
-                                            .doc(groupdocid)
+                                            .doc(groupsList![index]['id'])
                                             .collection('chats')
                                             .where('role',
                                                 isEqualTo: userprovider
-                                                            .userModel!
-                                                            .role ==
+                                                            .userModel!.role ==
                                                         'student'
                                                     ? 'mentor'
                                                     : 'student')
@@ -351,38 +368,39 @@ class _GroupsListState extends State<GroupsList> {
                                           //     // as QueryDocumentSnapshot <Map<String,dynamic>>).data().length
                                           //     );
                                           if (snapshot.data != null) {
-                                            return
-                                                // Container(child: Text('data'),);
-                                                Badge(
-                                                  elevation: 3,
-                                                  badgeColor: Color.fromARGB(255, 93, 250, 174),
-                                                    child: GroupTile(
-                                                      groupData:
-                                                          groupsList![
-                                                              index],
-                                                      userData: userData,
-                                                    ),
-                                                    showBadge: snapshot
-                                                            .data!
-                                                            .docs
-                                                            .length >
-                                                        ((userprovider.userModel!.role ==
-                                                                'student')
-                                                            ? (documentSnapshot.data!.data() as Map<String, dynamic>)[
-                                                                'count']
-                                                            : (documentSnapshot.data!.data() as Map<String, dynamic>)[
-                                                                'mcount']),
-                                                    position:
-                                                        BadgePosition.bottomEnd(
-                                                            bottom: 15,
-                                                            end: 15),
-                                                    animationType:
-                                                        BadgeAnimationType.scale,
-                                                    badgeContent: Text('${snapshot.data!.docs.length - ((userprovider.userModel!.role == 'student') ? (documentSnapshot.data!.data() as Map<String, dynamic>)['count'] : (documentSnapshot.data!.data() as Map<String, dynamic>)['mcount'])}',
-                                                    style: TextStyle(color: Colors.white,
-                                                    ))
-                                                    // Text('${ getchatcount()-  getcount()}'),
-                                                    );
+                                            return Badge(
+                                              elevation: 3,
+                                              badgeColor: Color.fromARGB(
+                                                  255, 93, 250, 174),
+                                              child: GroupTile(
+                                                groupData: groupsList![index],
+                                                userData: userData,
+                                              ),
+                                              showBadge: snapshot
+                                                      .data!.docs.length >
+                                                  ((userprovider.userModel!
+                                                              .role ==
+                                                          'student')
+                                                      ? (documentSnapshot.data!
+                                                              .data()
+                                                          as Map<String,
+                                                              dynamic>)['studentCount']
+                                                      : (documentSnapshot.data!
+                                                              .data()
+                                                          as Map<String,
+                                                              dynamic>)[_auth.currentUser!.uid]),
+                                              position: BadgePosition.bottomEnd(
+                                                  bottom: 15, end: 15),
+                                              animationType:
+                                                  BadgeAnimationType.scale,
+                                              badgeContent: Text(
+                                                '${snapshot.data!.docs.length - ((userprovider.userModel!.role == 'student') ? (documentSnapshot.data!.data() as Map<String, dynamic>)['studentCount'] : (documentSnapshot.data!.data() as Map<String, dynamic>)[_auth.currentUser!.uid])}',
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                              // Text('${ getchatcount()-  getcount()}'),
+                                            );
                                           } else
                                             return Container(
                                                 // child: Text('abc'),
