@@ -7,9 +7,7 @@ import 'package:chewie/chewie.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:open_file/open_file.dart';
-import 'package:page_transition/page_transition.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:cloudyml_app2/home.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoScreenOffline extends StatefulWidget {
@@ -139,15 +137,19 @@ class _VideoScreenOfflineState extends State<VideoScreenOffline> {
                 Row(
                   children: [
                     IconButton(
-                      onPressed: () {
-                        Scaffold.of(context).openDrawer();
-                      },
-                      icon: Icon(
-                        Icons.menu,
-                        size: 40,
-                        color: Colors.white,
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => HomePage()),
+                          );
+                          // Scaffold.of(context).openDrawer();
+                        },
+                        icon: Icon(
+                          Icons.arrow_back,
+                          size: 40,
+                          color: Colors.white,
+                        ),
                       ),
-                    ),
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.1,
                     ),

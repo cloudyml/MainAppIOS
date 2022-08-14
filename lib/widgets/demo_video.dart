@@ -84,7 +84,7 @@ class _VideoPlayerCustomState extends State<VideoPlayerCustom> {
     final seconds = convertToTwoDigits(timeRemained % 60);
     timeRemaining = '$mins:$seconds';
     return Positioned(
-      bottom: 33,
+      bottom: 36,
       // left: 0,
       right: 20,
       child: Text(
@@ -105,7 +105,7 @@ class _VideoPlayerCustomState extends State<VideoPlayerCustom> {
     final seconds = convertToTwoDigits(currentPosition % 60);
     timeElapsedString = '$mins:$seconds';
     return Positioned(
-      bottom: 33,
+      bottom: 35,
       left: 20,
       right: 0,
       child: Text(
@@ -128,6 +128,12 @@ class _VideoPlayerCustomState extends State<VideoPlayerCustom> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(titleSpacing: 00.0,
+        centerTitle: true,
+        toolbarHeight: 80,
+        toolbarOpacity: 0.8,
+         elevation: 0.00,
+        backgroundColor: Colors.black,),
       backgroundColor: Colors.black,
       body: FutureBuilder(
         future: _video,
@@ -138,14 +144,20 @@ class _VideoPlayerCustomState extends State<VideoPlayerCustom> {
                 final isPortrait = orientation == Orientation.portrait;
                 return Stack(
                   children: [
-                    Center(
+                   Positioned(
+                      top: -30,
+                      bottom: 45,
+                      left: 0,
+                      right: 0,
+                      child: Center(
                       child: AspectRatio(
                         aspectRatio: _controller!.value.aspectRatio,
                         child: VideoPlayer(_controller!),
                       ),
                     ),
+                    ),
                     Positioned(
-                      bottom: 45,
+                      bottom: 55,
                       left: 0,
                       right: 0,
                       child: VideoProgressIndicator(
@@ -159,7 +171,7 @@ class _VideoPlayerCustomState extends State<VideoPlayerCustom> {
                       ),
                     ),
                     Positioned(
-                      bottom: 10,
+                      bottom: 20,
                       left: 0,
                       right: 0,
                       child: IconButton(

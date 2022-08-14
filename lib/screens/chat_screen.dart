@@ -10,6 +10,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import "package:image_picker/image_picker.dart";
@@ -18,14 +19,20 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:record/record.dart';
-import '../widgets/bottom_sheet.dart';
+import 'package:badges/badges.dart';
+import 'package:lottie/lottie.dart';
+import '../widgets/assignment_bottomsheet.dart';
 
 class ChatScreen extends StatefulWidget {
   final groupData;
   final userData;
   String? groupId;
 
-  ChatScreen({this.groupData, this.groupId, this.userData});
+  ChatScreen({
+    this.groupData,
+    this.groupId,
+    this.userData,
+  });
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -44,6 +51,8 @@ class _ChatScreenState extends State<ChatScreen> {
   String? pickedFileName;
 
   Directory? appStorage;
+
+  int count = 0;
 
   ScrollController _scrollController = ScrollController();
 
@@ -65,11 +74,107 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Record record = Record();
   bool isRecording = false;
+  bool _showbadge = false;
 
 //...............FUNCTIONS.........................
 
   //getting chats with pagination logic
+
+  //Global variables to hold tagImage and tagName of tag
+  List<String> tagImages = [];
+  List<String> tagNames = [];
+
+  ///This mehtod adds Images and Names to be used for to [tagNames] and [tagImages]
+  ///Group members for UI of list of tags
+  Future<void> addTagProperties() async {
+    //Take list User id of all mentors
+    List tagUserId = widget.groupData['data']['mentors'];
+    //Take user id of student
+    tagUserId.add(widget.groupData['data']['student_id']);
+    //Loop over list of member ids in tagUserId to fetch Name and Image of Respective member
+    for (var member in tagUserId) {
+      await FirebaseFirestore.instance
+          .collection('Users')
+          .doc(member)
+          .get()
+          .then((value) {
+        if (value.data() != null) {
+          //Add member name and image to [tagNames] and [tagImages] only if does not contain already and
+          //Only If member is not currentUser in FirebaseAuth
+          if (!tagNames.contains(value.data()!['name']) &&
+              value.data()!['name'] != widget.userData["name"]) {
+            tagNames.add(value.data()!['name']);
+            tagImages.add(value.data()!['image']);
+          }
+        }
+      });
+    }
+  }
+
+  //Flag used to make the list of tags visible and invisible
+  bool shouldShowTags = false;
+
+  ///This method inserts a text into textfield and moves cursor at end
+  void _insertText(String inserted) {
+    final text = _message.text;
+    final selection = _message.selection;
+    final newText = text.replaceRange(selection.start, selection.end, inserted);
+    _message.value = TextEditingValue(
+      text: newText,
+      selection: TextSelection.collapsed(
+          offset: selection.baseOffset + inserted.length),
+    );
+  }
+
+  ///This method returns widget that represents list of tags to choose from
+  Widget buildTags(BuildContext context, double height, double width) {
+    return Container(
+      height: height * 0.25,
+      width: width * 0.8,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
+        border: Border.all(
+          color: Colors.grey,
+          width: 0.1,
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        child: ListView.builder(
+          itemCount: tagNames.length,
+          itemBuilder: (context, index) {
+            return ListTile(
+              leading: CircleAvatar(
+                backgroundImage: AssetImage('assets/user.jpg'),
+                foregroundImage: NetworkImage(tagImages[index]),
+              ),
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [Text(tagNames[index]), Divider()],
+              ),
+              minVerticalPadding: 0,
+              onTap: () {
+                //If tapped on particular [listTile] it inserts tag of that member in textField
+                _insertText('${tagNames[index]} ');
+                //And Hides the list of tags
+                setState(() {
+                  shouldShowTags = false;
+                });
+              },
+            );
+          },
+        ),
+      ),
+    );
+  }
+
   void _getChats() {
+    count = 0;
     var pageChatQuery = _firestore
         .collection("groups")
         .doc(widget.groupData!["id"])
@@ -183,7 +288,7 @@ class _ChatScreenState extends State<ChatScreen> {
         "sendBy": widget.userData["name"],
         "type": "text",
         "time": FieldValue.serverTimestamp(),
-        'role':widget.userData["role"]
+        "role": widget.userData["role"],
       };
 
       await _firestore
@@ -192,6 +297,7 @@ class _ChatScreenState extends State<ChatScreen> {
           .collection("chats")
           .add(message);
 
+      print('count is-------$count');
       _message.clear();
       setState(() {
         textFocusCheck = false;
@@ -273,10 +379,15 @@ class _ChatScreenState extends State<ChatScreen> {
     });
   }
 
+  // void showTags() {
+  //   _message.text;
+  // }
+
   @override
   void initState() {
     // TODO: implement initState
-    super.initState();
+    // _message.addListener();
+
     getStoragePath();
     _scrollController.addListener(() {
       if (_scrollController.offset >=
@@ -285,6 +396,7 @@ class _ChatScreenState extends State<ChatScreen> {
         _getChats();
       }
     });
+    super.initState();
   }
 
   @override
@@ -303,7 +415,6 @@ class _ChatScreenState extends State<ChatScreen> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         titleSpacing: 0,
-
         flexibleSpace: Container(
           decoration: const BoxDecoration(
             color: Color(0xFF7860DC),
@@ -418,39 +529,43 @@ class _ChatScreenState extends State<ChatScreen> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Container(
-                                      padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
-                                    decoration: BoxDecoration(
-                                     color: Colors.transparent,
-                                        
-              //DecorationImage
-              // border: Border.all(
-              //   // color: Colors.green,
-              //   width: 8,
-              // ), //Border.all
-              borderRadius: BorderRadius.circular(10),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey,
-                  offset: const Offset(
-                    1.0,
-                    1.0,
-                  ), //Offset
-                  blurRadius: 2.0,
-                  spreadRadius: 2.0,
-                ), //BoxShadow
-                BoxShadow(
-                  color: Color.fromARGB(255, 255, 255, 255),
-                  offset: const Offset(0.0, 0.0),
-                  blurRadius: 0.0,
-                  spreadRadius: 0.0,
-                ), //BoxShadow
-              ],
-            ),
-                                      margin: EdgeInsets.fromLTRB(25, 0, 25, 0),
-                                        child:  chat()
+                                        padding:
+                                            EdgeInsets.fromLTRB(5, 5, 5, 5),
+                                        decoration: BoxDecoration(
+                                          color: Colors.transparent,
+
+                                          //DecorationImage
+                                          // border: Border.all(
+                                          //   // color: Colors.green,
+                                          //   width: 8,
+                                          // ), //Border.all
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.grey,
+                                              offset: const Offset(
+                                                1.0,
+                                                1.0,
+                                              ), //Offset
+                                              blurRadius: 2.0,
+                                              spreadRadius: 2.0,
+                                            ), //BoxShadow
+                                            BoxShadow(
+                                              color: Color.fromARGB(
+                                                  255, 255, 255, 255),
+                                              offset: const Offset(0.0, 0.0),
+                                              blurRadius: 0.0,
+                                              spreadRadius: 0.0,
+                                            ), //BoxShadow
+                                          ],
+                                        ),
+                                        margin:
+                                            EdgeInsets.fromLTRB(25, 0, 25, 0),
+                                        child: chat()
                                         //  Text(
-                                            // 'You can ask assignment related doubts here 6pm- midnight.(Indian standard time)\nour mentors:-\n6:00pm-7:30pm - Rahul\n7:30pm-midnight - Harsh'),
-                                            )
+                                        // 'You can ask assignment related doubts here 6pm- midnight.(Indian standard time)\nour mentors:-\n6:00pm-7:30pm - Rahul\n7:30pm-midnight - Harsh'),
+                                        )
                                     // Center(
                                     //     child: Text("Start a Conversation."),
                                     //   ),
@@ -458,18 +573,76 @@ class _ChatScreenState extends State<ChatScreen> {
                                 );
                         } else {
                           if (snapshot.data != null) {
-                            return ListView.builder(
-                              reverse: true,
-                              controller: _scrollController,
-                              itemCount: snapshot.data!.length,
-                              itemBuilder: (context, index) {
-                                Map<String, dynamic> map =
-                                    // messageData =
-                                    snapshot.data![index].data()
-                                        as Map<String, dynamic>;
+                            return Stack(
+                              children: [
+                                ListView.builder(
+                                  reverse: true,
+                                  controller: _scrollController,
+                                  itemCount: snapshot.data!.length,
+                                  itemBuilder: (context, index) {
+                                    Map<String, dynamic> map =
+                                        // messageData =
+                                        snapshot.data![index].data()
+                                            as Map<String, dynamic>;
 
-                                return messages(size, map, context, appStorage);
-                              },
+                                    return messages(
+                                        size, map, context, appStorage);
+                                  },
+                                ),
+                                shouldShowTags
+                                    ? Positioned(
+                                        bottom: 0,
+                                        child: FutureBuilder(
+                                          future: addTagProperties(),
+                                          builder: ((context, snapshot) {
+                                            if (ConnectionState.done ==
+                                                snapshot.connectionState) {
+                                              return buildTags(
+                                                context,
+                                                height,
+                                                width,
+                                              );
+                                            } else {
+                                              return Container(
+                                                height: height * 0.25,
+                                                width: width * 0.8,
+                                                decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius:
+                                                      BorderRadius.only(
+                                                    topLeft:
+                                                        Radius.circular(20),
+                                                    topRight:
+                                                        Radius.circular(20),
+                                                  ),
+                                                  border: Border.all(
+                                                    color: Colors.grey,
+                                                    width: 0.1,
+                                                  ),
+                                                ),
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(20),
+                                                  child: ClipRRect(
+                                                    borderRadius: BorderRadius.circular(20),
+                                                    child: Lottie.asset(
+                                                      'assets/load-shimmer.json',
+                                                      fit: BoxFit.fill
+                                                    ),
+                                                  ),
+                                                ),
+                                              );
+                                            }
+                                          }),
+                                        ),
+                                      )
+                                    : Container(),
+                                // Positioned(
+                                //   bottom: 0,
+                                //   left: 0,
+                                //   right: 0,
+                                //   child: selectTags(context),
+                                // )
+                              ],
                             );
                           } else {
                             return Container();
@@ -494,6 +667,11 @@ class _ChatScreenState extends State<ChatScreen> {
                           child: TextField(
                             onChanged: (text) {
                               setState(() {
+                                if (text == '@') {
+                                  shouldShowTags = true;
+                                } else {
+                                  shouldShowTags = false;
+                                }
                                 if (text.isNotEmpty) {
                                   textFocusCheck = true;
                                 } else {

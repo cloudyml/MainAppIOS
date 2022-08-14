@@ -217,7 +217,7 @@ Column includes(BuildContext context) {
       ),
       featureTile(
         Icons.call,
-        '1-1 Skype Live Course Mentorship',
+        '1-1 Chat Support',
         horizontalScale,
         verticalScale,
       ),
