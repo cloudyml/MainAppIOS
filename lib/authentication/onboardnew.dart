@@ -6,10 +6,13 @@ import 'package:cloudyml_app2/authentication/loginform.dart';
 import 'package:cloudyml_app2/authentication/onboardbg.dart';
 import 'package:cloudyml_app2/authentication/phoneauthnew.dart';
 import 'package:cloudyml_app2/globals.dart';
+import 'package:cloudyml_app2/models/existing_user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert' as convert;
 
 class Onboardew extends StatefulWidget {
   const Onboardew({Key? key}) : super(key: key);
@@ -23,6 +26,29 @@ class _OnboardewState extends State<Onboardew> {
   bool formVisible = false;
   bool phoneVisible = false;
   int _formIndex = 1;
+
+  List<ExistingUser> listOfAllExistingUser = [];
+
+  void getListOfExistingUsers() async {
+    final rawData = await http.get(Uri.parse('https://script.google.com/macros/s/AKfycbzOsK2DmwO6lA_Vv6zaeZTdZA2G6sgN4RmWl9kdb1AsZ6Sz0oCdiSvvEVoYZqQZe8sx/exec'));
+    var rawJson = convert.jsonDecode(rawData.body);
+
+    rawJson.forEach((json) async {
+      print(json['name']);
+      ExistingUser existingUser = ExistingUser();
+      existingUser.name = json['name'];
+      existingUser.email = json['email'];
+      existingUser.courseId = json['courseId'];
+      listOfAllExistingUser.add(existingUser);
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    getListOfExistingUsers();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -204,7 +230,10 @@ class _OnboardewState extends State<Onboardew> {
                               final provider =
                                   Provider.of<GoogleSignInProvider>(context,
                                       listen: false);
-                              provider.googleLogin(context);
+                              provider.googleLogin(
+                                context,
+                                listOfAllExistingUser,
+                              );
                               print(provider);
                               setState(() {
                                 googleloading = false;
@@ -364,7 +393,9 @@ class _OnboardewState extends State<Onboardew> {
                               Container(
                                 child: AnimatedSwitcher(
                                   duration: Duration(milliseconds: 200),
-                                  child: LoginForm(page: "OnBoard",),
+                                  child: LoginForm(
+                                    page: "OnBoard",
+                                  ),
                                 ),
                               )
                             ],
@@ -412,7 +443,10 @@ class _OnboardewState extends State<Onboardew> {
                               Container(
                                 child: AnimatedSwitcher(
                                   duration: Duration(milliseconds: 200),
-                                  child: SignUpform(),
+                                  child: SignUpform(
+                                    listOfAllExistingUser:
+                                        listOfAllExistingUser,
+                                  ),
                                 ),
                               )
                             ],

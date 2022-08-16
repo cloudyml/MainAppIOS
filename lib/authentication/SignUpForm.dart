@@ -7,6 +7,7 @@ import 'package:cloudyml_app2/Providers/UserProvider.dart';
 import 'package:cloudyml_app2/authentication/firebase_auth.dart';
 import 'package:cloudyml_app2/globals.dart';
 import 'package:cloudyml_app2/home.dart';
+import 'package:cloudyml_app2/models/existing_user.dart';
 import 'package:cloudyml_app2/widgets/loading.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,9 @@ import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 
 class SignUpform extends StatefulWidget {
-  const SignUpform({Key? key}) : super(key: key);
+  final List<ExistingUser> listOfAllExistingUser;
+  const SignUpform({Key? key, required this.listOfAllExistingUser})
+      : super(key: key);
 
   @override
   State<SignUpform> createState() => _SignUpformState();
@@ -52,8 +55,22 @@ class _SignUpformState extends State<SignUpform> {
       //   isVerifyy = true;
       // });
       // print('Is verify ${isVerifyy}');
+      ///Should get only those Existing user to which authenticated user's email is matching
+      final getExistingUser = widget.listOfAllExistingUser
+          .where((element) => (element).email == email.text);
+
+      ///Getting list of paid courses id
+      final paidCourseNames = getExistingUser.map((e) => e.courseId).toList();
+      
       userprofile(
-          name: username.text, mobilenumber: mobile.text, email: email.text,image: '',authType: "emailAuth",phoneVerified: false);
+        name: username.text,
+        mobilenumber: mobile.text,
+        email: email.text,
+        image: '',
+        authType: "emailAuth",
+        phoneVerified: false,
+        listOfCourses: paidCourseNames,
+      );
       AwesomeDialog(
         context: context,
         animType: AnimType.LEFTSLIDE,
@@ -83,21 +100,21 @@ class _SignUpformState extends State<SignUpform> {
               child: HomePage()),
           (route) => false);
       await AwesomeNotifications().createNotification(
-          content:NotificationContent(
-              id:  1234,
+          content: NotificationContent(
+              id: 1234,
               channelKey: 'image',
               title: 'Welcome to CloudyML',
               body: 'It\'s great to have you on CloudyML',
               bigPicture: 'asset://assets/HomeImage.png',
               largeIcon: 'asset://assets/logo2.png',
               notificationLayout: NotificationLayout.BigPicture,
-              displayOnForeground: true
-          )
-      );
-      await Provider.of<UserProvider>(context, listen: false).addToNotificationP(
+              displayOnForeground: true));
+      await Provider.of<UserProvider>(context, listen: false)
+          .addToNotificationP(
         title: 'Welcome to CloudyML',
         body: 'It\'s great to have you on CloudyML',
-        notifyImage: 'https://firebasestorage.googleapis.com/v0/b/cloudyml-app.appspot.com/o/images%2Fhomeimage.png?alt=media&token=2f4abc37-413f-49c3-b43d-03c02696567e',
+        notifyImage:
+            'https://firebasestorage.googleapis.com/v0/b/cloudyml-app.appspot.com/o/images%2Fhomeimage.png?alt=media&token=2f4abc37-413f-49c3-b43d-03c02696567e',
         NDate: DateFormat('dd-MM-yyyy | h:mm a').format(DateTime.now()),
       );
       // LocalNotificationService.showNotificationfromApp(
@@ -330,8 +347,11 @@ class _SignUpformState extends State<SignUpform> {
                           });
 
                           createAccount(
-                                  email.text, pass.text, pass.text, context)
-                              .then((user) async {
+                            email.text,
+                            pass.text,
+                            pass.text,
+                            context,
+                          ).then((user) async {
                             if (user != null) {
                               print(user);
                               if (!isVerified) {
