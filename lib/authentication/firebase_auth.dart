@@ -194,7 +194,7 @@ class GoogleSignInProvider extends ChangeNotifier {
               _user?.displayName,
             );
           }
-        }
+        
         await AwesomeNotifications().createNotification(
           content: NotificationContent(
               id: 1234,
@@ -213,7 +213,7 @@ class GoogleSignInProvider extends ChangeNotifier {
           notifyImage:
               'https://firebasestorage.googleapis.com/v0/b/cloudyml-app.appspot.com/o/images%2Fhomeimage.png?alt=media&token=2f4abc37-413f-49c3-b43d-03c02696567e',
           NDate: DateFormat('dd-MM-yyyy | h:mm a').format(DateTime.now()),
-        );
+        );}
       });
       Navigator.pushAndRemoveUntil(
         context,
