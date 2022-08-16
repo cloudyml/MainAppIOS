@@ -101,36 +101,36 @@ Future logOut(BuildContext context) async {
   }
 }
 
-void updateGroupData(
-  List<String?> paidCourseNames,
-  String? userId,
-  String? userName,
-) async {
-  for (var courseId in paidCourseNames) {
-    await FirebaseFirestore.instance
-        .collection('courses')
-        .where('id', isEqualTo: courseId)
-        .get()
-        .then(
-      (value) {
-        Map<String, dynamic> groupData = {
-          "name": value.docs[0].data()['name'],
-          "icon": value.docs[0].data()["image_url"],
-          "mentors": value.docs[0].data()["mentors"],
-          value.docs[0].data()["mentors"][0]: 0,
-          value.docs[0].data()["mentors"][1]: 0,
-          value.docs[0].data()["mentors"][2]: 0,
-          value.docs[0].data()["mentors"][3]: 0,
-          'studentCount': 0,
-          "student_id": userId,
-          "student_name": userName,
-        };
-        print(groupData);
-        FirebaseFirestore.instance.collection('groups').add(groupData);
-      },
-    );
-  }
-}
+// void updateGroupData(
+//   List<String?> paidCourseNames,
+//   String? userId,
+//   String? userName,
+// ) async {
+//   for (var courseId in paidCourseNames) {
+//     await FirebaseFirestore.instance
+//         .collection('courses')
+//         .where('id', isEqualTo: courseId)
+//         .get()
+//         .then(
+//       (value) {
+//         Map<String, dynamic> groupData = {
+//           "name": value.docs[0].data()['name'],
+//           "icon": value.docs[0].data()["image_url"],
+//           "mentors": value.docs[0].data()["mentors"],
+//           value.docs[0].data()["mentors"][0]: 0,
+//           value.docs[0].data()["mentors"][1]: 0,
+//           value.docs[0].data()["mentors"][2]: 0,
+//           value.docs[0].data()["mentors"][3]: 0,
+//           'studentCount': 0,
+//           "student_id": userId,
+//           "student_name": userName,
+//         };
+//         print(groupData);
+//         FirebaseFirestore.instance.collection('groups').add(groupData);
+//       },
+//     );
+//   }
+// }
 
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
@@ -139,7 +139,8 @@ class GoogleSignInProvider extends ChangeNotifier {
   GoogleSignInAccount? _user;
   GoogleSignInAccount get user => _user!;
   Future googleLogin(
-      BuildContext context, List<ExistingUser> listOfAllExistingUser) async {
+    BuildContext context,
+  ) async {
     try {
       final googleUser = await googleSignIn.signIn();
       if (googleUser == null) return;
@@ -160,14 +161,6 @@ class GoogleSignInProvider extends ChangeNotifier {
       await FirebaseAuth.instance.signInWithCredential(credential);
       showToast('Please wait while we are fetching info...');
 
-      ///Should get only those Existing user to which authenticated user's email is matching
-      final getExistingUser = listOfAllExistingUser.where(
-        (element) => (element).email == _user?.email,
-      );
-
-      ///Getting list of paid courses id
-      final paidCourseNames = getExistingUser.map((e) => e.courseId).toList();
-      print(paidCourseNames);
       //This is check if User already exist in Database in User Collection
       //If User does not exist create user and groups collection
       await FirebaseFirestore.instance
@@ -184,16 +177,16 @@ class GoogleSignInProvider extends ChangeNotifier {
             image: _user?.photoUrl,
             authType: "googleAuth",
             phoneVerified: false,
-            listOfCourses: paidCourseNames,
+            listOfCourses: [],
           );
           showToast('Account Created');
-          if (paidCourseNames.isNotEmpty) {
-            updateGroupData(
-              paidCourseNames,
-              FirebaseAuth.instance.currentUser?.uid,
-              _user?.displayName,
-            );
-          }
+          // if (paidCourseNames.isNotEmpty) {
+          //   updateGroupData(
+          //     paidCourseNames,
+          //     FirebaseAuth.instance.currentUser?.uid,
+          //     _user?.displayName,
+          //   );
+          // }
         }
         await AwesomeNotifications().createNotification(
           content: NotificationContent(

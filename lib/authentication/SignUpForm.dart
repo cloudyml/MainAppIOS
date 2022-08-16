@@ -19,9 +19,11 @@ import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 
 class SignUpform extends StatefulWidget {
-  final List<ExistingUser> listOfAllExistingUser;
-  const SignUpform({Key? key, required this.listOfAllExistingUser})
-      : super(key: key);
+  // final List<ExistingUser> listOfAllExistingUser;
+  const SignUpform({
+    Key? key,
+    // required this.listOfAllExistingUser
+  }) : super(key: key);
 
   @override
   State<SignUpform> createState() => _SignUpformState();
@@ -56,12 +58,12 @@ class _SignUpformState extends State<SignUpform> {
       // });
       // print('Is verify ${isVerifyy}');
       ///Should get only those Existing user to which authenticated user's email is matching
-      final getExistingUser = widget.listOfAllExistingUser
-          .where((element) => (element).email == email.text);
+      // final getExistingUser = widget.listOfAllExistingUser
+      //     .where((element) => (element).email == email.text);
 
-      ///Getting list of paid courses id
-      final paidCourseNames = getExistingUser.map((e) => e.courseId).toList();
-      
+      // ///Getting list of paid courses id
+      // final paidCourseNames = getExistingUser.map((e) => e.courseId).toList();
+
       userprofile(
         name: username.text,
         mobilenumber: mobile.text,
@@ -69,7 +71,7 @@ class _SignUpformState extends State<SignUpform> {
         image: '',
         authType: "emailAuth",
         phoneVerified: false,
-        listOfCourses: paidCourseNames,
+        listOfCourses: [],
       );
       AwesomeDialog(
         context: context,
