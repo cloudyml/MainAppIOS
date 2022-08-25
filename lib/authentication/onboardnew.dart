@@ -27,26 +27,26 @@ class _OnboardewState extends State<Onboardew> {
   bool phoneVisible = false;
   int _formIndex = 1;
 
-  List<ExistingUser> listOfAllExistingUser = [];
+  // List<ExistingUser> listOfAllExistingUser = [];
 
-  void getListOfExistingUsers() async {
-    final rawData = await http.get(Uri.parse('https://script.google.com/macros/s/AKfycbzOsK2DmwO6lA_Vv6zaeZTdZA2G6sgN4RmWl9kdb1AsZ6Sz0oCdiSvvEVoYZqQZe8sx/exec'));
-    var rawJson = convert.jsonDecode(rawData.body);
+  // void getListOfExistingUsers() async {
+  //   final rawData = await http.get(Uri.parse('https://script.google.com/macros/s/AKfycbzOsK2DmwO6lA_Vv6zaeZTdZA2G6sgN4RmWl9kdb1AsZ6Sz0oCdiSvvEVoYZqQZe8sx/exec'));
+  //   var rawJson = convert.jsonDecode(rawData.body);
 
-    rawJson.forEach((json) async {
-      print(json['name']);
-      ExistingUser existingUser = ExistingUser();
-      existingUser.name = json['name'];
-      existingUser.email = json['email'];
-      existingUser.courseId = json['courseId'];
-      listOfAllExistingUser.add(existingUser);
-    });
-  }
+  //   rawJson.forEach((json) async {
+  //     print(json['name']);
+  //     ExistingUser existingUser = ExistingUser();
+  //     existingUser.name = json['name'];
+  //     existingUser.email = json['email'];
+  //     existingUser.courseId = json['courseId'];
+  //     listOfAllExistingUser.add(existingUser);
+  //   });
+  // }
 
   @override
   void initState() {
     // TODO: implement initState
-    getListOfExistingUsers();
+    // getListOfExistingUsers();
     super.initState();
   }
 
@@ -232,7 +232,7 @@ class _OnboardewState extends State<Onboardew> {
                                       listen: false);
                               provider.googleLogin(
                                 context,
-                                listOfAllExistingUser,
+                                // listOfAllExistingUser,
                               );
                               print(provider);
                               setState(() {
@@ -444,8 +444,8 @@ class _OnboardewState extends State<Onboardew> {
                                 child: AnimatedSwitcher(
                                   duration: Duration(milliseconds: 200),
                                   child: SignUpform(
-                                    listOfAllExistingUser:
-                                        listOfAllExistingUser,
+                                    // listOfAllExistingUser:
+                                    //     listOfAllExistingUser,
                                   ),
                                 ),
                               )
