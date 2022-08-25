@@ -6,7 +6,7 @@ import 'package:cloudyml_app2/authentication/loginform.dart';
 import 'package:cloudyml_app2/authentication/onboardbg.dart';
 import 'package:cloudyml_app2/authentication/phoneauthnew.dart';
 import 'package:cloudyml_app2/globals.dart';
-import 'package:cloudyml_app2/models/existing_user.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -161,32 +161,14 @@ class _OnboardewState extends State<Onboardew> {
                         SizedBox(
                           height: verticalScale * 21,
                         ),
-                        InkWell(
-                          onTap: () {
-                            setState(() {
-                              phoneVisible = true;
-                            });
+                        SignInWithAppleButton(
+                          style: SignInWithAppleButtonStyle.black,
+                          iconAlignment: IconAlignment.center,
+                          onPressed: () {
+                            context
+                                .read<AuthenticationProvider>()
+                                .signInWithApple();
                           },
-                          child: Container(
-                            height: 45 * verticalScale,
-                            width: 273 * horizontalScale,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(
-                                    min(horizontalScale, verticalScale) * 8),
-                                border: Border.all(
-                                    color: HexColor('7B62DF'), width: 2)),
-                            child: Center(
-                              child: Text(
-                                'Continue with Phone',
-                                textScaleFactor:
-                                    min(horizontalScale, verticalScale),
-                                style: TextStyle(
-                                    fontFamily: 'SemiBold',
-                                    color: Colors.black,
-                                    fontSize: 20),
-                              ),
-                            ),
-                          ),
                         ),
                         SizedBox(
                           height: verticalScale * 21,
@@ -444,9 +426,9 @@ class _OnboardewState extends State<Onboardew> {
                                 child: AnimatedSwitcher(
                                   duration: Duration(milliseconds: 200),
                                   child: SignUpform(
-                                    // listOfAllExistingUser:
-                                    //     listOfAllExistingUser,
-                                  ),
+                                      // listOfAllExistingUser:
+                                      //     listOfAllExistingUser,
+                                      ),
                                 ),
                               )
                             ],

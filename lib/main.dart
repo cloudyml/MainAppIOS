@@ -13,6 +13,7 @@ import 'package:cloudyml_app2/offline/offline_videos.dart';
 import 'package:cloudyml_app2/screens/splash.dart';
 import 'package:cloudyml_app2/services/database_service.dart';
 import 'package:cloudyml_app2/services/local_notificationservice.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -197,6 +198,15 @@ class MyApp extends StatelessWidget {
         isIgnoring: true,
         child: MultiProvider(
           providers: [
+            ChangeNotifierProvider(
+              create: (ctx) => AuthenticationProvider(FirebaseAuth.instance),
+            ),
+            StreamProvider(
+              create: (BuildContext context) {
+                return context.read<AuthenticationProvider>().authStateChanges;
+              },
+              initialData: [],
+            ),
             ChangeNotifierProvider.value(value: UserProvider.initialize()),
             ChangeNotifierProvider.value(value: AppProvider()),
             StreamProvider<List<CourseDetails>>.value(
